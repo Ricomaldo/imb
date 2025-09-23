@@ -13,13 +13,19 @@ const debouncedUpdateTodo = debounce((content, updateFn) => {
   updateFn(content);
 }, 1000);
 
+const debouncedUpdateNotes = debounce((content, updateFn) => {
+  updateFn(content);
+}, 1000);
+
 export const usePanelContent = (projectId) => {
   const projectData = useProjectData(projectId);
   const {
     roadmapMarkdown,
     todoMarkdown,
+    notesMarkdown,
     updateRoadmapMarkdown,
-    updateTodoMarkdown
+    updateTodoMarkdown,
+    updateNotesMarkdown
   } = projectData || {};
 
   // Contenu direct du store (plus d'état local)
@@ -45,6 +51,21 @@ export const usePanelContent = (projectId) => {
 
 **Next:** Définir les prochaines étapes`;
 
+  const notesContent = notesMarkdown || `# Notes du projet
+
+## Contexte
+> *Décrivez ici le contexte et les objectifs du projet*
+
+## Idées et réflexions
+-
+
+## Documentation
+-
+
+---
+
+*Utilisez cet espace pour capturer toutes vos pensées et notes importantes liées au projet* 📝`;
+
   // Handlers avec debounce
   const updateRoadmapContent = useCallback((content) => {
     if (projectId && updateRoadmapMarkdown) {
@@ -58,10 +79,18 @@ export const usePanelContent = (projectId) => {
     }
   }, [projectId, updateTodoMarkdown]);
 
+  const updateNotesContent = useCallback((content) => {
+    if (projectId && updateNotesMarkdown) {
+      debouncedUpdateNotes(content, updateNotesMarkdown);
+    }
+  }, [projectId, updateNotesMarkdown]);
+
   return {
     roadmapContent,
     todoContent,
+    notesContent,
     updateRoadmapContent,
-    updateTodoContent
+    updateTodoContent,
+    updateNotesContent
   };
 };

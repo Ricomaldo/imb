@@ -2,6 +2,31 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-23 (Widget Notes & Hydration Reminder)
+
+- **Widget Notes dans l'Atelier** : Nouveau panel pour notes longues liées au projet
+  - Position : bas-droite sous le Todo (colonnes 4-6, lignes 4-6)
+  - Contenu markdown persistant par projet via `notesMarkdown` dans useProjectDataStore
+  - Structure par défaut : Contexte, Idées et réflexions, Documentation
+  - Hook `usePanelContent` étendu avec `notesContent` et `updateNotesContent`
+  - Debounce 1s pour sauvegarde automatique optimisée
+  - Texture parchment, icône 📝, couleur accent neutre
+  - État collapsible mémorisé dans `atelierModules.notes`
+
+- **Widget Hydration Reminder dans la Cuisine** : Invitation bienveillante à s'hydrater
+  - Module dédié dans `room-modules/cuisine/HydrationReminder`
+  - Message fixe "Pause hydratation ?" sans tracking ni compteur
+  - Bouton unique "J'ai bu" avec animation de célébration
+  - **Animation paillettes CSS** : 24 particules avec variations
+    - Alternance couleurs or/bleu ardoise
+    - Durée aléatoire 0.8s-1.5s par particule
+    - Rotation et scale progressifs
+    - Animation 3 secondes totale
+  - Design cohérent : texture wood, fond transparent
+  - Animations optimisées GPU avec `will-change: transform`
+  - État minimal : uniquement `isAnimating` local
+  - Affichage optionnel de l'heure de dernière hydratation
+
 ### Fixed - 2025-09-20 (ProjectOverviewModal)
 
 - **Formulaire de création de projet** : Ajout du champ "Position Kanban"

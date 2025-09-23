@@ -34,6 +34,21 @@ const createProjectDataStore = (projectId) => {
 
 **Next:** Définir les prochaines étapes`,
 
+        notesMarkdown: `# Notes du projet
+
+## Contexte
+> *Décrivez ici le contexte et les objectifs du projet*
+
+## Idées et réflexions
+-
+
+## Documentation
+-
+
+---
+
+*Utilisez cet espace pour capturer toutes vos pensées et notes importantes liées au projet* 📝`,
+
         // État des modules Atelier
         atelierModules: {
           roadmap: { collapsed: true },
@@ -43,7 +58,8 @@ const createProjectDataStore = (projectId) => {
             collapsed: true,
             items: []
           },
-          screentv: { collapsed: true, screenshots: [] }
+          screentv: { collapsed: true, screenshots: [] },
+          notes: { collapsed: false }
         },
 
         // Données structurées legacy (pour compatibilité)
@@ -59,6 +75,10 @@ const createProjectDataStore = (projectId) => {
 
         updateTodoMarkdown: (content) => {
           set({ todoMarkdown: content });
+        },
+
+        updateNotesMarkdown: (content) => {
+          set({ notesMarkdown: content });
         },
 
         // Actions - Modules Atelier
@@ -82,7 +102,8 @@ const createProjectDataStore = (projectId) => {
               todo: { collapsed: true },
               mindlog: { collapsed: true, mood: "😐", note: "" },
               actions: { collapsed: true, items: [] },
-              screentv: { collapsed: true, screenshots: [] }
+              screentv: { collapsed: true, screenshots: [] },
+              notes: { collapsed: false }
             };
             return defaultModules[moduleName] || { collapsed: true };
           }
@@ -158,6 +179,7 @@ const createProjectDataStore = (projectId) => {
           set({
             roadmapMarkdown: data.roadmapMarkdown || get().roadmapMarkdown,
             todoMarkdown: data.todoMarkdown || get().todoMarkdown,
+            notesMarkdown: data.notesMarkdown || get().notesMarkdown,
             atelierModules: data.atelierModules || get().atelierModules,
             roadmap: data.roadmap || [],
             todo: data.todo || [],

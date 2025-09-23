@@ -1,4 +1,4 @@
-// src/components/widgets/MindLogSorter/MindLogSorter.jsx
+// src/components/room-modules/sanctuaire/MindLogSorter/MindLogSorter.jsx
 // Widget de tri mental pour catégoriser les entrées MindLog par drag&drop
 
 import React, { useState, useMemo } from 'react';
@@ -20,8 +20,8 @@ import {
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import useDiaryStore from '../../../stores/useDiaryStore';
-import { alpha } from '../../../styles/color';
+import useDiaryStore from '../../../../stores/useDiaryStore';
+import { alpha } from '../../../../styles/color';
 
 // Conteneur principal
 const SorterContainer = styled.div`
@@ -365,13 +365,17 @@ const DraggableEntry = ({ entry, onDelete }) => {
 
 // Zone de drop pour catégories
 const DroppableZone = ({ category, entries, label, icon, onDeleteEntry }) => {
-  const { setNodeRef, isOver } = useSortable({
+  const { setNodeRef, isOver, active } = useSortable({
     id: category,
     data: {
       type: 'category',
       category
-    }
+    },
+    disabled: true // Désactiver le drag de la zone elle-même
   });
+
+  // Vérifier si l'élément actif est une entrée (pas une zone)
+  const isDroppingEntry = active && !active.data?.current?.type;
 
   return (
     <DropZone ref={setNodeRef} $isOver={isOver} $category={category}>
@@ -398,6 +402,7 @@ const DroppableZone = ({ category, entries, label, icon, onDeleteEntry }) => {
 // Composant principal
 const MindLogSorter = () => {
   const { getAllLogs, updateLogCategory, deleteLog } = useDiaryStore();
+  const logs = useDiaryStore(state => state.mindlog.logs); // Écouter directement les logs pour le re-render
   const [activeId, setActiveId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
@@ -444,7 +449,7 @@ const MindLogSorter = () => {
     });
 
     return result;
-  }, [getAllLogs]);
+  }, [logs]); // Utiliser logs au lieu de getAllLogs pour détecter les changements
 
   const handleDragStart = (event) => {
     setActiveId(event.active.id);

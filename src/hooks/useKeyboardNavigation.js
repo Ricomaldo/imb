@@ -1,7 +1,7 @@
 // src/hooks/useKeyboardNavigation.js
 
 import { useEffect, useRef } from 'react';
-import useSettingsStore from '../stores/useSettingsStore';
+import usePreferencesStore from '../stores/usePreferencesStore';
 
 /**
  * Hook pour gérer les raccourcis clavier de navigation
@@ -37,7 +37,7 @@ export const useKeyboardNavigation = ({
   stepDelayMs = 550,
   enableEscapeToDefault = true
 }) => {
-  const defaultRoom = useSettingsStore((state) => state.defaultRoom);
+  const defaultRoom = usePreferencesStore((state) => state.defaultRoom);
 
   // Refs pour disposer de valeurs fraîches dans les timeouts
   const availableRef = useRef(availableDirections);

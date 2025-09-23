@@ -5,8 +5,8 @@ import { useTheme } from "styled-components";
 import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
-import MindLogSorter from "../../widgets/MindLogSorter";
-import useRoomsUIStore from "../../../stores/useRoomsUIStore";
+import MindLogSorter from "../../room-modules/sanctuaire/MindLogSorter/MindLogSorter";
+import usePreferencesStore from "../../../stores/usePreferencesStore";
 
 /**
  * Sanctuaire room component for spiritual and meditation activities
@@ -16,7 +16,7 @@ import useRoomsUIStore from "../../../stores/useRoomsUIStore";
  */
 const SanctuaireRoom = () => {
   const theme = useTheme();
-  const { getPanelState, updatePanelState } = useRoomsUIStore();
+  const { getPanelState, updatePanelState } = usePreferencesStore();
 
   return (
     <BaseRoom roomType="sanctuaire" layoutType="grid">

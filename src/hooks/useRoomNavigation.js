@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { getAdjacentRooms, isValidPosition } from '../utils/roomPositions';
-import useSettingsStore from '../stores/useSettingsStore';
+import usePreferencesStore from '../stores/usePreferencesStore';
 
 export const useRoomNavigation = () => {
-  const defaultRoom = useSettingsStore((state) => state.defaultRoom);
+  const defaultRoom = usePreferencesStore((state) => state.defaultRoom);
   const [currentRoom, setCurrentRoom] = useState(defaultRoom);
 
   const navigateToRoom = (direction) => {

@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { roomConfig } from '../../../utils/roomPositions';
 import { roomColors } from '../../../utils/assetMapping';
-import useSettingsStore from '../../../stores/useSettingsStore';
+import usePreferencesStore from '../../../stores/usePreferencesStore';
 
 const GridContainer = styled.div`
   display: grid;
@@ -56,7 +56,7 @@ const RoomLabel = styled.span`
  * @renders RoomLabel
  */
 const NavigationGrid = () => {
-  const { defaultRoom } = useSettingsStore();
+  const { defaultRoom } = usePreferencesStore();
 
   const handleRoomClick = async (roomType) => {
     const targetRoom = roomConfig.find(r => r.type === roomType);

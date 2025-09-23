@@ -6,7 +6,7 @@ import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
 import useNotesStore from "../../../stores/useNotesStore";
-import useRoomsUIStore from "../../../stores/useRoomsUIStore";
+import usePreferencesStore from "../../../stores/usePreferencesStore";
 import MarkdownEditor from "../../common/MarkdownEditor";
 import ImageDisplay from "../../widgets/ImageDisplay/ImageDisplay";
 import QuoteCarousel from "../../widgets/QuoteCarousel/QuoteCarousel";
@@ -31,7 +31,7 @@ import lionImage from "../../../assets/images/totems/Lion.png";
 const ChambreRoom = () => {
   const theme = useTheme();
   const { roomNotes, updateRoomNote } = useNotesStore();
-  const { getPanelState, updatePanelState } = useRoomsUIStore();
+  const { getPanelState, updatePanelState } = usePreferencesStore();
   const chambreNotes = roomNotes.chambre || "";
 
   // Référence pour le handler de log du MindLog

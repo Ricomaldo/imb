@@ -13,7 +13,7 @@ import {
   StatusMessage,
   SaveButton
 } from './SettingsModal.styles';
-import useSettingsStore from '../../../stores/useSettingsStore';
+import usePreferencesStore from '../../../stores/usePreferencesStore';
 import { roomConfig } from '../../../utils/roomPositions';
 
 /**
@@ -31,7 +31,7 @@ import { roomConfig } from '../../../utils/roomPositions';
  * @renders StatusMessage
  */
 const SettingsModal = ({ isOpen, onClose }) => {
-  const { defaultRoom, setDefaultRoom } = useSettingsStore();
+  const { defaultRoom, setDefaultRoom } = usePreferencesStore();
   const [selectedRoom, setSelectedRoom] = useState(
     `${defaultRoom.x},${defaultRoom.y}`
   );

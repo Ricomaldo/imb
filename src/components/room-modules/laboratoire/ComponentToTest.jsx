@@ -18,7 +18,7 @@
 import React, { useRef } from 'react';
 import MindLogCompact from '../../widgets/MindLog/MindLogCompact';
 import MindLogToolbar from '../../common/MindLogToolbar';
-import MindLogSorter from '../../widgets/MindLogSorter';
+import MindLogSorter from '../sanctuaire/MindLogSorter/MindLogSorter';
 // import TimeTimer from '../../widgets/TimeTimer';  // Exemple d'import
 
 // ========================================

@@ -147,9 +147,6 @@ const SyncModal = ({ isOpen, onClose }) => {
       ProjectSyncAdapter.configure(githubToken, gistId);
       ProjectSyncAdapter.setPassword(password);
 
-      // Vérifier d'abord les stats
-      const stats = ProjectSyncAdapter.getSyncStats();
-
       // Confirmation avant d'écraser les données locales
       const confirm = window.confirm(
         `⚠️ Ceci va remplacer toutes vos données locales par celles du Gist.\n` +

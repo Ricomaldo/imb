@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### Changed - 2025-09-24 (Refactoring Stores)
+
+- **Fusion des stores de préférences** : Simplification de l'architecture
+  - `useSettingsStore` + `useRoomsUIStore` → `usePreferencesStore` unifié
+  - Migration automatique des données existantes au premier chargement
+  - Réduction de 7 à 6 stores actifs pour une meilleure maintenabilité
+  - Toutes les fonctionnalités conservées avec API compatible
+  - Clé localStorage unifiée : `irim-preferences-store`
+
+- **Vérification système de synchronisation** :
+  - Confirmation que les 3 stores principaux sont bien synchronisés (Notes, ProjectMeta, ProjectData)
+  - Les 4 stores locaux restent privés (Preferences, Diary, Settings legacy, Projects legacy)
+  - Export/Import Gist 100% fonctionnel avec architecture v2.0.0
+
+- **Correction bug SyncModal** :
+  - Suppression variable inutilisée `stats` ligne 151
+
 ### Added - 2025-09-23 (Widget Tri Mental - Sanctuaire)
 
 - **Widget MindLogSorter** : Système de catégorisation par drag&drop des entrées émotionnelles

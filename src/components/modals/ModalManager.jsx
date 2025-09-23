@@ -7,6 +7,7 @@ import SyncModal from './SyncModal/SyncModal';
 import SettingsModal from './SettingsModal/SettingsModal';
 import ProjectOverviewModal from './ProjectOverviewModal/ProjectOverviewModal';
 import CaptureConfirmModal from './CaptureConfirmModal/CaptureConfirmModal';
+import TimeTimerModal from './TimeTimerModal/TimeTimerModal';
 
 /**
  * Manager component that renders all modals in the application
@@ -28,6 +29,7 @@ const ModalManager = () => {
     'settings': false,
     'projects': false,
     'capture-confirm': false,
+    'time-timer': false,
   });
 
   // Utiliser une ref pour stocker la fonction de setState
@@ -96,6 +98,11 @@ const ModalManager = () => {
       <CaptureConfirmModal
         isOpen={modalStates['capture-confirm']}
         onClose={() => closeModal('capture-confirm')}
+      />
+
+      <TimeTimerModal
+        isOpen={modalStates['time-timer']}
+        onClose={() => closeModal('time-timer')}
       />
     </>
   );

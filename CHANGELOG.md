@@ -2,6 +2,35 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-23 (Widget Tri Mental - Sanctuaire)
+
+- **Widget MindLogSorter** : Système de catégorisation par drag&drop des entrées émotionnelles
+  - 4 zones de tri : "À digérer", "Insights", "Évacué", "À revisiter"
+  - Intégration native avec @dnd-kit (déjà présent dans le projet)
+  - Affichage des 10 dernières entrées MindLog avec aperçu (30 chars)
+  - Feedback visuel sur hover/drag avec codes couleur par catégorie
+  - Support des entrées cachées avec indicateur visuel 👁️
+  - **Suppression avec confirmation** : Modal overlay pour action définitive
+  - Dimensions compactes : adaptatif 100% du panel parent
+
+- **Extension MindLog avec gestion visibilité** :
+  - Fonction "Cacher" dans MindLog (Chambre) : masque l'entrée localement
+  - Entrées cachées restent visibles uniquement dans le Sanctuaire
+  - Toggle "Voir cachés" pour afficher temporairement les entrées masquées
+  - Indicateurs visuels : opacity réduite + badge "(caché)"
+
+- **Store useDiaryStore amélioré** :
+  - Nouvelles propriétés : `category`, `categoryDate`, `hidden` par entrée
+  - Actions : `updateLogCategory()`, `toggleLogVisibility()`, `deleteLog()`
+  - Getters : `getVisibleLogs()` (Chambre), `getAllLogs()` (Sanctuaire)
+  - Rétrocompatibilité totale avec entrées existantes
+
+- **Intégration Sanctuaire** :
+  - PanelGrid 5x5 avec layout cohérent aux autres pièces
+  - Panel "Tri Mental" (2x2) avec texture stone et icône 🧘
+  - Zones placeholder pour futures fonctionnalités méditation/réflexion
+  - Persistence état via useRoomsUIStore
+
 ### Added - 2025-09-23 (Widget Notes & Hydration Reminder)
 
 - **Widget Notes dans l'Atelier** : Nouveau panel pour notes longues liées au projet

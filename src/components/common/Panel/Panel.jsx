@@ -51,7 +51,11 @@ const PanelInner = ({
   badge,
 
   // ÉVÉNEMENTS
-  onClick
+  onClick,
+
+  // ACTIONS CUSTOM
+  customActions,
+  hideHeaderTitleWhenCollapsed = false
 }) => {
   const panelContext = usePanelContext();
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
@@ -86,8 +90,8 @@ const PanelInner = ({
               )}
             </HeaderContent>
 
-            {/* Seulement le bouton toggle, pas les outils */}
-            <div style={{ display: 'flex', gap: '4px' }}>
+            {/* Pas d'actions custom en mode collapsed */}
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
               {collapsible && (
                 <ToggleButton
                   onClick={handleToggleCollapse}
@@ -114,7 +118,8 @@ const PanelInner = ({
       <PanelContainer $maxHeight={maxHeight} $collapsed={false} $texture={texture} $borderType={borderType}>
         <PanelHeader $accentColor={accentColor}>
           <HeaderContent>
-            <span>{icon} {title}</span>
+            {!hideHeaderTitleWhenCollapsed && <span>{icon} {title}</span>}
+            {hideHeaderTitleWhenCollapsed && <span>{icon}</span>}
             {badge && (
               <PanelBadge >
                 {badge}
@@ -144,6 +149,9 @@ const PanelInner = ({
                 iconsMap={panelContext.iconsMap}
               />
             )}
+
+            {/* Actions custom toujours en mode ouvert */}
+            {customActions && customActions}
 
             {collapsible && (
               <ToggleButton

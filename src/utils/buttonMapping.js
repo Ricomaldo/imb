@@ -17,12 +17,10 @@ export const openModal = (modalId) => {
   }
 };
 
-// ---- ControlTower: ligne du haut (calendrier + infos + timer) + ligne du bas (actions rapides) ----
+// ---- ControlTower: ligne du haut (calendrier + horloge + timer) + ligne du bas (actions rapides) ----
 export const controlButtons = [
   { id: 'calendar', type: 'action', icon: '📅', label: 'Calendrier', action: () => {} },
-  { id: 'stars', type: 'stat', icon: '⭐', label: 'Étoiles', value: '11/100' },
-  { id: 'xp', type: 'stat', icon: '🔮', label: 'XP', value: 29 },
-  { id: 'timer', type: 'action', icon: '⏱️', label: 'Timer', action: () => {} },
+  { id: 'timer', type: 'action', icon: '⏱️', label: 'Timer', action: () => openModal('time-timer') },
 ];
 
 export const quickActions = [

@@ -1,7 +1,7 @@
 // src/components/rooms/Laboratoire/LaboratoireRoom.jsx
 // LABO SANDBOX - Espace de test et expérimentation
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
@@ -20,7 +20,7 @@ import {
   NoPanelCenter,
 } from "./LaboratoireRoom.styles";
 import Button from "../../common/Button";
-import ComponentToTest from "../../room-modules/laboratoire/ComponentToTest";
+import ComponentToTest, { getPanelConfig } from "../../room-modules/laboratoire/ComponentToTest";
 
 /**
  * Laboratoire room component for testing and experimenting with components
@@ -46,6 +46,19 @@ const LaboratoireRoom = () => {
   const [panelHeight, setPanelHeight] = useState(3);
   const [showPanel, setShowPanel] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
+  const [, forceUpdate] = useState(0);
+
+  // Récupérer la config du Panel depuis ComponentToTest
+  const panelConfig = getPanelConfig();
+
+  // Écouter l'event de montage du composant pour mettre à jour customActions
+  useEffect(() => {
+    const handleComponentMount = () => {
+      forceUpdate(prev => prev + 1);  // Force re-render pour mettre à jour customActions
+    };
+    window.addEventListener('lab-component-mounted', handleComponentMount);
+    return () => window.removeEventListener('lab-component-mounted', handleComponentMount);
+  }, []);
 
   // Fonction pour obtenir le variant selon la valeur
   const getButtonVariant = (value, currentValue) => {
@@ -131,16 +144,25 @@ const LaboratoireRoom = () => {
           <Panel
             gridColumn={gridPos.gridColumn}
             gridRow={gridPos.gridRow}
-            title="Test Component"
-            icon="🔬"
-            texture="wood"
-            accentColor={theme.colors.accents.warm}
-            collapsible={true}
+            // Props de base avec fallback
+            title={panelConfig.title || "Test Component"}
+            icon={panelConfig.icon || "🔬"}
+            texture={panelConfig.texture || "wood"}
+            accentColor={panelConfig.accentColor || theme.colors.accents.warm}
+            // Props de configuration du panel
+            collapsible={panelConfig.collapsible !== false}
             collapsed={collapsed}
             onToggleCollapse={setCollapsed}
+            hideHeaderTitleWhenCollapsed={panelConfig.hideHeaderTitleWhenCollapsed}
+            customActions={panelConfig.customActions}
           >
             {ComponentToTest ? (
-              <ComponentToTest />
+              <ComponentToTest
+                panelWidth={panelWidth}
+                panelHeight={panelHeight}
+                collapsed={collapsed}
+                showPanel={showPanel}
+              />
             ) : (
               <WelcomeContent>
                 <WelcomeEmoji>👋</WelcomeEmoji>
@@ -156,7 +178,12 @@ const LaboratoireRoom = () => {
           // Sans Panel - Contenu direct
           <NoPanelContent>
             {ComponentToTest ? (
-              <ComponentToTest />
+              <ComponentToTest
+                panelWidth={5}
+                panelHeight={5}
+                collapsed={false}
+                showPanel={false}
+              />
             ) : (
               <NoPanelCenter>
                 <LargeEmoji>👋</LargeEmoji>

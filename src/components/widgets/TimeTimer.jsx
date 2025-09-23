@@ -111,29 +111,27 @@ export default function TimeTimer({
   }, [startTime, duration, running]);
 
   useEffect(() => {
-    if (running && remaining > 0) {
+    if (running) {
       if (!startTime) {
         const now = Date.now();
         const alreadyElapsed = duration - remaining;
         setStartTime(now - alreadyElapsed * 1000);
       }
+    }
+  }, [running, startTime, duration, remaining]);
+
+  useEffect(() => {
+    if (running && startTime && remaining > 0) {
       intervalRef.current = requestAnimationFrame(updateTimer);
-    } else {
-      if (intervalRef.current) {
-        cancelAnimationFrame(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (!running) {
-        setStartTime(null);
-      }
     }
 
     return () => {
       if (intervalRef.current) {
         cancelAnimationFrame(intervalRef.current);
+        intervalRef.current = null;
       }
     };
-  }, [running, remaining, updateTimer, startTime, duration]);
+  }, [running, startTime, updateTimer]);
 
   // Cleanup
   useEffect(() => {
@@ -318,7 +316,7 @@ export default function TimeTimer({
     },
     timeDisplay: {
       position: "absolute",
-      top: "75%",  // Milieu de la partie basse (entre 50% et 100%)
+      top: "25%",  // Quart de cercle depuis le haut
       left: "50%",
       transform: "translate(-50%, -50%)",
       fontSize: fontSize.message,

@@ -12,6 +12,8 @@ import ImageDisplay from "../../widgets/ImageDisplay/ImageDisplay";
 import QuoteCarousel from "../../widgets/QuoteCarousel/QuoteCarousel";
 import NavigationGrid from "../../room-modules/chambre/NavigationGrid";
 import TimeTimer from "../../widgets/TimeTimer";
+import MindLogCompact from "../../widgets/MindLog/MindLogCompact";
+import MindLogToolbar from "../../common/MindLogToolbar";
 import { ChambreTitle } from "./ChambreRoom.styles";
 import lionImage from "../../../assets/images/totems/Lion.png";
 
@@ -31,6 +33,9 @@ const ChambreRoom = () => {
   const { roomNotes, updateRoomNote } = useNotesStore();
   const { getPanelState, updatePanelState } = useRoomsUIStore();
   const chambreNotes = roomNotes.chambre || "";
+
+  // Référence pour le handler de log du MindLog
+  const mindLogHandlerRef = React.useRef(null);
 
   return (
     <BaseRoom roomType="chambre" layoutType="grid">
@@ -80,12 +85,12 @@ const ChambreRoom = () => {
           </div>
         </Panel>
 
-        {/* MindLog - 2x1 ligne 3 */}
+        {/* MindLog - 1x2 en haut à gauche */}
         <Panel
           gridColumn="1 / 2"
           gridRow="1 / 3"
           title="MindLog"
-          icon="🧠"
+          icon="🌈"
           texture="leather"
           accentColor={theme.colors.accents.cold}
           collapsible={true}
@@ -93,17 +98,30 @@ const ChambreRoom = () => {
           onToggleCollapse={(val) =>
             updatePanelState("chambre", "mindlog", { collapsed: val })
           }
+          hideHeaderTitleWhenCollapsed={true}
+          customActions={
+            <MindLogToolbar
+              viewMode={mindLogHandlerRef.current?.viewMode || 'compact'}
+              isEditing={mindLogHandlerRef.current?.isEditing || false}
+              logsCount={mindLogHandlerRef.current?.logsCount || 0}
+              onToggleView={() => mindLogHandlerRef.current?.handleToggleView?.()}
+              onToggleEdit={() => mindLogHandlerRef.current?.handleToggleEdit?.()}
+              onQuickLog={() => mindLogHandlerRef.current?.handleQuickLog?.()}
+              onClearLogs={() => mindLogHandlerRef.current?.handleClearLogs?.()}
+              showEditButton={true}
+              showClearButton={false}
+            />
+          }
         >
-          <div
-            style={{
-              padding: theme.spacing.md,
-              textAlign: "center",
-              opacity: 0.7,
+          <MindLogCompact
+            context="diary"
+            onMount={(handlers) => {
+              mindLogHandlerRef.current = handlers;
             }}
-          >
-            <p>Module MindLog</p>
-            <small>À implémenter - État mental</small>
-          </div>
+            onLogSave={(log) => {
+              console.log("📊 MindLog saved (diary):", log);
+            }}
+          />
         </Panel>
 
         {/* Mantra - 2x1 ligne 3 */}

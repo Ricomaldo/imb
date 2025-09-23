@@ -136,6 +136,33 @@ const EntriesZone = styled.div`
   }
 `;
 
+// Bouton de suppression sur les cartes
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  background: ${({ theme }) => alpha(theme.colors.accents?.danger || '#DC3545', 0.8)};
+  border: none;
+  border-radius: 3px;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.accents?.danger || '#DC3545'};
+  }
+`;
+
 // Carte d'entrée draggable
 const EntryCard = styled.div`
   position: relative;
@@ -275,33 +302,6 @@ const ModalButton = styled.button`
   }
 `;
 
-// Bouton de suppression sur les cartes
-const DeleteButton = styled.button`
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  background: ${({ theme }) => alpha(theme.colors.accents?.danger || '#DC3545', 0.8)};
-  border: none;
-  border-radius: 3px;
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.accents?.danger || '#DC3545'};
-  }
-`;
-
 // Composant d'entrée draggable
 const DraggableEntry = ({ entry, onDelete }) => {
   const {
@@ -364,7 +364,7 @@ const DraggableEntry = ({ entry, onDelete }) => {
 };
 
 // Zone de drop pour catégories
-const DroppableZone = ({ category, entries, label, icon }) => {
+const DroppableZone = ({ category, entries, label, icon, onDeleteEntry }) => {
   const { setNodeRef, isOver } = useSortable({
     id: category,
     data: {
@@ -387,7 +387,7 @@ const DroppableZone = ({ category, entries, label, icon }) => {
           <DraggableEntry
             key={entry.id}
             entry={entry}
-            onDelete={handleDeleteEntry}
+            onDelete={onDeleteEntry}
           />
         ))}
       </SortableContext>
@@ -521,6 +521,7 @@ const MindLogSorter = () => {
               entries={organizedEntries[cat.id]}
               label={cat.label}
               icon={cat.icon}
+              onDeleteEntry={handleDeleteEntry}
             />
           ))}
         </ZonesContainer>

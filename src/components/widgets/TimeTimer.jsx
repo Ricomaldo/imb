@@ -5,6 +5,7 @@ import PauseIcon from "../../assets/icons/pause.svg";
 import ResetIcon from "../../assets/icons/reset.svg";
 import ReverseIcon from "../../assets/icons/reverse.svg";
 import palettesData from "../../data/palettes.json";
+import loopReady from "../../assets/sounds/loops/(LOOP-READY) Track 9 - Holy Temple_2.wav";
 
 // ========== Configuration ==========
 const PALETTES = Object.values(palettesData);
@@ -40,13 +41,27 @@ export default function TimeTimer({
   const [paletteIndex, setPaletteIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Palette actuelle
-  const currentPalette = PALETTES[paletteIndex];
+  // Audio loop
 
   // ========== Refs ==========
   const intervalRef = useRef(null);
   const isMountedRef = useRef(true);
   const containerRef = useRef(null);
+  const audioRef = useRef(null);
+
+  // Initialisation de l'audio au montage
+  useEffect(() => {
+    const audio = new Audio(loopReady);
+    audio.loop = true;
+    audio.volume = 0.25;
+    audio.preload = "auto";
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audioRef.current = null;
+    };
+  }, []);
 
   // ========== Gestion du responsive ==========
   useEffect(() => {
@@ -131,7 +146,7 @@ export default function TimeTimer({
         intervalRef.current = null;
       }
     };
-  }, [running, startTime, updateTimer]);
+  }, [running, startTime, remaining, updateTimer]);
 
   // Cleanup
   useEffect(() => {
@@ -152,6 +167,25 @@ export default function TimeTimer({
     setShowParti(false);
     setShowReparti(false);
   }, [duration]);
+
+  // Lecture/pause de la boucle audio pendant le cycle de 4 minutes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const shouldPlay = running && duration === 240 && remaining > 0;
+
+    if (shouldPlay) {
+      audio.play().catch(() => {
+        // Ignorer si le navigateur bloque l'autoplay; le clic Play débloque.
+      });
+    } else {
+      audio.pause();
+      if (!running || remaining === 0) {
+        audio.currentTime = 0;
+      }
+    }
+  }, [running, duration, remaining]);
 
   // ========== Fonctions utilitaires ==========
   const displayTime = () => {
@@ -212,6 +246,11 @@ export default function TimeTimer({
     setIsPaused(false);
     setShowParti(false);
     setShowReparti(false);
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   }, [duration]);
 
   const setPresetDuration = useCallback((minutes) => {
@@ -391,6 +430,20 @@ export default function TimeTimer({
         input[type=text] {
           -moz-appearance: textfield;
         }
+
+        /* Pulse lent du cercle central pendant la lecture */
+        @keyframes ttPulseSlow {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.08); opacity: 0.95; }
+        }
+        .tt-center {
+          transform-origin: 50% 50%;
+          transform-box: fill-box; /* nécessaire pour les éléments SVG */
+        }
+        .tt-pulse {
+          animation: ttPulseSlow 2.8s ease-in-out infinite;
+          will-change: transform, opacity;
+        }
       `}</style>
 
       <div ref={containerRef} style={styles.container}>
@@ -532,6 +585,7 @@ export default function TimeTimer({
               cx={diskSize / 2}
               cy={diskSize / 2}
               r={radius * 0.15}
+              className={`tt-center ${running ? "tt-pulse" : ""}`}
               fill="#4B5563"
             />
           </svg>

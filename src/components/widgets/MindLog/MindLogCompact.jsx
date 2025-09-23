@@ -36,14 +36,14 @@ const MindLogCompact = ({
   // Initialisation selon le contexte
   useEffect(() => {
     if (context === 'diary') {
-      const { current, logs, markdownNotes } = diaryStore.mindlog;
+      const { current, markdownNotes } = diaryStore.mindlog;
       setCurrentMood(current.mood);
       setEnergy(current.energy);
       setFocus(current.focus);
       setNotes(current.note);
       // Utiliser getVisibleLogs pour ne voir que les entrées non-cachées
-      const logs = showHidden ? diaryStore.getAllLogs() : diaryStore.getVisibleLogs();
-      setLocalLogs(logs || []);
+      const visibleLogs = showHidden ? diaryStore.getAllLogs() : diaryStore.getVisibleLogs();
+      setLocalLogs(visibleLogs || []);
       setMarkdownText(markdownNotes || '');
     } else if (context === 'project' && projectData) {
       const mindlogState = projectData.getModuleState('mindlog') || {};

@@ -5,292 +5,287 @@ import styled from 'styled-components';
 import { roomConfig } from '../../../utils/roomPositions';
 import { roomColors } from '../../../utils/assetMapping';
 import Button from '../../common/Button/Button';
+import { alpha } from '../../../styles/color';
 
 const EditorContainer = styled.div`
-  padding: 20px;
+  padding: ${({ theme }) => theme.spacing.lg};
 `;
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 4px;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: ${({ theme }) => theme.spacing['2xs']};
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
-  aspect-ratio: 4 / 3;
-  background: ${props => props.theme.colors.background.secondary};
-  padding: 8px;
-  border-radius: 8px;
+  aspect-ratio: 6 / 5;
+  background: ${props => props.theme.colors.background};
+  padding: ${({ theme }) => theme.spacing.sm};
+  border-radius: ${props => props.theme.radii.lg};
+  border: ${({ theme }) => `${theme.borders.thin} solid ${theme.colors.border}`};
   position: relative;
 `;
 
 const RoomTile = styled.div`
-  background: ${props => props.$isEmpty ? 'rgba(255,255,255,0.1)' : props.$color};
-  border: 2px solid ${props => props.$isEmpty
-    ? 'rgba(255,255,255,0.3)'
-    : props.$isMovable
-      ? props.theme.colors.accents.warm
-      : props.theme.colors.border};
-  border-radius: 4px;
+  background: ${props => {
+    if (props.$isEmpty) {
+      return `linear-gradient(45deg,
+        ${alpha(props.theme.colors.secondary, 0.1)} 25%,
+        ${alpha(props.theme.colors.secondary, 0.2)} 25%,
+        ${alpha(props.theme.colors.secondary, 0.2)} 75%,
+        ${alpha(props.theme.colors.secondary, 0.1)} 75%)`;
+    }
+    return props.$color || props.theme.colors.secondary;
+  }};
+  border: ${props => props.theme.borders.base} solid ${props =>
+    props.$isDragging
+      ? props.theme.colors.accents.gold
+      : props.$isEmpty
+        ? alpha(props.theme.colors.border, 0.3)
+        : props.theme.colors.border
+  };
+  border-radius: ${({ theme }) => theme.radii.sm};
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  color: ${props => props.$isEmpty ? 'rgba(255,255,255,0.5)' : props.theme.colors.text.primary};
-  cursor: ${props => props.$isMovable ? 'pointer' : 'default'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: ${({ theme }) => theme.typography.sizes.xs};
+  font-weight: ${({ theme }) => theme.typography.weights.semibold};
+  color: ${props => props.$isEmpty
+    ? alpha(props.theme.colors.text.secondary, 0.5)
+    : props.theme.colors.text.primary
+  };
+  cursor: ${props => props.$isEmpty ? 'default' : 'move'};
+  transition: ${({ theme }) => `all ${theme.motion.durations.base} ${theme.motion.easings.standard}`};
   position: relative;
-  opacity: ${props => props.$isEmpty ? 0.5 : 1};
-  text-shadow: ${props => props.$isEmpty ? 'none' : '0 1px 2px rgba(0,0,0,0.8)'};
+  opacity: ${props => props.$isDragging ? 0.5 : 1};
+  text-shadow: ${props => props.$isEmpty ? 'none' : `0 1px 2px ${alpha(props.theme.colors.black, 0.8)}`};
 
   &:hover {
-    ${props => props.$isMovable && !props.$isEmpty && `
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      border-color: ${props.theme.colors.accents.hot};
+    ${props => !props.$isEmpty && !props.$isDragging && `
+      transform: scale(1.02);
+      box-shadow: ${props.theme.shadows.md};
       z-index: 10;
     `}
   }
 
-  ${props => props.$isMoving && `
-    animation: slideMove 0.3s ease-out;
+  ${props => props.$isDragOver && `
+    background: ${alpha(props.theme.colors.accents.gold, 0.2)};
+    border-color: ${props.theme.colors.accents.gold};
   `}
 `;
 
 const RoomLabel = styled.span`
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 2px ${({ theme }) => alpha(theme.colors.black, 0.5)};
   text-align: center;
-  padding: 2px;
+  padding: ${({ theme }) => theme.spacing['3xs']};
+  user-select: none;
 `;
 
 const EmptyLabel = styled.span`
   color: ${props => props.theme.colors.text.secondary};
   font-style: italic;
   opacity: 0.5;
+  font-size: ${({ theme }) => theme.typography.sizes.xs};
+  user-select: none;
 `;
 
 const Controls = styled.div`
   display: flex;
-  gap: 10px;
+  gap: ${({ theme }) => theme.spacing.md};
   justify-content: center;
-  margin-top: 20px;
+  margin-top: ${({ theme }) => theme.spacing.lg};
   flex-wrap: wrap;
-`;
-
-const ControlsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20px;
-  gap: 10px;
 `;
 
 const InfoText = styled.div`
   text-align: center;
-  margin-top: 15px;
-  font-size: 12px;
-  color: ${props => props.theme.colors.text.secondary};
-`;
-
-const MoveCounter = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
+  margin-top: ${({ theme }) => theme.spacing.lg};
+  font-size: ${props => props.theme.typography.sizes.sm};
   color: ${props => props.theme.colors.text.secondary};
 `;
 
 /**
- * Room layout editor with puzzle slider mechanics
+ * Room layout editor with 5x6 grid and drag & drop
  * @renders EditorContainer
  * @renders GridContainer
  * @renders RoomTile
  * @renders Controls
  */
 const RoomLayoutEditor = ({ onSave, initialLayout = null }) => {
-  // État initial avec une case vide en position (3,2)
   const [layout, setLayout] = useState([]);
-  const [emptyPos, setEmptyPos] = useState({ x: 3, y: 2 });
-  const [moveCount, setMoveCount] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [draggedRoom, setDraggedRoom] = useState(null);
+  const [dragOverPos, setDragOverPos] = useState(null);
 
-  // Initialiser la grille
+  // Initialiser la grille 6x5
   useEffect(() => {
-    if (initialLayout) {
+    if (initialLayout && initialLayout.length > 0) {
       setLayout(initialLayout);
-      // Trouver la position vide
-      const empty = initialLayout.find(tile => tile.type === 'empty');
-      if (empty) {
-        setEmptyPos({ x: empty.x, y: empty.y });
-      }
     } else {
-      // Configuration par défaut avec case vide en bas à droite
-      const defaultLayout = [
-        ...roomConfig.slice(0, 11), // Les 11 premières pièces
-        { x: 3, y: 2, type: 'empty', name: 'Vide' } // Case vide
-      ];
-      setLayout(defaultLayout);
+      // Créer une grille 6x5 avec les 12 pièces au centre et des cases vides autour
+      const grid = [];
+
+      // D'abord, créer toutes les cases vides (6 colonnes x 5 rangées)
+      for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 6; x++) {
+          grid.push({ x, y, type: 'empty', name: 'Vide' });
+        }
+      }
+
+      // Puis placer les 12 pièces existantes au centre
+      // La grille originale est 4x3, on la centre dans 6x5 avec 1 case de bordure
+      roomConfig.forEach((room, index) => {
+        // Les pièces vont de (0,0)-(3,2) dans la config originale
+        // On les place de (1,1)-(4,3) dans la grille 6x5
+        const newX = room.x + 1; // Décaler de 1 pour la bordure gauche
+        const newY = room.y + 1; // Décaler de 1 pour la bordure haute
+        const gridIndex = newY * 6 + newX; // Multiplier par 6 (nombre de colonnes)
+
+        grid[gridIndex] = {
+          x: newX,
+          y: newY,
+          type: room.type,
+          name: room.name
+        };
+      });
+
+      setLayout(grid);
     }
   }, [initialLayout]);
 
-  // Vérifier si une tuile est adjacente à la case vide
-  const isAdjacentToEmpty = (x, y) => {
-    const dx = Math.abs(x - emptyPos.x);
-    const dy = Math.abs(y - emptyPos.y);
-    return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
+  // Gérer le début du drag
+  const handleDragStart = (e, room) => {
+    if (room.type === 'empty') return;
+    setDraggedRoom(room);
+    e.dataTransfer.effectAllowed = 'move';
   };
 
-  // Déplacer une tuile vers la case vide
-  const moveTile = (tile) => {
-    if (!isAdjacentToEmpty(tile.x, tile.y) || isAnimating) return;
+  // Gérer le survol pendant le drag
+  const handleDragOver = (e, position) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverPos(`${position.x},${position.y}`);
+  };
 
-    setIsAnimating(true);
+  // Gérer la sortie du survol
+  const handleDragLeave = () => {
+    setDragOverPos(null);
+  };
 
-    const newLayout = layout.map(t => {
-      if (t.x === tile.x && t.y === tile.y) {
-        // La tuile cliquée prend la position de la case vide
-        return { ...t, x: emptyPos.x, y: emptyPos.y };
-      } else if (t.type === 'empty') {
-        // La case vide prend la position de la tuile
-        return { ...t, x: tile.x, y: tile.y };
+  // Gérer le drop
+  const handleDrop = (e, targetPosition) => {
+    e.preventDefault();
+    setDragOverPos(null);
+
+    if (!draggedRoom) return;
+
+    // Échanger les positions
+    const newLayout = layout.map(tile => {
+      // La pièce qui était à la position cible
+      if (tile.x === targetPosition.x && tile.y === targetPosition.y) {
+        return {
+          ...tile,
+          type: draggedRoom.type,
+          name: draggedRoom.name
+        };
       }
-      return t;
+      // La position d'origine de la pièce déplacée devient vide ou prend la pièce échangée
+      if (tile.x === draggedRoom.x && tile.y === draggedRoom.y) {
+        const targetTile = layout.find(t => t.x === targetPosition.x && t.y === targetPosition.y);
+        return {
+          ...tile,
+          type: targetTile.type,
+          name: targetTile.name
+        };
+      }
+      return tile;
     });
 
     setLayout(newLayout);
-    setEmptyPos({ x: tile.x, y: tile.y });
-    setMoveCount(moveCount + 1);
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 300);
+    setDraggedRoom(null);
   };
 
   // Réinitialiser à la configuration par défaut
   const handleReset = () => {
-    const defaultLayout = [
-      ...roomConfig,
-      { x: 3, y: 2, type: 'empty', name: 'Vide' }
-    ].map((room, index) => {
-      const x = index % 4;
-      const y = Math.floor(index / 4);
-      return { ...room, x, y };
-    });
+    // Recréer la grille par défaut 6x5
+    const grid = [];
 
-    setLayout(defaultLayout);
-    setEmptyPos({ x: 3, y: 2 });
-    setMoveCount(0);
-  };
-
-  // Mélanger aléatoirement (en faisant des mouvements valides)
-  const handleShuffle = () => {
-    let tempLayout = [...layout];
-    let tempEmpty = { ...emptyPos };
-
-    // Faire 50 mouvements aléatoires
-    for (let i = 0; i < 50; i++) {
-      // Trouver les mouvements possibles
-      const possibleMoves = tempLayout.filter(tile => {
-        if (tile.type === 'empty') return false;
-        const dx = Math.abs(tile.x - tempEmpty.x);
-        const dy = Math.abs(tile.y - tempEmpty.y);
-        return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
-      });
-
-      if (possibleMoves.length > 0) {
-        // Choisir un mouvement aléatoire
-        const randomTile = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-
-        // Échanger les positions
-        tempLayout = tempLayout.map(t => {
-          if (t.x === randomTile.x && t.y === randomTile.y) {
-            return { ...t, x: tempEmpty.x, y: tempEmpty.y };
-          } else if (t.type === 'empty') {
-            return { ...t, x: randomTile.x, y: randomTile.y };
-          }
-          return t;
-        });
-
-        tempEmpty = { x: randomTile.x, y: randomTile.y };
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < 6; x++) {
+        grid.push({ x, y, type: 'empty', name: 'Vide' });
       }
     }
 
-    setLayout(tempLayout);
-    setEmptyPos(tempEmpty);
-    setMoveCount(0);
+    roomConfig.forEach((room) => {
+      // Centrer la grille 4x3 dans la grille 6x5
+      const newX = room.x + 1;
+      const newY = room.y + 1;
+      const gridIndex = newY * 6 + newX; // Multiplier par 6 (nombre de colonnes)
+
+      grid[gridIndex] = {
+        x: newX,
+        y: newY,
+        type: room.type,
+        name: room.name
+      };
+    });
+
+    setLayout(grid);
   };
 
   // Sauvegarder la configuration
   const handleSave = () => {
     if (onSave) {
-      // Retirer la case vide avant de sauvegarder
-      const savedLayout = layout
-        .filter(tile => tile.type !== 'empty')
-        .map(tile => ({
-          type: tile.type,
-          x: tile.x,
-          y: tile.y
-        }));
-      onSave(savedLayout);
+      // Sauvegarder toute la grille 6x5
+      onSave(layout);
     }
   };
-
-  // Créer la grille ordonnée pour l'affichage
-  const orderedGrid = [];
-  for (let y = 0; y < 3; y++) {
-    for (let x = 0; x < 4; x++) {
-      const tile = layout.find(t => t.x === x && t.y === y);
-      orderedGrid.push(tile || { x, y, type: 'placeholder', name: '?' });
-    }
-  }
 
   return (
     <EditorContainer>
       <GridContainer>
-        {orderedGrid.map((tile, index) => (
-          <RoomTile
-            key={`${tile.type}-${index}`}
-            $color={tile.type !== 'empty' ? roomColors[tile.type] : 'transparent'}
-            $isEmpty={tile.type === 'empty'}
-            $isMovable={tile.type !== 'empty' && isAdjacentToEmpty(tile.x, tile.y)}
-            onClick={() => moveTile(tile)}
-            title={tile.type !== 'empty'
-              ? isAdjacentToEmpty(tile.x, tile.y)
-                ? `Cliquer pour déplacer ${tile.name}`
-                : tile.name
-              : 'Case vide'}
-          >
-            {tile.type === 'empty' ? (
-              <EmptyLabel>Vide</EmptyLabel>
-            ) : (
-              <RoomLabel>{tile.name}</RoomLabel>
-            )}
-          </RoomTile>
-        ))}
+        {layout.map((tile, index) => {
+          const isDragging = draggedRoom &&
+            tile.x === draggedRoom.x &&
+            tile.y === draggedRoom.y;
+          const isDragOver = dragOverPos === `${tile.x},${tile.y}`;
+
+          return (
+            <RoomTile
+              key={`${tile.x}-${tile.y}`}
+              $color={tile.type !== 'empty' ? roomColors[tile.type] : null}
+              $isEmpty={tile.type === 'empty'}
+              $isDragging={isDragging}
+              $isDragOver={isDragOver}
+              draggable={tile.type !== 'empty'}
+              onDragStart={(e) => handleDragStart(e, tile)}
+              onDragOver={(e) => handleDragOver(e, tile)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, tile)}
+              title={tile.name}
+            >
+              {tile.type === 'empty' ? (
+                <EmptyLabel>✦</EmptyLabel>
+              ) : (
+                <RoomLabel>{tile.name}</RoomLabel>
+              )}
+            </RoomTile>
+          );
+        })}
       </GridContainer>
 
       <InfoText>
-        Cliquez sur une pièce adjacente à la case vide pour la déplacer
+        Glissez-déposez les pièces pour réorganiser votre demeure
       </InfoText>
 
-      <ControlsContainer>
-        <MoveCounter>
-          🎯 Mouvements : {moveCount}
-        </MoveCounter>
-        <Controls>
-          <Button onClick={handleReset} size="small" variant="secondary">
-            ↺ Réinitialiser
-          </Button>
-          <Button onClick={handleShuffle} size="small" variant="secondary">
-            🎲 Mélanger
-          </Button>
-          <Button onClick={handleSave} size="small" disabled={layout.length === 0}>
-            💾 Sauvegarder
-          </Button>
-        </Controls>
-      </ControlsContainer>
+      <Controls>
+        <Button onClick={handleReset} size="small" variant="secondary">
+          ↺ Réinitialiser
+        </Button>
+        <Button onClick={handleSave} size="small" disabled={layout.length === 0}>
+          💾 Sauvegarder
+        </Button>
+      </Controls>
     </EditorContainer>
   );
 };

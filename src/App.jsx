@@ -5,7 +5,7 @@ import { theme } from './styles/theme';
 import StudioHall from './components/layout/StudioHall/StudioHall';
 import ModalManager from './components/modals/ModalManager';
 import exposeStoresToWindow from './utils/exposeStores';
-import { initializeStores } from './stores/migrateProjectStores';
+import { initializeStores, cleanupObsoleteStorage } from './stores/migrateProjectStores';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
@@ -21,6 +21,9 @@ function App() {
 
         console.log(`📊 Initialization status: ${status}`);
         setInitStatus(status);
+
+        // 1.5. Nettoyer les clés obsolètes du localStorage
+        cleanupObsoleteStorage();
 
         // 2. Exposer les stores pour debug (dev uniquement)
         if (import.meta.env.DEV) {

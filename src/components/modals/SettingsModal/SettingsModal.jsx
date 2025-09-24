@@ -81,7 +81,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="⚙️ Paramètres" variant="roomcanvas">
+    <Modal isOpen={isOpen} onClose={onClose} title="⚙️ Paramètres" variant="roomCanvas">
       <SettingsContainer>
         <TabContainer>
           <TabButton

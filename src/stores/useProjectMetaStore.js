@@ -86,15 +86,25 @@ const useProjectMetaStore = create(
           status: projectData.status || "concept",
           category: projectData.category || "perso",
           subcategory: projectData.subcategory,
-          contractType: projectData.contractType, // nouveau
-          deploymentStatus: projectData.deploymentStatus, // nouveau
-          projectNature: projectData.projectNature, // nouveau
-          technologies: projectData.technologies || [], // nouveau
-          client: projectData.client, // nouveau
-          startDate: projectData.startDate, // nouveau
-          endDate: projectData.endDate, // nouveau
-          order: projectData.order !== undefined ? projectData.order : maxOrder + 1, // nouveau
-          kanbanColumn: projectData.kanbanColumn !== undefined ? projectData.kanbanColumn : (projectData.category === 'formation' ? null : 'inbox'), // nouveau
+          contractType: projectData.contractType,
+          deploymentStatus: projectData.deploymentStatus,
+          projectNature: projectData.projectNature,
+          technologies: projectData.technologies || [],
+          client: projectData.client,
+          startDate: projectData.startDate,
+          endDate: projectData.endDate,
+          order: projectData.order !== undefined ? projectData.order : maxOrder + 1,
+          kanbanColumn: projectData.kanbanColumn !== undefined ? projectData.kanbanColumn : (projectData.category === 'formation' ? null : 'inbox'),
+          // Nouveaux champs pour URLs et déploiement
+          deployUrl: projectData.deployUrl || null,
+          githubRepo: projectData.githubRepo || null,
+          frameworkVersion: projectData.frameworkVersion || null,
+          deploymentNotes: projectData.deploymentNotes || "",
+          environmentUrls: projectData.environmentUrls || {
+            staging: null,
+            production: null,
+            local: null
+          },
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };

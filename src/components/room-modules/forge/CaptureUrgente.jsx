@@ -15,7 +15,8 @@ import {
   CancelButton,
   SuccessMessage
 } from './CaptureUrgente.styles';
-import useProjectsStore from '../../../stores/useProjectsStore';
+import useProjectMetaStore from '../../../stores/useProjectMetaStore';
+import { useProjectData } from '../../../stores/useProjectDataStore';
 
 /**
  * Composant pour capturer rapidement bugs et états de développement
@@ -27,7 +28,8 @@ const CaptureUrgente = ({
   onCapture,
   placeholder = {}
 }) => {
-  const { selectedProject, addCaptureUrgente } = useProjectsStore();
+  const { selectedProject } = useProjectMetaStore();
+  const projectData = useProjectData(selectedProject);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -78,9 +80,20 @@ const CaptureUrgente = ({
       })
     };
 
-    // Ajouter au store
+    // Ajouter au store de données du projet
     const actualStoreKey = storeKey || (type === 'bug' ? 'bugs' : 'saveStates');
-    addCaptureUrgente(selectedProject, actualStoreKey, captureData);
+
+    // Récupérer les captures existantes ou créer un tableau vide
+    const existingCaptures = projectData[actualStoreKey] || [];
+
+    // Ajouter la nouvelle capture
+    const newCapture = {
+      id: Date.now(),
+      ...captureData
+    };
+
+    // Mettre à jour le store avec la nouvelle capture
+    projectData.updateModuleState(actualStoreKey, [...existingCaptures, newCapture]);
 
     // Callback optionnel
     if (onCapture) {

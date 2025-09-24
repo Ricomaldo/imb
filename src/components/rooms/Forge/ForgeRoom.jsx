@@ -27,8 +27,7 @@ import { ForgeToolbar, ForgeTitle } from "./ForgeRoom.styles";
  */
 const ForgeRoom = () => {
   const theme = useTheme();
-  const { roomNotes, updateRoomNote } = useNotesStore();
-  const forgeNotes = roomNotes.forge || "";
+  useNotesStore();
   const [showCatalog, setShowCatalog] = useState(false);
   const [showTree, setShowTree] = useState(false);
   const [collapsedPanels, setCollapsedPanels] = useState({

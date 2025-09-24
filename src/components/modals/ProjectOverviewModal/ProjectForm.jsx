@@ -193,7 +193,17 @@ const ProjectForm = ({ project, categories, onSave, onDelete, onCancel }) => {
     technologies: [],
     client: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    // Nouveaux champs
+    deployUrl: '',
+    githubRepo: '',
+    frameworkVersion: '',
+    deploymentNotes: '',
+    environmentUrls: {
+      staging: '',
+      production: '',
+      local: ''
+    }
   });
 
   const [newTech, setNewTech] = useState('');
@@ -223,7 +233,17 @@ const ProjectForm = ({ project, categories, onSave, onDelete, onCancel }) => {
         technologies: project.technologies || [],
         client: project.client || '',
         startDate: project.startDate || '',
-        endDate: project.endDate || ''
+        endDate: project.endDate || '',
+        // Nouveaux champs
+        deployUrl: project.deployUrl || '',
+        githubRepo: project.githubRepo || '',
+        frameworkVersion: project.frameworkVersion || '',
+        deploymentNotes: project.deploymentNotes || '',
+        environmentUrls: project.environmentUrls || {
+          staging: '',
+          production: '',
+          local: ''
+        }
       });
     }
   }, [project]);
@@ -465,6 +485,71 @@ const ProjectForm = ({ project, categories, onSave, onDelete, onCancel }) => {
               </TechTag>
             ))}
           </TechTagsContainer>
+        </FormGroup>
+
+        {/* Nouveaux champs */}
+        <FormGroup>
+          <Label>URL de déploiement</Label>
+          <Input
+            type="url"
+            value={formData.deployUrl}
+            onChange={(e) => handleChange('deployUrl', e.target.value)}
+            placeholder="https://example.com"
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Dépôt GitHub</Label>
+          <Input
+            type="text"
+            value={formData.githubRepo}
+            onChange={(e) => handleChange('githubRepo', e.target.value)}
+            placeholder="username/repository"
+          />
+        </FormGroup>
+
+        <FormGroup className="full-width">
+          <Label>Versions des frameworks</Label>
+          <Input
+            type="text"
+            value={formData.frameworkVersion}
+            onChange={(e) => handleChange('frameworkVersion', e.target.value)}
+            placeholder="React 18.2, Node 20.11, PostgreSQL 15"
+          />
+        </FormGroup>
+
+        <FormGroup className="full-width">
+          <Label>URLs des environnements</Label>
+          <div style={{ display: 'grid', gap: '8px' }}>
+            <Input
+              type="url"
+              value={formData.environmentUrls.local}
+              onChange={(e) => handleChange('environmentUrls', { ...formData.environmentUrls, local: e.target.value })}
+              placeholder="Local: http://localhost:3000"
+            />
+            <Input
+              type="url"
+              value={formData.environmentUrls.staging}
+              onChange={(e) => handleChange('environmentUrls', { ...formData.environmentUrls, staging: e.target.value })}
+              placeholder="Staging: https://staging.example.com"
+            />
+            <Input
+              type="url"
+              value={formData.environmentUrls.production}
+              onChange={(e) => handleChange('environmentUrls', { ...formData.environmentUrls, production: e.target.value })}
+              placeholder="Production: https://example.com"
+            />
+          </div>
+        </FormGroup>
+
+        <FormGroup className="full-width">
+          <Label>Notes de déploiement</Label>
+          <Input
+            type="text"
+            value={formData.deploymentNotes}
+            onChange={(e) => handleChange('deploymentNotes', e.target.value)}
+            placeholder="Informations sur le déploiement, serveurs, CI/CD..."
+          />
         </FormGroup>
       </FormGrid>
 

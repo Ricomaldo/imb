@@ -35,15 +35,27 @@ const getRoomConfig = () => {
         const customLayout = prefs?.state?.customRoomLayout;
 
         if (customLayout && Array.isArray(customLayout)) {
-          // Appliquer la disposition personnalisée
-          return customLayout.map(room => {
-            const defaultRoom = defaultRoomConfig.find(r => r.type === room.type);
-            return {
-              ...defaultRoom,
-              x: room.x,
-              y: room.y
-            };
-          });
+          // Pour la grille 5x6, on ne retourne que les pièces non-vides
+          // en ajustant leurs positions si elles viennent de l'éditeur
+          const rooms = customLayout
+            .filter(room => room.type !== 'empty')
+            .map(room => {
+              const defaultRoom = defaultRoomConfig.find(r => r.type === room.type);
+              if (!defaultRoom) {
+                return null;
+              }
+              return {
+                ...defaultRoom,
+                x: room.x,
+                y: room.y
+              };
+            })
+            .filter(Boolean);
+
+          // S'assurer qu'on a bien toutes les 12 pièces
+          if (rooms.length === 12) {
+            return rooms;
+          }
         }
       }
     } catch (error) {
@@ -60,12 +72,12 @@ export const roomConfig = getRoomConfig();
 export const getAdjacentRooms = (currentPos) => {
   return {
     up: currentPos.y > 0 ? { x: currentPos.x, y: currentPos.y - 1 } : null,
-    down: currentPos.y < 2 ? { x: currentPos.x, y: currentPos.y + 1 } : null,
+    down: currentPos.y < 4 ? { x: currentPos.x, y: currentPos.y + 1 } : null,
     left: currentPos.x > 0 ? { x: currentPos.x - 1, y: currentPos.y } : null,
-    right: currentPos.x < 3 ? { x: currentPos.x + 1, y: currentPos.y } : null
+    right: currentPos.x < 5 ? { x: currentPos.x + 1, y: currentPos.y } : null
   };
 };
 
 export const isValidPosition = (pos) => {
-  return pos && pos.x >= 0 && pos.x <= 3 && pos.y >= 0 && pos.y <= 2;
+  return pos && pos.x >= 0 && pos.x <= 5 && pos.y >= 0 && pos.y <= 4;
 };

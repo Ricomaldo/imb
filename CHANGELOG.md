@@ -11,6 +11,13 @@
   - Export des mois en fichiers Markdown
   - Store `useDiaryStore` avec `dailyDiary` et `monthlyArchives`
 
+- **Widget CaptureUrgente (Forge)** : Capture rapide des blocages de dev
+  - Deux modes : "Bugs" et "Pause Projet"
+  - Formulaire 3 champs adaptés au mode
+  - Liaison au projet actif via `useProjectsStore`
+  - Boutons Capturer/Annuler, reset auto et feedback visuel
+  - Design Forge cohérent (métal, contrastes sombres)
+
 - **Widget DiaryArchive (Bibliothèque)** : Consultation des archives du journal
   - Navigation par mois dans la sidebar
   - Visualisation jour par jour avec aperçu Markdown

@@ -36,6 +36,16 @@ export const defaultProjectsData = {
         startDate: "2024-09-01",
         endDate: null,
         order: 0,
+        // Nouveaux champs URLs et déploiement
+        deployUrl: null,
+        githubRepo: "irimwebforge/IRIMMetaBrain",
+        frameworkVersion: "React 18.2, Node 20.11, Vite 5.0",
+        deploymentNotes: "Application locale avec possibilité de sync GitHub Gist",
+        environmentUrls: {
+          staging: null,
+          production: null,
+          local: "http://localhost:5173"
+        },
         created_at: "2024-09-01T00:00:00.000Z",
         updated_at: new Date().toISOString()
       },
@@ -56,6 +66,16 @@ export const defaultProjectsData = {
         startDate: "2024-10-01",
         endDate: null,
         order: 1,
+        // Nouveaux champs URLs et déploiement
+        deployUrl: null,
+        githubRepo: null,
+        frameworkVersion: "React Native 0.72, Expo SDK 49",
+        deploymentNotes: "App mobile pour tracking d'humeur - Phase concept",
+        environmentUrls: {
+          staging: null,
+          production: null,
+          local: null
+        },
         created_at: "2024-10-01T00:00:00.000Z",
         updated_at: new Date().toISOString()
       },
@@ -76,6 +96,16 @@ export const defaultProjectsData = {
         startDate: "2024-06-01",
         endDate: null,
         order: 2,
+        // Nouveaux champs URLs et déploiement
+        deployUrl: "https://pepetteszub.com",
+        githubRepo: "private/pepetteszub",
+        frameworkVersion: "React 18.2, Node 20.11, PostgreSQL 15",
+        deploymentNotes: "Déployé sur Vercel avec base de données Supabase",
+        environmentUrls: {
+          staging: "https://staging.pepetteszub.com",
+          production: "https://pepetteszub.com",
+          local: "http://localhost:3000"
+        },
         created_at: "2024-06-01T00:00:00.000Z",
         updated_at: new Date().toISOString()
       },
@@ -96,6 +126,16 @@ export const defaultProjectsData = {
         startDate: "2024-11-01",
         endDate: null,
         order: 3,
+        // Nouveaux champs URLs et déploiement
+        deployUrl: null,
+        githubRepo: null,
+        frameworkVersion: "Python 3.11, TensorFlow 2.14, React 18.2",
+        deploymentNotes: "Projet IA générative pour analyse et création artistique de rêves",
+        environmentUrls: {
+          staging: null,
+          production: null,
+          local: null
+        },
         created_at: "2024-11-01T00:00:00.000Z",
         updated_at: new Date().toISOString()
       }

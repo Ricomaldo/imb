@@ -297,6 +297,28 @@ export const needsInitialization = () => {
   }
 };
 
+// Fonction pour nettoyer les clés obsolètes du localStorage
+export const cleanupObsoleteStorage = () => {
+  console.log('🧹 Cleaning up obsolete localStorage keys...');
+
+  // Supprimer l'ancien store monolithique
+  if (localStorage.getItem('irim-projects-store')) {
+    localStorage.removeItem('irim-projects-store');
+    console.log('✅ Removed obsolete key: irim-projects-store');
+  }
+
+  // Supprimer d'autres clés obsolètes si elles existent
+  const obsoleteKeys = ['projects-backup-v1']; // Ajouter d'autres clés obsolètes ici si nécessaire
+  obsoleteKeys.forEach(key => {
+    if (localStorage.getItem(key)) {
+      localStorage.removeItem(key);
+      console.log(`✅ Removed obsolete key: ${key}`);
+    }
+  });
+
+  console.log('✅ LocalStorage cleanup completed');
+};
+
 // Fonction pour réinitialiser complètement (utile pour debug/reset)
 export const resetToDefaultData = async () => {
   if (!confirm('⚠️ Ceci va remplacer TOUTES vos données par les données par défaut. Continuer?')) {

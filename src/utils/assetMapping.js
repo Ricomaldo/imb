@@ -21,27 +21,26 @@ export const roomBackgrounds = {
 };
 
 export const roomColors = {
-  // Ligne 0
-  sanctuaire: "#4B0082", // Lavande mystique
-  chambre: "#FFE4B5", // Beige moelleux
-  cuisine: "#F0E68C", // Jaune chaleureux
-  comptoir: "#DDA0DD", // Prune commerce
+  // Ligne 0 - Espaces nobles
+  sanctuaire: "#4A4A6A",     // Violet pierre profond
+  chambre: "#D4B896",        // Beige lin royal  
+  cuisine: "#B8956B",        // Ocre terre cuite
+  comptoir: "#9B7B9B",       // Mauve pierre noble
 
-  // Ligne 1
-  jardin: "#79eaf3ff", // Vert nature
-  atelier: "#DEB887", // Bois buriné
-  forge: "#CD853F", // Peru ardent
-  boutique: "#F0E68C", // Khaki doré
+  // Ligne 1 - Espaces artisanaux
+  jardin: "#7A8471",         // Vert mousse naturel
+  atelier: "#A0826D",        // Bois patiné
+  forge: "#8B4513",          // Brun rouillé (ton thème)
+  boutique: "#D2B48C",       // Tan marchand (ton thème)
 
-  // Ligne 2
-  scriptorium: "#F5DEB3", // Wheat parchemin
-  bibliotheque: "#D2B48C", // Tan savant
-  laboratoire: "#2C2C2C", // Indigo laboratoire
-  cave: "#696969", // Gris sombre
+  // Ligne 2 - Espaces savants
+  scriptorium: "#C8B99C",    // Parchemin ancien
+  bibliotheque: "#8B7355",   // Cuir relié
+  laboratoire: "#4A4A4A",    // Pierre sombre
+  cave: "#5D4037",           // Terre battue
 
-  empty: "#F5F5F5",
+  empty: "#E8E2D6",          // Ton background thème
 };
-
 export const textures = {
   parchment: "/src/assets/images/ui/parchment-texture.jpg",
   stone: "/src/assets/images/ui/stone-wall.jpg",

@@ -2,7 +2,6 @@
 // Cela permet aux outils de dev de capturer l'état
 
 import useNotesStore from '../stores/useNotesStore';
-import useProjectsStore from '../stores/useProjectsStore';
 import useProjectMetaStore from '../stores/useProjectMetaStore';
 import { getProjectData } from '../stores/useProjectDataStore';
 
@@ -14,7 +13,6 @@ export const exposeStoresToWindow = (navigationHook = null) => {
 
     // Exposer TOUS les stores
     window.__ZUSTAND_STORES__.notes = useNotesStore;
-    window.__ZUSTAND_STORES__.projects = useProjectsStore; // Legacy store
     window.__ZUSTAND_STORES__.projectMeta = useProjectMetaStore;
     window.__ZUSTAND_STORES__.getProjectData = getProjectData;
 

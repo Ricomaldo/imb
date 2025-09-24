@@ -3,24 +3,25 @@
 import { roomBackgrounds } from './assetMapping';
 
 // Configuration par défaut des pièces
+// Grille 6x5 avec la maison 4x3 centrée (bordure d'une case de chaque côté)
 const defaultRoomConfig = [
-  // Ligne 0: [Sanctuaire] [Chambre] [Scriptorium] [Comptoir]
-  { x: 0, y: 0, type: 'sanctuaire', name: 'Sanctuaire', background: roomBackgrounds.sanctuaire },
-  { x: 1, y: 0, type: 'chambre', name: 'Chambre', background: roomBackgrounds.chambre },
-  { x: 2, y: 0, type: 'scriptorium', name: 'Scriptorium', background: roomBackgrounds.scriptorium },
-  { x: 3, y: 0, type: 'comptoir', name: 'Comptoir', background: roomBackgrounds.comptoir },
+  // Ligne 1 (anciennement ligne 0): [Sanctuaire] [Chambre] [Scriptorium] [Comptoir]
+  { x: 1, y: 1, type: 'sanctuaire', name: 'Sanctuaire', background: roomBackgrounds.sanctuaire },
+  { x: 2, y: 1, type: 'chambre', name: 'Chambre', background: roomBackgrounds.chambre },
+  { x: 3, y: 1, type: 'scriptorium', name: 'Scriptorium', background: roomBackgrounds.scriptorium },
+  { x: 4, y: 1, type: 'comptoir', name: 'Comptoir', background: roomBackgrounds.comptoir },
 
-  // Ligne 1: [Cuisine] [ATELIER] [Forge] [Boutique]
-  { x: 0, y: 1, type: 'cuisine', name: 'Cuisine', background: roomBackgrounds.cuisine },
-  { x: 1, y: 1, type: 'atelier', name: 'Atelier', background: roomBackgrounds.atelier },
-  { x: 2, y: 1, type: 'forge', name: 'Forge', background: roomBackgrounds.forge },
-  { x: 3, y: 1, type: 'boutique', name: 'Boutique', background: roomBackgrounds.boutique },
+  // Ligne 2 (anciennement ligne 1): [Cuisine] [ATELIER] [Forge] [Boutique]
+  { x: 1, y: 2, type: 'cuisine', name: 'Cuisine', background: roomBackgrounds.cuisine },
+  { x: 2, y: 2, type: 'atelier', name: 'Atelier', background: roomBackgrounds.atelier },
+  { x: 3, y: 2, type: 'forge', name: 'Forge', background: roomBackgrounds.forge },
+  { x: 4, y: 2, type: 'boutique', name: 'Boutique', background: roomBackgrounds.boutique },
 
-  // Ligne 2: [Laboratoire] [Bibliothèque] [Jardin] [Cave]
-  { x: 0, y: 2, type: 'laboratoire', name: 'Laboratoire', background: roomBackgrounds.laboratoire },
-  { x: 1, y: 2, type: 'bibliotheque', name: 'Bibliothèque', background: roomBackgrounds.bibliotheque },
-  { x: 2, y: 2, type: 'jardin', name: 'Jardin', background: roomBackgrounds.jardin },
-  { x: 3, y: 2, type: 'cave', name: 'Cave', background: roomBackgrounds.cave }
+  // Ligne 3 (anciennement ligne 2): [Laboratoire] [Bibliothèque] [Jardin] [Cave]
+  { x: 1, y: 3, type: 'laboratoire', name: 'Laboratoire', background: roomBackgrounds.laboratoire },
+  { x: 2, y: 3, type: 'bibliotheque', name: 'Bibliothèque', background: roomBackgrounds.bibliotheque },
+  { x: 3, y: 3, type: 'jardin', name: 'Jardin', background: roomBackgrounds.jardin },
+  { x: 4, y: 3, type: 'cave', name: 'Cave', background: roomBackgrounds.cave }
 ];
 
 // Fonction pour obtenir la configuration des pièces
@@ -80,4 +81,11 @@ export const getAdjacentRooms = (currentPos) => {
 
 export const isValidPosition = (pos) => {
   return pos && pos.x >= 0 && pos.x <= 5 && pos.y >= 0 && pos.y <= 4;
+};
+
+// Vérifie si une pièce existe réellement à cette position
+export const roomExistsAt = (pos) => {
+  if (!pos) return false;
+  const config = getRoomConfig();
+  return config.some(room => room.x === pos.x && room.y === pos.y);
 };

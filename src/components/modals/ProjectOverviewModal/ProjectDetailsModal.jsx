@@ -298,6 +298,82 @@ const ProjectDetailsModal = ({ isOpen, onClose, project: initialProject }) => {
               </InfoSection>
             </InfoGrid>
 
+            {/* Nouveaux champs : URLs et Déploiement */}
+            <InfoGrid>
+              <InfoSection>
+                <SectionTitle>URLs & Déploiement</SectionTitle>
+                {project.deployUrl && (
+                  <InfoRow>
+                    <span className="label">URL Production</span>
+                    <span className="value">
+                      <a href={project.deployUrl} target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'inherit', textDecoration: 'underline' }}>
+                        {project.deployUrl}
+                      </a>
+                    </span>
+                  </InfoRow>
+                )}
+                {project.githubRepo && (
+                  <InfoRow>
+                    <span className="label">GitHub</span>
+                    <span className="value">
+                      <a href={`https://github.com/${project.githubRepo}`}
+                         target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'inherit', textDecoration: 'underline' }}>
+                        {project.githubRepo}
+                      </a>
+                    </span>
+                  </InfoRow>
+                )}
+                {project.frameworkVersion && (
+                  <InfoRow>
+                    <span className="label">Versions</span>
+                    <span className="value">{project.frameworkVersion}</span>
+                  </InfoRow>
+                )}
+              </InfoSection>
+
+              <InfoSection>
+                <SectionTitle>Environnements</SectionTitle>
+                {project.environmentUrls?.local && (
+                  <InfoRow>
+                    <span className="label">Local</span>
+                    <span className="value">
+                      <a href={project.environmentUrls.local}
+                         target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'inherit', textDecoration: 'underline' }}>
+                        {project.environmentUrls.local}
+                      </a>
+                    </span>
+                  </InfoRow>
+                )}
+                {project.environmentUrls?.staging && (
+                  <InfoRow>
+                    <span className="label">Staging</span>
+                    <span className="value">
+                      <a href={project.environmentUrls.staging}
+                         target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'inherit', textDecoration: 'underline' }}>
+                        {project.environmentUrls.staging}
+                      </a>
+                    </span>
+                  </InfoRow>
+                )}
+                {project.environmentUrls?.production && (
+                  <InfoRow>
+                    <span className="label">Production</span>
+                    <span className="value">
+                      <a href={project.environmentUrls.production}
+                         target="_blank" rel="noopener noreferrer"
+                         style={{ color: 'inherit', textDecoration: 'underline' }}>
+                        {project.environmentUrls.production}
+                      </a>
+                    </span>
+                  </InfoRow>
+                )}
+              </InfoSection>
+            </InfoGrid>
+
             {project.technologies && project.technologies.length > 0 && (
               <InfoSection style={{ marginTop: '24px' }}>
                 <SectionTitle>Technologies</SectionTitle>

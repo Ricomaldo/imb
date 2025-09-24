@@ -11,6 +11,7 @@ import Button from "../../common/Button";
 import ComponentCatalog from "../../dev/ComponentCatalog/ComponentCatalog";
 import SystemOverview from "../../dev/SystemOverview/SystemOverview";
 import CaptureUrgente from "../../room-modules/forge/CaptureUrgente";
+import DeploymentNotes from "../../room-modules/forge/DeploymentNotes";
 import { ForgeToolbar, ForgeTitle } from "./ForgeRoom.styles";
 
 /**
@@ -32,7 +33,8 @@ const ForgeRoom = () => {
   const [showTree, setShowTree] = useState(false);
   const [collapsedPanels, setCollapsedPanels] = useState({
     bugs: false,
-    saveStates: false
+    saveStates: false,
+    deployment: false
   });
 
   return (
@@ -129,7 +131,7 @@ const ForgeRoom = () => {
             {/* Panel pour sauvegarder l'état de développement */}
             <Panel
               gridColumn="4 / 6"
-              gridRow="1 / 5"
+              gridRow="1 / 3"
               title="Pause Projet"
               icon="💾"
               texture="metal"
@@ -152,6 +154,23 @@ const ForgeRoom = () => {
               />
             </Panel>
 
+            {/* Panel pour les notes de déploiement */}
+            <Panel
+              gridColumn="3 / 6"
+              gridRow="3 / 6"
+              title="Notes Déploiement"
+              icon="🚀"
+              texture="metal"
+              borderType="blue"
+              accentColor={theme.colors.accents.success}
+              collapsible={true}
+              collapsed={collapsedPanels.deployment}
+              onToggleCollapse={(collapsed) =>
+                setCollapsedPanels(prev => ({ ...prev, deployment: collapsed }))
+              }
+            >
+              <DeploymentNotes />
+            </Panel>
 
           </>
         )}

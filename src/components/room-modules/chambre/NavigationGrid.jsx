@@ -174,25 +174,16 @@ const NavigationGrid = () => {
   const currentRoomType = getCurrentRoomType();
 
   // Créer la grille complète 6x5 avec cases vides
-  // La maison 4x3 est centrée avec 1 case de bordure de chaque côté
   const fullGrid = [];
   for (let y = 0; y < 5; y++) {
     for (let x = 0; x < 6; x++) {
-      // Si on est dans la zone centrale (1-4, 1-3), chercher la room correspondante
-      if (x >= 1 && x <= 4 && y >= 1 && y <= 3) {
-        // Les coordonnées originales sont décalées de -1
-        const originalX = x - 1;
-        const originalY = y - 1;
-        const room = roomConfig.find(r => r.x === originalX && r.y === originalY);
+      // Chercher directement une room à cette position
+      const room = roomConfig.find(r => r.x === x && r.y === y);
 
-        if (room) {
-          fullGrid.push(room);
-        } else {
-          // Cas d'erreur : pas de room trouvée là où il devrait y en avoir une
-          fullGrid.push({ x, y, type: 'empty', name: '' });
-        }
+      if (room) {
+        fullGrid.push(room);
       } else {
-        // Case vide en bordure
+        // Case vide
         fullGrid.push({ x, y, type: 'empty', name: '' });
       }
     }

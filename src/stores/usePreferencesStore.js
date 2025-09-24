@@ -9,8 +9,8 @@ const usePreferencesStore = create(
     (set, get) => ({
       // === PRÉFÉRENCES APPLICATION (ancien useSettingsStore) ===
 
-      // Pièce de démarrage par défaut (Chambre)
-      defaultRoom: { x: 1, y: 0 },
+      // Pièce de démarrage par défaut (Atelier au centre de la grille 6x5)
+      defaultRoom: { x: 2, y: 2 },
 
       // Disposition personnalisée des pièces (null = utiliser la disposition par défaut)
       customRoomLayout: null,

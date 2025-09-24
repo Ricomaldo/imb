@@ -132,18 +132,13 @@ const RoomLayoutEditor = ({ onSave, initialLayout = null }) => {
         }
       }
 
-      // Puis placer les 12 pièces existantes au centre
-      // La grille originale est 4x3, on la centre dans 6x5 avec 1 case de bordure
+      // Placer les 12 pièces à leurs positions
       roomConfig.forEach((room, index) => {
-        // Les pièces vont de (0,0)-(3,2) dans la config originale
-        // On les place de (1,1)-(4,3) dans la grille 6x5
-        const newX = room.x + 1; // Décaler de 1 pour la bordure gauche
-        const newY = room.y + 1; // Décaler de 1 pour la bordure haute
-        const gridIndex = newY * 6 + newX; // Multiplier par 6 (nombre de colonnes)
+        const gridIndex = room.y * 6 + room.x; // Multiplier par 6 (nombre de colonnes)
 
         grid[gridIndex] = {
-          x: newX,
-          y: newY,
+          x: room.x,
+          y: room.y,
           type: room.type,
           name: room.name
         };
@@ -217,14 +212,11 @@ const RoomLayoutEditor = ({ onSave, initialLayout = null }) => {
     }
 
     roomConfig.forEach((room) => {
-      // Centrer la grille 4x3 dans la grille 6x5
-      const newX = room.x + 1;
-      const newY = room.y + 1;
-      const gridIndex = newY * 6 + newX; // Multiplier par 6 (nombre de colonnes)
+      const gridIndex = room.y * 6 + room.x; // Multiplier par 6 (nombre de colonnes)
 
       grid[gridIndex] = {
-        x: newX,
-        y: newY,
+        x: room.x,
+        y: room.y,
         type: room.type,
         name: room.name
       };

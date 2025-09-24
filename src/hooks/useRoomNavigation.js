@@ -1,7 +1,7 @@
 // hooks/useRoomNavigation.js
 
 import { useState } from 'react';
-import { getAdjacentRooms, isValidPosition } from '../utils/roomPositions';
+import { getAdjacentRooms, isValidPosition, roomExistsAt } from '../utils/roomPositions';
 import usePreferencesStore from '../stores/usePreferencesStore';
 
 export const useRoomNavigation = () => {
@@ -12,7 +12,7 @@ export const useRoomNavigation = () => {
     const adjacentRooms = getAdjacentRooms(currentRoom);
     const targetRoom = adjacentRooms[direction];
 
-    if (isValidPosition(targetRoom)) {
+    if (roomExistsAt(targetRoom)) {
       setCurrentRoom(targetRoom);
     }
   };
@@ -20,10 +20,10 @@ export const useRoomNavigation = () => {
   const getAvailableDirections = () => {
     const adjacent = getAdjacentRooms(currentRoom);
     return {
-      up: isValidPosition(adjacent.up),
-      down: isValidPosition(adjacent.down),
-      left: isValidPosition(adjacent.left),
-      right: isValidPosition(adjacent.right)
+      up: roomExistsAt(adjacent.up),
+      down: roomExistsAt(adjacent.down),
+      left: roomExistsAt(adjacent.left),
+      right: roomExistsAt(adjacent.right)
     };
   };
 

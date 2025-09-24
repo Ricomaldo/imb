@@ -1,10 +1,10 @@
-// src/stores/migrateProjectStores.js - Migration sécurisée vers la nouvelle architecture
+// src/stores/migrateProjectStores.js - Gestion de la migration et initialisation des stores
 
 import useProjectMetaStore from './useProjectMetaStore';
 import { getProjectData } from './useProjectDataStore';
 import { defaultProjectsData, initializeWithDefaultData } from './defaultProjectsData';
 
-// Fonction de migration principale
+// Fonction de migration depuis l'ancien format (v1 vers v2)
 export const migrateProjectStores = () => {
   // Vérifier si la migration a déjà été effectuée
   const migrationFlag = localStorage.getItem('store-migrated-v2');
@@ -139,101 +139,20 @@ export const migrateProjectStores = () => {
   }
 };
 
-// Fonction pour vérifier l'intégrité après migration
-export const verifyMigration = () => {
-  try {
-    // Vérifier le meta store
-    const metaStore = localStorage.getItem('project-meta-store');
-    if (!metaStore) {
-      console.error('Meta store not found');
-      return false;
-    }
-
-    const metaData = JSON.parse(metaStore);
-    const projectIds = Object.keys(metaData.state.projects || {});
-
-    // Vérifier que chaque projet a ses données
-    let allDataPresent = true;
-    projectIds.forEach(projectId => {
-      const projectData = localStorage.getItem(`project-data-${projectId}`);
-      if (!projectData) {
-        console.error(`Missing data for project: ${projectId}`);
-        allDataPresent = false;
-      }
-    });
-
-    if (allDataPresent) {
-      console.log('Migration verification passed ✓');
-      return true;
-    } else {
-      console.error('Migration verification failed');
-      return false;
-    }
-  } catch (error) {
-    console.error('Verification error:', error);
-    return false;
-  }
-};
-
-// Fonction pour rollback en cas de problème
-export const rollbackMigration = () => {
-  const backup = localStorage.getItem('projects-backup-v1');
-  if (!backup) {
-    console.error('No backup found for rollback');
-    return false;
-  }
-
-  try {
-    // Restaurer l'ancien store
-    localStorage.setItem('irim-projects-store', backup);
-
-    // Nettoyer les nouveaux stores
-    localStorage.removeItem('project-meta-store');
-    localStorage.removeItem('store-migrated-v2');
-
-    // Nettoyer les stores de données individuels
-    const keys = Object.keys(localStorage);
-    keys.forEach(key => {
-      if (key.startsWith('project-data-')) {
-        localStorage.removeItem(key);
-      }
-    });
-
-    console.log('Rollback completed successfully');
-    return true;
-  } catch (error) {
-    console.error('Rollback failed:', error);
-    return false;
-  }
-};
-
-// Auto-migration au chargement (à appeler dans App.jsx)
-export const autoMigrate = () => {
-  const needsMigration = !localStorage.getItem('store-migrated-v2');
-
-  if (needsMigration) {
-    const success = migrateProjectStores();
-    if (success) {
-      verifyMigration();
-    }
-  }
-};
-
-// Fonction d'initialisation complète (migration + données par défaut)
+// Fonction d'initialisation principale appelée au démarrage de l'application
 export const initializeStores = async () => {
   console.log('🚀 Initializing stores...');
 
-  // 1. Vérifier si c'est une première utilisation
+  // Vérifier l'état actuel des stores
   const metaStoreExists = localStorage.getItem('project-meta-store');
   const oldStoreExists = localStorage.getItem('irim-projects-store');
   const migrationDone = localStorage.getItem('store-migrated-v2') === 'true';
 
-  // 2. Si ancien store existe et pas encore migré
+  // Migration depuis l'ancien format si nécessaire
   if (oldStoreExists && !migrationDone) {
     console.log('📦 Old store detected, starting migration...');
     const migrationSuccess = migrateProjectStores();
     if (migrationSuccess) {
-      verifyMigration();
       console.log('✅ Migration completed successfully');
       return 'migrated';
     } else {
@@ -242,7 +161,7 @@ export const initializeStores = async () => {
     }
   }
 
-  // 3. Si aucun store n'existe (première utilisation ou localStorage vide)
+  // Première utilisation : initialiser avec les données par défaut
   if (!metaStoreExists && !oldStoreExists) {
     console.log('🆕 First time usage detected, initializing with default data...');
     await initializeWithDefaultData();
@@ -252,7 +171,7 @@ export const initializeStores = async () => {
     return 'initialized';
   }
 
-  // 4. Si meta store existe mais semble vide ou corrompu
+  // Vérification et réparation des stores corrompus
   if (metaStoreExists) {
     try {
       const metaData = JSON.parse(metaStoreExists);
@@ -281,7 +200,7 @@ export const initializeStores = async () => {
   return 'existing';
 };
 
-// Fonction pour vérifier si les stores ont besoin d'initialisation
+// Vérifier si les stores ont besoin d'initialisation
 export const needsInitialization = () => {
   const metaStore = localStorage.getItem('project-meta-store');
 
@@ -297,7 +216,7 @@ export const needsInitialization = () => {
   }
 };
 
-// Fonction pour nettoyer les clés obsolètes du localStorage
+// Nettoyer les clés obsolètes du localStorage
 export const cleanupObsoleteStorage = () => {
   console.log('🧹 Cleaning up obsolete localStorage keys...');
 
@@ -307,8 +226,8 @@ export const cleanupObsoleteStorage = () => {
     console.log('✅ Removed obsolete key: irim-projects-store');
   }
 
-  // Supprimer d'autres clés obsolètes si elles existent
-  const obsoleteKeys = ['projects-backup-v1']; // Ajouter d'autres clés obsolètes ici si nécessaire
+  // Supprimer le backup de migration qui n'est plus nécessaire
+  const obsoleteKeys = ['projects-backup-v1'];
   obsoleteKeys.forEach(key => {
     if (localStorage.getItem(key)) {
       localStorage.removeItem(key);
@@ -317,32 +236,4 @@ export const cleanupObsoleteStorage = () => {
   });
 
   console.log('✅ LocalStorage cleanup completed');
-};
-
-// Fonction pour réinitialiser complètement (utile pour debug/reset)
-export const resetToDefaultData = async () => {
-  if (!confirm('⚠️ Ceci va remplacer TOUTES vos données par les données par défaut. Continuer?')) {
-    return false;
-  }
-
-  console.log('🔄 Resetting all stores to default data...');
-
-  // Nettoyer tous les stores
-  const keys = Object.keys(localStorage);
-  keys.forEach(key => {
-    if (key.startsWith('project-') ||
-        key === 'irim-projects-store' ||
-        key === 'irim-notes-store') {
-      localStorage.removeItem(key);
-    }
-  });
-
-  // Réinitialiser avec données par défaut
-  await initializeWithDefaultData();
-  localStorage.setItem('store-migrated-v2', 'true');
-  localStorage.setItem('stores-initialized', 'true');
-
-  console.log('✅ Reset to default data completed');
-  window.location.reload(); // Recharger pour appliquer les changements
-  return true;
 };

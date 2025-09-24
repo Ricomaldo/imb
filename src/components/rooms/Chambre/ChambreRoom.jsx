@@ -56,10 +56,10 @@ const ChambreRoom = () => {
         >
           <ImageDisplay src={lionImage} alt="Lion Totem" hoverEffect={true} />
         </Panel>
-        {/* Timer Zone - 2x2 en haut à gauche */}
+        {/* Timer Zone */}
         <Panel
           gridColumn="3 / 5"
-          gridRow="1 / 3"
+          gridRow="3 / 5"
           title="TimeTimer"
           icon="⏰"
           texture="wood"
@@ -171,7 +171,7 @@ const ChambreRoom = () => {
         {/* Navigation - 2x1 ligne 4 */}
         <Panel
           gridColumn="3 / 5"
-          gridRow="3 / 4"
+          gridRow="1 / 3"
           title="Navigation"
           icon="🧭"
           texture="metal"

@@ -10,12 +10,13 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: ${({ theme }) => theme.spacing['2xs']};
   width: 100%;
   height: 100%;
-  min-height: 120px;
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.xs};
   place-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const RoomCell = styled.div`
@@ -32,8 +33,8 @@ const RoomCell = styled.div`
   transition: all 0.2s ease;
   opacity: ${props => props.$isCurrent ? 1 : 0.8};
   box-shadow: ${props => props.$isCurrent ? `0 0 8px ${props.color}` : '0 2px 4px rgba(0,0,0,0.2)'};
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
   aspect-ratio: 1.5;
 
   &:hover {

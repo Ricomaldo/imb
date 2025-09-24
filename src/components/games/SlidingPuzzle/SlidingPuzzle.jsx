@@ -188,9 +188,15 @@ const SlidingPuzzle = () => {
   };
 
   // Mélanger le puzzle (avec mouvements valides pour garantir la solvabilité)
-  const shufflePuzzle = () => {
+  const shufflePuzzle = (initialTiles = null) => {
     setIsShuffling(true);
-    let shuffled = [...tiles];
+    let shuffled = initialTiles ? [...initialTiles] : [...tiles];
+
+    // Si pas de tuiles, initialiser d'abord
+    if (shuffled.length === 0) {
+      shuffled = initializePuzzle();
+    }
+
     const moves = 100; // Nombre de mouvements aléatoires
 
     for (let i = 0; i < moves; i++) {
@@ -224,7 +230,7 @@ const SlidingPuzzle = () => {
     setTiles(solved);
     setMoves(0);
     setIsWon(false);
-    setTimeout(shufflePuzzle, 100);
+    setTimeout(() => shufflePuzzle(solved), 100);
   };
 
   // Gestion du clavier

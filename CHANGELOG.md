@@ -2,6 +2,65 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-25 (Cave / Salle de Jeux)
+
+- **Salle Cave avec 3 jeux interactifs** : Transformation de la Cave en salle de jeux ludique
+  - **Puzzle Glissant (15-puzzle)** : Puzzle 4x4 classique avec 15 tuiles à remettre en ordre
+    - Mélange algorithmique garantissant la solvabilité
+    - Contrôle clavier (flèches) et souris
+    - Compteur de coups et message de victoire animé
+  - **2048 Medieval** : Version thématique médiévale du célèbre 2048
+    - Titres de noblesse pour chaque tuile (Paysan → Empereur)
+    - Couleurs progressives du marron au violet
+    - Contrôle QSDZ/WASD (pour éviter conflit avec navigation écran)
+    - Sauvegarde du meilleur score
+  - **Mastermind** : Jeu de déduction logique (à implémenter)
+  - **Tableau des Scores** : Affichage des records à battre
+  - Utilisation de BaseRoom pour fond d'écran et notes
+
+- **Levier Secret** : Mécanisme interactif pour révéler/cacher les jeux
+  - Position absolue sur le côté droit de la pièce
+  - Design métallique avec poignée en bois animée
+  - Animation d'apparition des jeux (fondu + glissement + flou)
+  - Effet mystérieux et ludique pour la découverte
+
+### Fixed - 2025-09-25
+
+- **Medieval2048 Input** : Correction du problème de saisie clavier
+  - Utilisation de `useCallback` avec pattern state setter
+  - Élimination des closures obsolètes dans les event handlers
+  - Configuration touches QSDZ pour clavier AZERTY
+
+### Added - 2025-09-24 (Gamification Projets & Refactoring)
+
+- **Widget ProjectsDropdown (Bibliothèque)** : Gamification de la documentation des projets
+  - Indicateurs visuels de complétude pour 5 champs de métadonnées
+  - Système de couleurs : vert (complet), orange (partiel), rouge (manquant)
+  - Barre de progression globale pour encourager la documentation
+  - Tri automatique par complétude (projets moins documentés en premier)
+  - Intégration directe avec ProjectOverviewModal pour édition rapide
+  - Icônes interactives : 🌐 (deploy), 📁 (github), ⚙️ (framework), 🔗 (env), 📝 (notes)
+
+- **Widget DeploymentNotes (Forge)** : Gestion des notes de déploiement
+  - Éditeur Markdown dédié aux notes CI/CD par projet
+  - Template automatique avec sections : Config, Stack, Repository, CI/CD, etc.
+  - Sauvegarde automatique avec debounce manuel
+  - Sélecteur de projet intégré
+  - Affichage des liens de production et GitHub
+
+### Changed - 2025-09-24 (Optimisations & Nettoyage)
+
+- **Refactoring NavigationGrid** : Affichage optimisé des pièces actives
+  - Retour à la grille 4x3 affichant uniquement les 12 pièces centrales
+  - Filtrage des rooms aux coordonnées (1,1) à (4,3)
+  - Suppression de l'affichage des cases vides périphériques
+
+- **Nettoyage migrateProjectStores.js** : Suppression du code obsolète
+  - Suppression de 110 lignes de fonctions inutilisées
+  - Fonctions retirées : autoMigrate, verifyMigration, rollbackMigration, resetToDefaultData
+  - Conservation uniquement des fonctions critiques pour la migration v1→v2
+  - Réduction de 348 à 238 lignes (-32%)
+
 ### Added - 2025-09-24 (Grille 6x5 & Navigation)
 
 - **Système de grille étendu 6x5** : Expansion de l'espace de navigation

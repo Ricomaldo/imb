@@ -1,10 +1,12 @@
 // src/components/rooms/Bibliotheque/BibliothequeRoom.jsx
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import BaseRoom from '../../layout/BaseRoom';
 import PanelGrid from '../../layout/PanelGrid';
 import Panel from '../../common/Panel';
 import DiaryArchive from '../../widgets/DiaryArchive/DiaryArchive';
+import ProjectsDropdown from '../../room-modules/bibliotheque/ProjectsDropdown';
+import ProjectOverviewModal from '../../modals/ProjectOverviewModal/ProjectOverviewModal';
 import { useTheme } from 'styled-components';
 
 /**
@@ -15,6 +17,15 @@ import { useTheme } from 'styled-components';
  */
 const BibliothequeRoom = () => {
   const theme = useTheme();
+  const [showProjectModal, setShowProjectModal] = useState(false);
+
+  const handleOpenProjectModal = useCallback((projectId) => {
+    setShowProjectModal(true);
+  }, []);
+
+  const handleCloseProjectModal = useCallback(() => {
+    setShowProjectModal(false);
+  }, []);
 
   return (
     <BaseRoom roomType="bibliotheque" layoutType="grid">
@@ -33,21 +44,18 @@ const BibliothequeRoom = () => {
           <DiaryArchive />
         </Panel>
 
-        {/* Futurs emplacements pour d'autres contenus de la bibliothèque */}
-        {/* Espace principal pour les livres/documents */}
+        {/* Projets & Archives - Panneau principal */}
         <Panel
           gridColumn="3 / 6"
           gridRow="1 / 4"
-          title="Documents"
-          icon="📖"
+          title="Projets & Archives"
+          icon="📊"
           texture="wood"
-          accentColor={theme.colors.accents.neutral}
+          accentColor={theme.colors.accents.gold}
           collapsible={true}
           collapsed={false}
         >
-          <div style={{ padding: '20px', textAlign: 'center', color: '#8b7355' }}>
-            Espace pour vos documents et références
-          </div>
+          <ProjectsDropdown onOpenModal={handleOpenProjectModal} />
         </Panel>
 
         {/* Espace pour les notes de recherche */}
@@ -82,6 +90,12 @@ const BibliothequeRoom = () => {
           </div>
         </Panel>
       </PanelGrid>
+
+      {/* Modal de gestion des projets */}
+      <ProjectOverviewModal
+        isOpen={showProjectModal}
+        onClose={handleCloseProjectModal}
+      />
     </BaseRoom>
   );
 };

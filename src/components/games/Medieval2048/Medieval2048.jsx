@@ -154,9 +154,10 @@ const Medieval2048 = () => {
 
   // Initialiser le plateau
   const initBoard = () => {
-    const newBoard = Array(16).fill(0);
+    let newBoard = Array(16).fill(0);
     // Ajouter 2 tuiles initiales
-    addNewTile(addNewTile(newBoard));
+    newBoard = addNewTile(newBoard);
+    newBoard = addNewTile(newBoard);
     return newBoard;
   };
 
@@ -176,12 +177,13 @@ const Medieval2048 = () => {
   };
 
   // Déplacer les tuiles dans une direction
-  const move = (direction) => {
+  const move = useCallback((direction) => {
     if (gameOver) return;
 
-    let newBoard = [...board];
-    let moved = false;
-    let points = 0;
+    setBoard(currentBoard => {
+      let newBoard = [...currentBoard];
+      let moved = false;
+      let points = 0;
 
     const getRow = (i) => [
       newBoard[i * 4], newBoard[i * 4 + 1],
@@ -286,14 +288,16 @@ const Medieval2048 = () => {
       default: return;
     }
 
-    if (moved) {
-      newBoard = addNewTile(newBoard);
-      setBoard(newBoard);
-      setScore(score + points);
-      if (score + points > best) setBest(score + points);
-      checkGameOver(newBoard);
-    }
-  };
+      if (moved) {
+        newBoard = addNewTile(newBoard);
+        setScore(prev => prev + points);
+        setBest(prev => Math.max(prev, score + points));
+        checkGameOver(newBoard);
+        return newBoard;
+      }
+      return currentBoard;
+    });
+  }, [gameOver, score, best]);
 
   // Vérifier si le jeu est terminé
   const checkGameOver = (currentBoard) => {
@@ -325,25 +329,27 @@ const Medieval2048 = () => {
     setHasWon(false);
   };
 
-  // Gestion du clavier
+  // Gestion du clavier (QSDZ pour AZERTY)
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (gameOver) return;
 
-      switch(e.key) {
-        case 'ArrowLeft':
+      switch(e.key.toLowerCase()) {
+        case 'q':
+        case 'a': // Support QWERTY aussi
           e.preventDefault();
           move('left');
           break;
-        case 'ArrowRight':
+        case 'd':
           e.preventDefault();
           move('right');
           break;
-        case 'ArrowUp':
+        case 'z':
+        case 'w': // Support QWERTY aussi
           e.preventDefault();
           move('up');
           break;
-        case 'ArrowDown':
+        case 's':
           e.preventDefault();
           move('down');
           break;
@@ -352,7 +358,7 @@ const Medieval2048 = () => {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [board, gameOver, score]);
+  }, [gameOver, move]);
 
   // Initialiser au montage
   useEffect(() => {
@@ -385,7 +391,7 @@ const Medieval2048 = () => {
       <Controls>
         <Button onClick={newGame}>Nouvelle Partie</Button>
         <div style={{ fontSize: '11px', color: '#999' }}>
-          Utilisez les flèches ←↑→↓
+          Utilisez Q S D Z (ou A W D S)
         </div>
       </Controls>
     </GameContainer>

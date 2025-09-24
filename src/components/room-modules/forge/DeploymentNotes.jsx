@@ -12,7 +12,7 @@ const NotesContainer = styled.div`
   flex-direction: column;
   gap: 12px;
   padding: 12px;
-  background: ${({ theme }) => theme.colors.backgroundLight};
+  background: ${({ theme }) => theme.colors.background};
   border-radius: ${({ theme }) => theme.radii.md};
 `;
 
@@ -21,8 +21,8 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${({ theme }) => theme.colors.uiKitBlue.dark};
-  color: white;
+  background: ${({ theme }) => theme.colors.accents.cold};
+  color: ${({ theme }) => theme.colors.text.light};
   border-radius: ${({ theme }) => theme.radii.sm};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
@@ -55,7 +55,7 @@ const ProjectSelector = styled.select`
   }
 
   option {
-    background: ${({ theme }) => theme.colors.uiKitBlue.dark};
+    background: ${({ theme }) => theme.colors.accents.cold};
     color: white;
   }
 `;

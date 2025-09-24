@@ -1,6 +1,7 @@
 // src/components/common/Badge/Badge.jsx
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { alpha } from '../../../styles/color';
 
@@ -136,6 +137,12 @@ const BadgeIcon = styled.span`
   }};
 `;
 
+/**
+ * Badge component for displaying status, categories, or labels
+ * Supports multiple colors, variants, and sizes with customizable shape
+ * @renders BadgeContainer
+ * @renders BadgeIcon
+ */
 const Badge = ({
   children,
   color = 'primary',
@@ -160,6 +167,37 @@ const Badge = ({
       {children}
     </BadgeContainer>
   );
+};
+
+Badge.propTypes = {
+  /** Contenu du badge */
+  children: PropTypes.node.isRequired,
+  /** Couleur du badge : status colors (success, warning, info, danger, muted) ou type colors (tool, app, website, api, library) */
+  color: PropTypes.oneOf([
+    'primary', 'secondary', 'success', 'warning', 'info', 'danger', 'muted',
+    'dev_actif', 'concept', 'vision', 'pause', 'archive',
+    'tool', 'outil', 'app', 'application', 'website', 'site', 'api', 'library', 'librairie',
+    'tech', 'local', 'staging', 'dev'
+  ]),
+  /** Variante du badge affectant le style de fond */
+  variant: PropTypes.oneOf(['subtle', 'solid', 'outline']),
+  /** Taille du badge */
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  /** Forme du badge */
+  shape: PropTypes.oneOf(['default', 'rounded', 'pill']),
+  /** Icône optionnelle à afficher à gauche du texte */
+  icon: PropTypes.node,
+  /** Fonction appelée au clic (rend le badge cliquable) */
+  onClick: PropTypes.func
+};
+
+Badge.defaultProps = {
+  color: 'primary',
+  variant: 'subtle',
+  size: 'md',
+  shape: 'default',
+  icon: null,
+  onClick: null
 };
 
 export default Badge;

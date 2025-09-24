@@ -1,6 +1,7 @@
 // src/components/room-modules/cuisine/PauseCorps.jsx
 
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import exercicesData from '../../../data/exercices.json';
 import encouragementsData from '../../../data/encouragements.json';
 import {
@@ -23,7 +24,20 @@ import {
 /**
  * PauseCorps - Widget bienveillant de micro-mouvements pour développeur
  * Combat raideurs nuque et fatigue oculaire pendant sessions dev
- * @renders Exercice aléatoire avec encouragement après accomplissement
+ * @renders PauseCorpsContainer
+ * @renders MysteryCard
+ * @renders MysteryText
+ * @renders RevealButton
+ * @renders ExerciceCard
+ * @renders TitleRow
+ * @renders CorpsIcon
+ * @renders ExerciceTitle
+ * @renders TargetsContainer
+ * @renders TargetBadge
+ * @renders ExerciceDescription
+ * @renders ExerciceDuration
+ * @renders ActionButton
+ * @renders EncouragementMessage
  */
 const PauseCorps = () => {
   const [currentExercice, setCurrentExercice] = useState(null);
@@ -115,5 +129,9 @@ const PauseCorps = () => {
     </PauseCorpsContainer>
   );
 };
+
+PauseCorps.propTypes = {};
+
+PauseCorps.defaultProps = {};
 
 export default PauseCorps;

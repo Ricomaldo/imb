@@ -1,6 +1,7 @@
 // src/components/room-modules/chambre/NavigationGrid.jsx
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { roomConfig } from '../../../utils/roomPositions';
 import { roomColors } from '../../../utils/assetMapping';
@@ -58,6 +59,7 @@ const RoomLabel = styled.span`
 
 /**
  * Grille de navigation pour accéder rapidement aux différentes rooms
+ * Navigation interactive avec animations et feedback visuel
  * @renders GridContainer
  * @renders RoomCell
  * @renders RoomLabel
@@ -210,5 +212,9 @@ const NavigationGrid = () => {
     </GridContainer>
   );
 };
+
+NavigationGrid.propTypes = {};
+
+NavigationGrid.defaultProps = {};
 
 export default NavigationGrid;

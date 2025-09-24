@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-25 (Documentation Composants pour Dev Tools)
+
+- **Documentation PropTypes et @renders** : Amélioration des outils de développement
+  - **ProjectsDropdown** : PropTypes pour `onOpenModal`, 18 annotations @renders
+  - **DeploymentNotes** : Structure PropTypes complète, 8 annotations @renders
+  - **NavigationGrid** : PropTypes ajoutés, annotations @renders améliorées
+  - **BaseRoom** : PropTypes détaillés (roomType, layoutType, children, className)
+  - **PanelGrid** : PropTypes pour columns/rows/gap avec valeurs par défaut
+  - **DiaryArchive** : Structure PropTypes, 11 annotations @renders
+  - **Badge** : PropTypes exhaustifs avec 20+ couleurs, variants et sizes
+  - **PauseCorps** : Structure PropTypes, 14 annotations @renders
+  - ComponentCatalog peut maintenant extraire automatiquement les props
+  - SystemOverview enrichi avec les dépendances via @renders
+
 ### Added - 2025-09-25 (Cave / Salle de Jeux)
 
 - **Salle Cave avec 3 jeux interactifs** : Transformation de la Cave en salle de jeux ludique

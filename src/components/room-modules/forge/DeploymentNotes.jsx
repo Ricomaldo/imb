@@ -1,6 +1,7 @@
 // src/components/room-modules/forge/DeploymentNotes.jsx
 
 import React, { useState, useCallback, useRef } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import MarkdownEditor from '../../common/MarkdownEditor/MarkdownEditor';
 import useProjectMetaStore from '../../../stores/useProjectMetaStore';
@@ -105,6 +106,14 @@ const EmptyState = styled.div`
 /**
  * Widget pour gérer les notes de déploiement d'un projet
  * Permet d'éditer en markdown les informations de déploiement, CI/CD, etc.
+ * @renders NotesContainer
+ * @renders Header
+ * @renders Title
+ * @renders ProjectSelector
+ * @renders InfoBanner
+ * @renders EditorWrapper
+ * @renders MarkdownEditor
+ * @renders EmptyState
  */
 const DeploymentNotes = () => {
   const { projects, selectedProject, updateProjectMeta, selectProject } = useProjectMetaStore();
@@ -280,5 +289,9 @@ _Dernière mise à jour: ${new Date().toLocaleDateString('fr-FR')}_`;
     </NotesContainer>
   );
 };
+
+DeploymentNotes.propTypes = {};
+
+DeploymentNotes.defaultProps = {};
 
 export default DeploymentNotes;

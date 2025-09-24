@@ -1,6 +1,7 @@
 // src/components/widgets/DiaryArchive/DiaryArchive.jsx
 
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import useDiaryStore from '../../../stores/useDiaryStore';
 import MarkdownEditor from '../../common/MarkdownEditor';
 import {
@@ -18,7 +19,18 @@ import {
 
 /**
  * Diary Archive widget for viewing and exporting monthly journal archives
- * @renders Archives navigation and content viewer
+ * Affiche la navigation par mois et le contenu des entrées archivées
+ * @renders ArchiveContainer
+ * @renders MonthsList
+ * @renders MonthItem
+ * @renders ArchiveContent
+ * @renders ArchiveHeader
+ * @renders ExportButton
+ * @renders NoArchivesMessage
+ * @renders DayEntry
+ * @renders DayHeader
+ * @renders DayContent
+ * @renders MarkdownEditor
  */
 const DiaryArchive = () => {
   const {
@@ -131,5 +143,9 @@ const DiaryArchive = () => {
     </ArchiveContainer>
   );
 };
+
+DiaryArchive.propTypes = {};
+
+DiaryArchive.defaultProps = {};
 
 export default DiaryArchive;

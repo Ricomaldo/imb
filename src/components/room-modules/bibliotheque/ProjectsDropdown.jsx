@@ -1,6 +1,7 @@
 // src/components/room-modules/bibliotheque/ProjectsDropdown.jsx
 
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useProjectMetaStore from '../../../stores/useProjectMetaStore';
 import { alpha } from '../../../styles/color';
@@ -239,6 +240,25 @@ const EmptyState = styled.div`
 /**
  * Widget dropdown pour afficher tous les projets avec indicateurs de complétude
  * Gamification visuelle pour encourager la documentation complète
+ * @renders DropdownContainer
+ * @renders Header
+ * @renders StatsBar
+ * @renders StatLabel
+ * @renders ProgressBar
+ * @renders ProgressFill
+ * @renders ProjectsList
+ * @renders ProjectItem
+ * @renders StatusBadge
+ * @renders ProjectInfo
+ * @renders ProjectName
+ * @renders TechStack
+ * @renders MetadataIndicators
+ * @renders Indicator
+ * @renders QuickActions
+ * @renders IconButton
+ * @renders Footer
+ * @renders FooterButton
+ * @renders EmptyState
  */
 const ProjectsDropdown = ({ onOpenModal }) => {
   const {
@@ -422,6 +442,18 @@ const ProjectsDropdown = ({ onOpenModal }) => {
       )}
     </DropdownContainer>
   );
+};
+
+ProjectsDropdown.propTypes = {
+  /**
+   * Fonction appelée pour ouvrir la modal de gestion des projets
+   * @param {string} projectId - ID du projet à éditer (optionnel)
+   */
+  onOpenModal: PropTypes.func
+};
+
+ProjectsDropdown.defaultProps = {
+  onOpenModal: null
 };
 
 export default ProjectsDropdown;

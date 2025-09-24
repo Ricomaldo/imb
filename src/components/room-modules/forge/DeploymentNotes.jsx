@@ -1,10 +1,9 @@
 // src/components/room-modules/forge/DeploymentNotes.jsx
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import MarkdownEditor from '../../common/MarkdownEditor/MarkdownEditor';
 import useProjectMetaStore from '../../../stores/useProjectMetaStore';
-import { debounce } from 'lodash';
 
 const NotesContainer = styled.div`
   width: 100%;
@@ -110,16 +109,22 @@ const EmptyState = styled.div`
 const DeploymentNotes = () => {
   const { projects, selectedProject, updateProjectMeta, selectProject } = useProjectMetaStore();
   const [localNotes, setLocalNotes] = useState('');
+  const saveTimeoutRef = useRef(null);
 
   const project = projects[selectedProject];
 
-  // Debounce la sauvegarde pour éviter trop d'écritures
-  const debouncedSave = useCallback(
-    debounce((projectId, notes) => {
+  // Debounce manuel pour la sauvegarde
+  const debouncedSave = useCallback((projectId, notes) => {
+    // Annuler le timeout précédent s'il existe
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Créer un nouveau timeout
+    saveTimeoutRef.current = setTimeout(() => {
       updateProjectMeta(projectId, { deploymentNotes: notes });
-    }, 1000),
-    []
-  );
+    }, 1000);
+  }, [updateProjectMeta]);
 
   const handleNotesChange = (value) => {
     setLocalNotes(value);
@@ -138,6 +143,15 @@ const DeploymentNotes = () => {
       setLocalNotes(project.deploymentNotes || getDefaultNotes(project));
     }
   }, [selectedProject, project]);
+
+  // Nettoyer le timeout au démontage
+  React.useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const getDefaultNotes = (proj) => {
     if (!proj) return '';

@@ -18,11 +18,11 @@ export const CanvasContainer = styled.div`
 
 export const RoomsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
   transition: transform 0.4s ease-out;
-  width: 400%;
-  height: 300%;
+  width: 600%;
+  height: 500%;
   position: absolute;
   top: 0;
   left: 0;

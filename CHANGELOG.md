@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-24 (Grille 6x5 & Navigation)
+
+- **Système de grille étendu 6x5** : Expansion de l'espace de navigation
+  - Migration de la grille 4x3 vers 6x5 avec bordure vide
+  - Les 12 pièces centrées aux positions (1,1) à (4,3)
+  - Cases vides prêtes pour futures expansions (texture parchemin prévue)
+  - `RoomLayoutEditor` avec drag & drop pour réorganiser les pièces
+  - Coordonnées natives dans `roomPositions.js` (plus de décalages)
+
+- **Navigation améliorée** : Détection intelligente des pièces
+  - Nouvelle fonction `roomExistsAt()` vérifie l'existence réelle des pièces
+  - Flèches n'apparaissent que vers les pièces existantes
+  - Correction de `useRoomNavigation` pour la grille 6x5
+  - `RoomCanvas` adapté pour afficher toute la grille
+
+- **NavigationGrid amélioré** : Grille de navigation dans la Chambre
+  - Retour à la grille 4x3 pour afficher uniquement les pièces existantes
+  - Styles améliorés avec bordures, ombres et animations
+  - Aspect ratio 1.5 pour meilleure lisibilité des noms
+
 ### Added - 2025-09-24 (Widgets Cuisine & Bibliothèque)
 
 - **Widget Journal (Diary)** : Journal quotidien avec archivage automatique

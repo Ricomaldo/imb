@@ -8,34 +8,39 @@ import usePreferencesStore from '../../../stores/usePreferencesStore';
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  gap: ${({ theme }) => theme.spacing['3xs']};
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: ${({ theme }) => theme.spacing.xs};
   width: 100%;
   height: 100%;
-  min-height: 180px;
-  padding: ${props => props.theme.spacing.sm};
+  min-height: 120px;
+  padding: ${props => props.theme.spacing.md};
+  place-items: center;
 `;
 
 const RoomCell = styled.div`
   background-color: ${props => props.color};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 2px;
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.radii.md};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: ${props => props.theme.typography.sizes.sm};
+  font-weight: 600;
   text-align: center;
   transition: all 0.2s ease;
-  opacity: ${props => props.$isCurrent ? 1 : 0.7};
-  box-shadow: ${props => props.$isCurrent ? `0 0 4px ${props.color}` : 'none'};
-  
+  opacity: ${props => props.$isCurrent ? 1 : 0.8};
+  box-shadow: ${props => props.$isCurrent ? `0 0 8px ${props.color}` : '0 2px 4px rgba(0,0,0,0.2)'};
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1.5;
+
   &:hover {
     opacity: 1;
-    transform: scale(1.05);
-    box-shadow: 0 0 6px ${props => props.color};
+    transform: scale(1.08);
+    box-shadow: 0 0 12px ${props => props.color};
+    z-index: 1;
   }
 
   &:active {
@@ -44,9 +49,10 @@ const RoomCell = styled.div`
 `;
 
 const RoomLabel = styled.span`
-  color: ${props => props.theme.colors.text.primary};
-  text-shadow: 0 0 2px rgba(0,0,0,0.5);
-  line-height: 1;
+  color: ${props => props.theme.colors.text.light};
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+  line-height: 1.2;
+  font-family: ${props => props.theme.typography.families.primary};
 `;
 
 /**
@@ -173,40 +179,32 @@ const NavigationGrid = () => {
 
   const currentRoomType = getCurrentRoomType();
 
-  // Créer la grille complète 6x5 avec cases vides
-  const fullGrid = [];
-  for (let y = 0; y < 5; y++) {
-    for (let x = 0; x < 6; x++) {
-      // Chercher directement une room à cette position
-      const room = roomConfig.find(r => r.x === x && r.y === y);
+  // Créer seulement la grille centrale 4x3 des pièces actives
+  const activeRooms = roomConfig.filter(room =>
+    room.x >= 1 && room.x <= 4 &&
+    room.y >= 1 && room.y <= 3
+  );
 
-      if (room) {
-        fullGrid.push(room);
-      } else {
-        // Case vide
-        fullGrid.push({ x, y, type: 'empty', name: '' });
-      }
-    }
-  }
+  // Trier les pièces par position (y puis x) pour l'ordre correct dans la grille
+  activeRooms.sort((a, b) => {
+    if (a.y !== b.y) return a.y - b.y;
+    return a.x - b.x;
+  });
 
   return (
     <GridContainer>
-      {fullGrid.map((cell, index) => (
-        cell.type === 'empty' ? (
-          <div key={`empty-${index}`} />
-        ) : (
-          <RoomCell
-            key={`${cell.x}-${cell.y}`}
-            color={roomColors[cell.type]}
-            $isCurrent={cell.type === currentRoomType}
-            onClick={() => handleRoomClick(cell.type)}
-            title={`Aller vers ${cell.name}`}
-          >
-            <RoomLabel>
-              {cell.name}
-            </RoomLabel>
-          </RoomCell>
-        )
+      {activeRooms.map((room) => (
+        <RoomCell
+          key={`${room.x}-${room.y}`}
+          color={roomColors[room.type]}
+          $isCurrent={room.type === currentRoomType}
+          onClick={() => handleRoomClick(room.type)}
+          title={`Aller vers ${room.name}`}
+        >
+          <RoomLabel>
+            {room.name}
+          </RoomLabel>
+        </RoomCell>
       ))}
     </GridContainer>
   );

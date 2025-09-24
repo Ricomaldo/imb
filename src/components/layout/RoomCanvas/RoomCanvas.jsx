@@ -39,9 +39,9 @@ const RoomCanvas = ({ roomNavHook }) => {
   const [activeDirection, setActiveDirection] = useState(null);
 
   // Calcul pour centrer la pièce courante dans le viewport
-  // Chaque pièce fait 25% de la largeur totale (100%/4) et 33.33% de la hauteur totale (100%/3)
-  const translateX = -currentRoom.x * 25; // 100% / 4 colonnes = 25%
-  const translateY = -currentRoom.y * 33.33; // 100% / 3 rangées = 33.33%
+  // Chaque pièce fait 16.67% de la largeur totale (100%/6) et 20% de la hauteur totale (100%/5)
+  const translateX = -currentRoom.x * 16.67; // 100% / 6 colonnes = 16.67%
+  const translateY = -currentRoom.y * 20; // 100% / 5 rangées = 20%
 
   // Fonction pour gérer la navigation avec animation
   const handleNavigation = (direction) => {
@@ -69,27 +69,37 @@ const RoomCanvas = ({ roomNavHook }) => {
     enableEscapeToDefault: true
   });
 
+  // Créer la grille complète 6x5
+  const fullGrid = [];
+  for (let y = 0; y < 5; y++) {
+    for (let x = 0; x < 6; x++) {
+      // Chercher si une pièce existe à cette position
+      const room = roomConfig.find(r => r.x === x && r.y === y);
+      fullGrid.push({ x, y, room });
+    }
+  }
+
   return (
     <CanvasContainer id="room-canvas-container">
       <RoomsGrid style={{ transform: `translate(${translateX}%, ${translateY}%)` }}>
-        {roomConfig.map((room, index) => (
+        {fullGrid.map((cell, index) => (
           <RoomSlot
             key={index}
-            roomType={room.type}
-            background={room.background}
+            roomType={cell.room?.type || 'empty'}
+            background={cell.room?.background || null}
             roomColors={roomColors}
           >
-{(() => {
-              const RoomComponent = getRoomComponent(room.type);
+            {cell.room ? (() => {
+              const RoomComponent = getRoomComponent(cell.room.type);
 
               // Si c'est le composant par défaut, passer les props room
               if (RoomComponent === DefaultRoomRenderer) {
-                return <RoomComponent room={room} />;
+                return <RoomComponent room={cell.room} />;
               }
 
               // Sinon, c'est un vrai composant Room
               return <RoomComponent />;
-            })()}
+            })() : null}
           </RoomSlot>
         ))}
       </RoomsGrid>

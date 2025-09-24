@@ -5,8 +5,12 @@ import styled from 'styled-components';
 export const BibliothequeGrid = styled.div`
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: ${({ theme }) => theme.spacing.sm};
+  display: flex;
+  padding: ${({ theme }) => theme.spacing.md};
+
+  > * {
+    flex: 1;
+    max-width: 100%;
+    height: 100%;
+  }
 `;

@@ -10,6 +10,7 @@ import MarkdownEditor from "../../common/MarkdownEditor";
 import Button from "../../common/Button";
 import ComponentCatalog from "../../dev/ComponentCatalog/ComponentCatalog";
 import SystemOverview from "../../dev/SystemOverview/SystemOverview";
+import CaptureUrgente from "../../room-modules/forge/CaptureUrgente";
 import { ForgeToolbar, ForgeTitle } from "./ForgeRoom.styles";
 
 /**
@@ -30,6 +31,10 @@ const ForgeRoom = () => {
   const forgeNotes = roomNotes.forge || "";
   const [showCatalog, setShowCatalog] = useState(false);
   const [showTree, setShowTree] = useState(false);
+  const [collapsedPanels, setCollapsedPanels] = useState({
+    bugs: false,
+    saveStates: false
+  });
 
   return (
     <BaseRoom roomType="forge" layoutType="grid">
@@ -96,43 +101,59 @@ const ForgeRoom = () => {
           </Panel>
         ) : (
           <>
-            {/* Panel principal vide pour le moment */}
+            {/* Panel pour capturer les bugs */}
             <Panel
-              gridColumn="1 / 4"
-              gridRow="1 / 6"
-              title="Zone de Forge"
-              icon="🔨"
+              gridColumn="1 / 3"
+              gridRow="1 / 5"
+              title="Capture de Bugs"
+              icon="🐛"
               texture="metal"
-              accentColor={theme.colors.accents.warm}
+              borderType="blue"
+              accentColor={theme.colors.accents.danger}
               collapsible={true}
+              collapsed={collapsedPanels.bugs}
+              onToggleCollapse={(collapsed) =>
+                setCollapsedPanels(prev => ({ ...prev, bugs: collapsed }))
+              }
             >
-              <div style={{ padding: theme.spacing.md, textAlign: "center" }}>
-                <p>Zone principale de la Forge</p>
-              </div>
-            </Panel>
-
-            {/* Panel de notes */}
-            <Panel
-              gridColumn="4 / 6"
-              gridRow="1 / 6"
-              title="Notes"
-              icon="📝"
-              texture="parchment"
-              accentColor={theme.colors.accents.cold}
-              contentType="markdown"
-              collapsible={true}
-              defaultCollapsed={false}
-            >
-              <MarkdownEditor
-                value={forgeNotes}
-                onChange={(value) => updateRoomNote("forge", value)}
-                placeholder="Notes de forge..."
-                height="100%"
-                compact={true}
-                variant="embedded"
-                accentColor={theme.colors.accents.cold}
+              <CaptureUrgente
+                type="bug"
+                storeKey="bugs"
+                placeholder={{
+                  title: "Ex: Erreur lors de la sauvegarde",
+                  description: "Décrivez le problème et comment le reproduire",
+                  urgency: "Sélectionnez l'urgence"
+                }}
               />
             </Panel>
+
+            {/* Panel pour sauvegarder l'état de développement */}
+            <Panel
+              gridColumn="4 / 6"
+              gridRow="1 / 5"
+              title="Pause Projet"
+              icon="💾"
+              texture="metal"
+              borderType="blue"
+              accentColor={theme.colors.accents.cold}
+              collapsible={true}
+              collapsed={collapsedPanels.saveStates}
+              onToggleCollapse={(collapsed) =>
+                setCollapsedPanels(prev => ({ ...prev, saveStates: collapsed }))
+              }
+            >
+              <CaptureUrgente
+                type="saveState"
+                storeKey="saveStates"
+                placeholder={{
+                  title: "Ex: Refactoring système de navigation",
+                  description: "État actuel: modification des routes, contexte...",
+                  nextAction: "Prochaine étape: finir le composant NavBar"
+                }}
+              />
+            </Panel>
+
+
           </>
         )}
       </PanelGrid>

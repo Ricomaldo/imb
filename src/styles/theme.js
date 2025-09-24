@@ -95,14 +95,14 @@ export const theme = {
 
     // Échelle typographique harmonieuse (ratio 1.25)
     sizes: {
-      xs: '10px',     // Micro-infos, timestamps, badges
-      sm: '12px',     // Textes secondaires, captions, meta
-      base: '14px',   // Texte principal, contenu standard
-      md: '16px',     // Textes importants, emphasis
-      lg: '20px',     // Sous-titres, section headers
-      xl: '25px',     // Titres de sections
-      '2xl': '31px',  // Titres de pages
-      '3xl': '39px'   // Titres principaux, hero
+      xs: '11px',     // Micro-infos, timestamps, badges
+      sm: '13px',     // Textes secondaires, captions, meta
+      base: '16px',   // Texte principal, contenu standard
+      md: '18px',     // Textes importants, emphasis
+      lg: '22px',     // Sous-titres, section headers
+      xl: '28px',     // Titres de sections
+      '2xl': '35px',  // Titres de pages
+      '3xl': '44px'   // Titres principaux, hero
     },
 
     // Poids standardisés

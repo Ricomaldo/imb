@@ -1,0 +1,60 @@
+{
+  "exercices": [
+    {
+      "id": "nuque_rotation",
+      "nom": "Rotation nuque douce",
+      "description": "Rotations lentes tête droite→gauche, 3x chaque sens",
+      "duree_seconde": 30,
+      "cible": ["nuque", "tension"]
+    },
+    {
+      "id": "yeux_20_20_20",
+      "nom": "Règle 20-20-20",
+      "description": "Regarder un point à 6m pendant 20 secondes",
+      "duree_seconde": 25,
+      "cible": ["yeux", "fatigue"]
+    },
+    {
+      "id": "epaules_roule",
+      "nom": "Roulement épaules",
+      "description": "5 rotations avant puis arrière, relâcher",
+      "duree_seconde": 20,
+      "cible": ["epaules", "posture"]
+    },
+    {
+      "id": "dos_etirement",
+      "nom": "Étirement dos",
+      "description": "Bras vers le ciel, pencher gauche puis droite, tenir 5s",
+      "duree_seconde": 25,
+      "cible": ["dos", "posture"]
+    },
+    {
+      "id": "poignets_circles",
+      "nom": "Cercles poignets",
+      "description": "10 rotations dans chaque sens, secouer les mains",
+      "duree_seconde": 15,
+      "cible": ["poignets", "circulation"]
+    },
+    {
+      "id": "respiration_profonde",
+      "nom": "Respiration profonde",
+      "description": "3 inspirations lentes par le nez, expirer par la bouche",
+      "duree_seconde": 35,
+      "cible": ["respiration", "detente"]
+    },
+    {
+      "id": "quelques_pas",
+      "nom": "Quelques pas",
+      "description": "Se lever, marcher jusqu'à la fenêtre et retour",
+      "duree_seconde": 40,
+      "cible": ["circulation", "jambes"]
+    },
+    {
+      "id": "lunettes_rappel",
+      "nom": "Check lunettes écran",
+      "description": "Vérifier si lunettes écran sont portées, ajuster si besoin",
+      "duree_seconde": 10,
+      "cible": ["yeux", "prevention"]
+    }
+  ]
+}

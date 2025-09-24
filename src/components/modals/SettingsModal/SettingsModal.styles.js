@@ -120,3 +120,36 @@ export const StatusMessage = styled.div`
     : 'rgba(255, 152, 0, 0.3)'
   };
 `;
+
+export const TabContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+`;
+
+export const TabButton = styled.button`
+  padding: 10px 20px;
+  background: ${props => props.$active
+    ? props.theme.colors.backgroundLight
+    : 'transparent'};
+  color: ${props => props.$active
+    ? props.theme.colors.text
+    : props.theme.colors.textSecondary};
+  border: none;
+  border-bottom: 2px solid ${props => props.$active
+    ? props.theme.colors.accent
+    : 'transparent'};
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.theme.colors.backgroundLight};
+    color: ${props => props.theme.colors.text};
+  }
+`;
+
+export const TabContent = styled.div`
+  min-height: 300px;
+`;

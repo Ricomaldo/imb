@@ -7,7 +7,7 @@ import useProjectMetaStore from '../../../stores/useProjectMetaStore';
 
 const Container = styled.div`
   height: 50px;
-  width: 25%;
+  min-width: 33%;
   margin: 0 auto ${({ theme }) => theme.spacing.sm};
   ${metalBg}
   ${secondaryLevel}

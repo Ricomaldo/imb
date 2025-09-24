@@ -64,6 +64,12 @@ const useDiaryStore = create(
       // Futures fonctionnalités journal
       entries: [], // Pour de futures entrées journal complètes
 
+      // Daily Diary - Journal quotidien
+      dailyDiary: {}, // Format: { 'YYYY-MM-DD': 'contenu markdown' }
+
+      // Archives mensuelles - Format: { 'YYYY-MM': { 'YYYY-MM-DD': 'contenu' } }
+      monthlyArchives: {},
+
       addDiaryEntry: (entry) => set(state => ({
         entries: [
           ...state.entries,
@@ -74,6 +80,99 @@ const useDiaryStore = create(
           }
         ]
       })),
+
+      // Actions pour le journal quotidien
+      getDailyEntry: (date) => {
+        return get().dailyDiary[date] || '';
+      },
+
+      updateDailyEntry: (date, content) => set(state => ({
+        dailyDiary: {
+          ...state.dailyDiary,
+          [date]: content
+        }
+      })),
+
+      // Actions pour l'archivage quotidien (archive les jours passés)
+      archiveMonthlyEntries: () => {
+        const state = get();
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
+        const currentMonth = today.toISOString().slice(0, 7); // YYYY-MM
+
+        // Trouver toutes les entrées qui ne sont pas d'aujourd'hui
+        const entriesToArchive = {};
+        const remainingEntries = {};
+
+        Object.entries(state.dailyDiary).forEach(([date, content]) => {
+          const entryMonth = date.slice(0, 7);
+
+          if (date < todayStr && content.trim() !== '') {
+            // Archiver toutes les entrées avant aujourd'hui qui ne sont pas vides
+            if (!entriesToArchive[entryMonth]) {
+              entriesToArchive[entryMonth] = {};
+            }
+            entriesToArchive[entryMonth][date] = content;
+          } else if (date === todayStr) {
+            // Garder uniquement l'entrée d'aujourd'hui
+            remainingEntries[date] = content;
+          }
+        });
+
+        // Mettre à jour le store avec les archives et nettoyer le journal quotidien
+        if (Object.keys(entriesToArchive).length > 0) {
+          set(state => ({
+            monthlyArchives: {
+              ...state.monthlyArchives,
+              ...Object.entries(entriesToArchive).reduce((acc, [month, entries]) => {
+                acc[month] = {
+                  ...(state.monthlyArchives[month] || {}),
+                  ...entries
+                };
+                return acc;
+              }, {})
+            },
+            dailyDiary: remainingEntries
+          }));
+        }
+      },
+
+      // Récupérer les archives d'un mois spécifique
+      getMonthlyArchive: (yearMonth) => {
+        return get().monthlyArchives[yearMonth] || {};
+      },
+
+      // Récupérer la liste des mois archivés
+      getArchivedMonths: () => {
+        return Object.keys(get().monthlyArchives).sort((a, b) => b.localeCompare(a));
+      },
+
+      // Exporter un mois en markdown
+      exportMonthToMarkdown: (yearMonth) => {
+        const archive = get().monthlyArchives[yearMonth];
+        if (!archive) return '';
+
+        const monthName = new Date(yearMonth + '-01').toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long'
+        });
+
+        let markdown = `# Journal - ${monthName}\n\n`;
+
+        Object.entries(archive)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .forEach(([date, content]) => {
+            const dateObj = new Date(date + 'T12:00:00');
+            const dayName = dateObj.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long'
+            });
+            markdown += `## ${dayName}\n\n${content}\n\n---\n\n`;
+          });
+
+        return markdown;
+      },
 
       // Getters
       getTodayLogs: () => {

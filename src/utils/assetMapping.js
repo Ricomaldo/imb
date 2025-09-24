@@ -2,9 +2,9 @@
 
 export const roomBackgrounds = {
   // Ligne 0
-  sanctuaire: "/src/assets/images/rooms/sanctuaire-mystique.jpg",
+  sanctuaire: "/src/assets/images/rooms/temple-lac.png",
   chambre: "/src/assets/images/rooms/chambre-cozy.jpg",
-  cuisine: "/src/assets/images/rooms/cuisine-medieval.jpg",
+  cuisine: "/src/assets/images/rooms/cuisine.jpg",
   comptoir: "/src/assets/images/rooms/bureau_tresor.jpg",
 
   // Ligne 1

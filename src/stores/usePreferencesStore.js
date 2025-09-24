@@ -12,6 +12,9 @@ const usePreferencesStore = create(
       // Pièce de démarrage par défaut (Chambre)
       defaultRoom: { x: 1, y: 0 },
 
+      // Disposition personnalisée des pièces (null = utiliser la disposition par défaut)
+      customRoomLayout: null,
+
       // === ÉTATS UI DES ROOMS (ancien useRoomsUIStore) ===
 
       // État UI par room et par panel
@@ -51,6 +54,16 @@ const usePreferencesStore = create(
       // Récupérer la pièce de démarrage
       getDefaultRoom: () => {
         return get().defaultRoom;
+      },
+
+      // Mettre à jour la disposition personnalisée des pièces
+      setCustomRoomLayout: (layout) => {
+        set({ customRoomLayout: layout });
+      },
+
+      // Récupérer la disposition personnalisée
+      getCustomRoomLayout: () => {
+        return get().customRoomLayout;
       },
 
       // === ACTIONS POUR ÉTATS UI DES ROOMS ===

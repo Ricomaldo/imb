@@ -184,7 +184,7 @@ const NavigationGrid = () => {
             title={`Aller vers ${room.name}`}
           >
           <RoomLabel>
-            {room.name.substring(0, 3)}
+            {room.name}
           </RoomLabel>
         </RoomCell>
       ))}

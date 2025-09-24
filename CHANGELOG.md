@@ -2,6 +2,44 @@
 
 ## [Unreleased]
 
+### Added - 2025-09-24 (Widgets Cuisine & Bibliothèque)
+
+- **Widget Journal (Diary)** : Journal quotidien avec archivage automatique
+  - Une page vierge chaque jour avec éditeur Markdown
+  - Archivage automatique des jours précédents à minuit
+  - Archives mensuelles consultables dans la Bibliothèque
+  - Export des mois en fichiers Markdown
+  - Store `useDiaryStore` avec `dailyDiary` et `monthlyArchives`
+
+- **Widget DiaryArchive (Bibliothèque)** : Consultation des archives du journal
+  - Navigation par mois dans la sidebar
+  - Visualisation jour par jour avec aperçu Markdown
+  - Export en .md pour chaque mois complet
+  - Interface compacte dans panel 2x2
+
+- **Widget PauseCorps (Cuisine)** : Micro-mouvements pour développeurs
+  - 8 exercices ciblés (nuque, yeux, dos, poignets, etc.)
+  - Système de révélation avec mystère initial
+  - Messages d'encouragement aléatoires après chaque exercice
+  - Design vert nature avec texte blanc
+  - Données dans `src/data/exercices.json` et `encouragements.json`
+
+- **Composant AnalogClock** : Horloge murale analogique
+  - Nouveau dossier `src/components/furniture/` pour objets décoratifs
+  - Horloge SVG avec aiguilles animées en temps réel
+  - Accrochée au mur de la Cuisine (position absolue)
+  - Design vintage avec ombres et effets
+
+- **Amélioration Bibliothèque** : Grille 5x5 avec PanelGrid
+  - Archives du Journal en petit panel (2x2)
+  - Espaces préparés pour Documents, Notes de Recherche et Collections
+  - Cohérence avec l'architecture des autres pièces
+
+- **Augmentation tailles de police globales** : Meilleure lisibilité
+  - `base`: 14px → 16px (standard web moderne)
+  - Toutes les tailles augmentées proportionnellement
+  - Ratio harmonieux préservé (~1.25)
+
 ### Changed - 2025-09-24 (Refactoring Stores)
 
 - **Fusion des stores de préférences** : Simplification de l'architecture

@@ -690,6 +690,58 @@ const useProjectsStore = create(
         };
       },
 
+      // Actions - Captures Urgentes (bugs et saveStates)
+      addCaptureUrgente: (projectId, storeKey, captureData) => {
+        set((state) => {
+          const project = state.projects[projectId];
+          if (!project) return state;
+
+          const newCapture = {
+            id: Date.now(),
+            ...captureData,
+            created_at: new Date().toISOString(),
+          };
+
+          // Initialiser le tableau s'il n'existe pas
+          const currentCaptures = project[storeKey] || [];
+
+          return {
+            projects: {
+              ...state.projects,
+              [projectId]: {
+                ...project,
+                [storeKey]: [...currentCaptures, newCapture],
+                updated_at: new Date().toISOString(),
+              },
+            },
+          };
+        });
+      },
+
+      getCapturesUrgentes: (projectId, storeKey) => {
+        const project = get().projects[projectId];
+        if (!project) return [];
+        return project[storeKey] || [];
+      },
+
+      deleteCaptureUrgente: (projectId, storeKey, captureId) => {
+        set((state) => {
+          const project = state.projects[projectId];
+          if (!project || !project[storeKey]) return state;
+
+          return {
+            projects: {
+              ...state.projects,
+              [projectId]: {
+                ...project,
+                [storeKey]: project[storeKey].filter(item => item.id !== captureId),
+                updated_at: new Date().toISOString(),
+              },
+            },
+          };
+        });
+      },
+
       // Import complet pour synchronisation (remplace tout)
       importData: (data) => {
         set({

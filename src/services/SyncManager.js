@@ -246,10 +246,30 @@ class SyncManager {
       }
 
       console.log('✅ Fichier trouvé et contenu récupéré');
+      console.log('🔍 Debug: Taille du contenu:', content.length);
+      console.log('🔍 Debug: Débuts du contenu:', content.substring(0, 100));
 
       // Déchiffrer si nécessaire
       if (encrypted && this.password) {
-        return this.decrypt(content);
+        try {
+          console.log('🔑 Tentative de déchiffrement...');
+          const result = this.decrypt(content);
+          console.log('✅ Déchiffrement réussi');
+          return result;
+        } catch (error) {
+          console.error('❌ Erreur déchiffrement:', error);
+
+          // Essayer de parser directement en cas d'échec (peut-être pas chiffré)
+          try {
+            console.log('🔄 Tentative de parsing direct (non chiffré)...');
+            const directResult = JSON.parse(content);
+            console.log('✅ Parsing direct réussi - données non chiffrées');
+            return directResult;
+          } catch (parseError) {
+            console.error('❌ Parsing direct échoué aussi:', parseError);
+            throw error; // Relancer l'erreur originale de déchiffrement
+          }
+        }
       } else {
         return JSON.parse(content);
       }

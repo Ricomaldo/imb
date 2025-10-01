@@ -1,23 +1,37 @@
 // src/utils/assetMapping.js
 
+// Import des backgrounds avec Vite (pour production)
+import templeLac from '../assets/images/rooms/temple-lac.png';
+import chambreCozy from '../assets/images/rooms/chambre-cozy.jpg';
+import cuisine from '../assets/images/rooms/cuisine.jpg';
+import bureauTresor from '../assets/images/rooms/bureau_tresor.jpg';
+import jardin from '../assets/images/rooms/jardin.png';
+import atelierWorkbench from '../assets/images/rooms/atelier-workbench.jpg';
+import forgeFire from '../assets/images/rooms/forge-fire.jpg';
+import boutiqueMedieval from '../assets/images/rooms/boutique-medieval.jpg';
+import scriptoriumMagique from '../assets/images/rooms/scriptorium_magique.jpg';
+import bibliotheque3 from '../assets/images/rooms/bibliotheque_3.jpg';
+import donjon from '../assets/images/rooms/donjon.jpg';
+import laboXxx from '../assets/images/rooms/labo-xxx.jpg';
+
 export const roomBackgrounds = {
   // Ligne 0
-  sanctuaire: "/src/assets/images/rooms/temple-lac.png",
-  chambre: "/src/assets/images/rooms/chambre-cozy.jpg",
-  cuisine: "/src/assets/images/rooms/cuisine.jpg",
-  comptoir: "/src/assets/images/rooms/bureau_tresor.jpg",
+  sanctuaire: templeLac,
+  chambre: chambreCozy,
+  cuisine: cuisine,
+  comptoir: bureauTresor,
 
   // Ligne 1
-  jardin: "/src/assets/images/rooms/jardin.png",
-  atelier: "/src/assets/images/rooms/atelier-workbench.jpg",
-  forge: "/src/assets/images/rooms/forge-fire.jpg",
-  boutique: "/src/assets/images/rooms/boutique-medieval.jpg",
+  jardin: jardin,
+  atelier: atelierWorkbench,
+  forge: forgeFire,
+  boutique: boutiqueMedieval,
 
   // Ligne 2
-  scriptorium: "/src/assets/images/rooms/scriptorium_magique.jpg",
-  bibliotheque: "/src/assets/images/rooms/bibliotheque_3.jpg",
-  cave: "/src/assets/images/rooms/donjon.jpg",
-  laboratoire: "/src/assets/images/rooms/labo-xxx.jpg",
+  scriptorium: scriptoriumMagique,
+  bibliotheque: bibliotheque3,
+  cave: donjon,
+  laboratoire: laboXxx,
 };
 
 export const roomColors = {
@@ -41,11 +55,17 @@ export const roomColors = {
 
   empty: "#E8E2D6",          // Ton background thème
 };
+// Import des textures avec Vite (pour production)
+import parchmentTexture from '../assets/images/ui/parchment-texture.jpg';
+import stoneWall from '../assets/images/ui/stone-wall.jpg';
+import woodGrain from '../assets/images/ui/wood-grain.jpg';
+import metalSurface from '../assets/images/ui/metal-surface.jpg';
+
 export const textures = {
-  parchment: "/src/assets/images/ui/parchment-texture.jpg",
-  stone: "/src/assets/images/ui/stone-wall.jpg",
-  wood: "/src/assets/images/ui/wood-grain.jpg",
-  metal: "/src/assets/images/ui/metal-surface.jpg",
+  parchment: parchmentTexture,
+  stone: stoneWall,
+  wood: woodGrain,
+  metal: metalSurface,
 };
 
 export const icons = {

@@ -109,6 +109,9 @@ class ProjectSyncAdapter {
     if (orphanedProjects.length > 0) {
       console.warn('🔍 Audit: Projets orphelins trouvés (data sans meta):', orphanedProjects);
       console.warn('Ces projets ne seront PAS exportés car absents du projectMeta store');
+
+      // Proposer un nettoyage automatique
+      console.warn('🧹 Suggestion: Nettoyer ces projets orphelins avec cleanupOrphanedProjects()');
     }
 
     // 🔍 Identifier les projets fantômes (meta sans data)
@@ -328,6 +331,37 @@ class ProjectSyncAdapter {
         localStorage.removeItem(key);
       }
     });
+  }
+
+  /**
+   * Nettoie les projets orphelins (data sans meta)
+   */
+  cleanupOrphanedProjects() {
+    const metaState = useProjectMetaStore.getState();
+    const projectIds = Object.keys(metaState.projects || {});
+
+    // Trouver tous les stores project-data-* dans localStorage
+    const allProjectDataKeys = Object.keys(localStorage).filter(key => key.startsWith('project-data-'));
+    const allProjectDataIds = allProjectDataKeys.map(key => key.replace('project-data-', ''));
+
+    // Identifier les projets orphelins
+    const orphanedProjects = allProjectDataIds.filter(id => !projectIds.includes(id));
+
+    if (orphanedProjects.length > 0) {
+      console.log('🧹 Nettoyage des projets orphelins:', orphanedProjects);
+
+      orphanedProjects.forEach(projectId => {
+        const storeKey = `project-data-${projectId}`;
+        localStorage.removeItem(storeKey);
+        console.log(`🗑️ Supprimé: ${storeKey}`);
+      });
+
+      console.log('✅ Nettoyage terminé');
+      return orphanedProjects;
+    } else {
+      console.log('✅ Aucun projet orphelin trouvé');
+      return [];
+    }
   }
 
   /**

@@ -4,6 +4,7 @@
 import useNotesStore from '../stores/useNotesStore';
 import useProjectMetaStore from '../stores/useProjectMetaStore';
 import { getProjectData } from '../stores/useProjectDataStore';
+import ProjectSyncAdapter from '../services/ProjectSyncAdapter';
 
 // Fonction pour exposer les stores et helpers
 export const exposeStoresToWindow = (navigationHook = null) => {
@@ -62,9 +63,17 @@ export const exposeStoresToWindow = (navigationHook = null) => {
       getVisibleProjects: () => useProjectMetaStore.getState().getVisibleProjects()
     };
 
+    // Exposer les outils de maintenance
+    const projectSyncAdapter = new ProjectSyncAdapter();
+    window.__SYNC_TOOLS__ = {
+      cleanupOrphanedProjects: () => projectSyncAdapter.cleanupOrphanedProjects(),
+      collectAllStoreData: () => projectSyncAdapter.collectAllStoreData()
+    };
+
     console.log('✅ Stores exposés dans window.__ZUSTAND_STORES__');
     console.log('💡 Utilise window.__DEBUG_STORES__() pour voir l\'état');
     console.log('🚀 Accès rapide: window.stores.projectMeta() ou window.stores.projectData("irimmetabrain")');
+    console.log('🧹 Maintenance: window.__SYNC_TOOLS__.cleanupOrphanedProjects()');
   }
 };
 

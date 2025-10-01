@@ -1,11 +1,14 @@
 // App.jsx
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import StudioHall from './components/layout/StudioHall/StudioHall';
 import ModalManager from './components/modals/ModalManager';
 import exposeStoresToWindow from './utils/exposeStores';
 import { initializeStores, cleanupObsoleteStorage } from './stores/migrateProjectStores';
+import CompanionApp from './companion/CompanionApp';
+import { openModal } from './utils/buttonMapping';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
@@ -70,9 +73,41 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StudioHall />
-      <ModalManager />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </ThemeProvider>
+  );
+}
+
+// Composant interne pour accéder au routing
+function AppContent() {
+  useEffect(() => {
+    // Vérifier si on doit afficher la modale de choix
+    const hasPreference = localStorage.getItem('interface-preference');
+    const isMobile = window.innerWidth < 768;
+    const isRootPath = window.location.pathname === '/';
+
+    // Afficher la modale uniquement si :
+    // 1. Pas de préférence sauvegardée
+    // 2. Détecté comme mobile
+    // 3. Sur la route racine
+    if (!hasPreference && isMobile && isRootPath) {
+      // Attendre que le ModalManager soit monté
+      setTimeout(() => {
+        openModal('device-choice');
+      }, 500);
+    }
+  }, []);
+
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<StudioHall />} />
+        <Route path="/companion/*" element={<CompanionApp />} />
+      </Routes>
+      <ModalManager />
+    </>
   );
 }
 

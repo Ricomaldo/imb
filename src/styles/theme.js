@@ -95,8 +95,8 @@ export const theme = {
 
     // Échelle typographique harmonieuse (ratio 1.25)
     sizes: {
-      xs: '11px',     // Micro-infos, timestamps, badges
-      sm: '13px',     // Textes secondaires, captions, meta
+      xs: '12px',     // Micro-infos, timestamps, badges
+      sm: '14px',     // Textes secondaires, captions, meta
       base: '16px',   // Texte principal, contenu standard
       md: '18px',     // Textes importants, emphasis
       lg: '22px',     // Sous-titres, section headers

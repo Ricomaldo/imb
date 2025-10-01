@@ -8,6 +8,7 @@ import SettingsModal from './SettingsModal/SettingsModal';
 import ProjectOverviewModal from './ProjectOverviewModal/ProjectOverviewModal';
 import CaptureConfirmModal from './CaptureConfirmModal/CaptureConfirmModal';
 import TimeTimerModal from './TimeTimerModal/TimeTimerModal';
+import DeviceChoiceModal from './DeviceChoiceModal/DeviceChoiceModal';
 
 /**
  * Manager component that renders all modals in the application
@@ -30,6 +31,7 @@ const ModalManager = () => {
     'projects': false,
     'capture-confirm': false,
     'time-timer': false,
+    'device-choice': false,
   });
 
   // Utiliser une ref pour stocker la fonction de setState
@@ -103,6 +105,11 @@ const ModalManager = () => {
       <TimeTimerModal
         isOpen={modalStates['time-timer']}
         onClose={() => closeModal('time-timer')}
+      />
+
+      <DeviceChoiceModal
+        isOpen={modalStates['device-choice']}
+        onClose={() => closeModal('device-choice')}
       />
     </>
   );

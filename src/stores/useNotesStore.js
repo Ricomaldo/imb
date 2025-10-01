@@ -35,6 +35,10 @@ const getInitialData = () => {
     },
     sideTowerNotes: {
       general: ''
+    },
+    companionNotes: {
+      devNote: '',
+      lastSync: null
     }
   };
 };
@@ -47,6 +51,7 @@ const useNotesStore = create(
       // État des notes avec données initiales
       roomNotes: initialData.roomNotes,
       sideTowerNotes: initialData.sideTowerNotes,
+      companionNotes: initialData.companionNotes,
 
       // Actions pour room notes
       updateRoomNote: (roomType, content) => {
@@ -77,6 +82,21 @@ const useNotesStore = create(
         return get().sideTowerNotes.general || '';
       },
 
+      // Actions pour companion notes
+      updateCompanionNote: (key, value) => {
+        set((state) => ({
+          companionNotes: {
+            ...state.companionNotes,
+            [key]: value,
+            lastSync: new Date().toISOString()
+          }
+        }));
+      },
+
+      getCompanionNote: (key) => {
+        return get().companionNotes[key] || '';
+      },
+
       // Actions de maintenance
       clearAllNotes: () => {
         set({
@@ -85,7 +105,8 @@ const useNotesStore = create(
             jardin: '', atelier: '', forge: '', boutique: '',
             scriptorium: '', bibliotheque: '', cave: ''
           },
-          sideTowerNotes: { general: '' }
+          sideTowerNotes: { general: '' },
+          companionNotes: { devNote: '', lastSync: null }
         });
       },
 
@@ -95,6 +116,7 @@ const useNotesStore = create(
         return {
           roomNotes: state.roomNotes,
           sideTowerNotes: state.sideTowerNotes,
+          companionNotes: state.companionNotes,
           exported_at: new Date().toISOString()
         };
       },
@@ -110,13 +132,19 @@ const useNotesStore = create(
             sideTowerNotes: { ...state.sideTowerNotes, ...data.sideTowerNotes }
           }));
         }
+        if (data.companionNotes) {
+          set((state) => ({
+            companionNotes: { ...state.companionNotes, ...data.companionNotes }
+          }));
+        }
       },
 
       // Import complet pour synchronisation (remplace tout)
       importData: (data) => {
         set({
           roomNotes: data.roomNotes || {},
-          sideTowerNotes: data.sideTowerNotes || {}
+          sideTowerNotes: data.sideTowerNotes || {},
+          companionNotes: data.companionNotes || { devNote: '', lastSync: null }
         });
       }
     }),

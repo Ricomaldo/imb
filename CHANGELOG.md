@@ -2,6 +2,51 @@
 
 ## [Unreleased]
 
+### Added - 2025-10-01 (IMB Companion - Interface Mobile)
+
+- **IMB Companion** : Interface mobile hyper-réduite avec navigation par onglets
+  - **DeviceChoiceModal** : Modale au démarrage sur mobile pour choisir interface (desktop/companion)
+  - Détection automatique mobile (<768px) avec préférence sauvegardée
+  - Routing automatique vers `/companion` avec TabBar fixe en bas
+  - **4 pages mobiles** :
+    - **HomePage** : Mantras (QuoteCarousel) + Journal (Diary) en pile collapsible
+    - **AtelierPage** : Roadmap, Todo, MindLog, Notes, ScreenTV avec ProjectCarousel
+    - **DevPage** : Notes de développement avec MarkdownEditor (sauvegarde auto Zustand)
+    - **SettingsPage** : Sync, info app, stockage, préférences interface
+  - **TabBar** : Navigation 4 onglets (🏠 Home, 🛠️ Atelier, 💡 Dev, ⚙️ Settings)
+  - Réutilisation maximale des composants desktop (Panel, MarkdownEditor, MindLog, etc.)
+  - Support complet du PanelContext et toolbars (édition markdown, filtres mantras, etc.)
+
+- **Extension stores pour Companion** :
+  - `useNotesStore.companionNotes` : Notes mobiles séparées (devNote, lastSync)
+  - Actions : `updateCompanionNote(key, value)`, `getCompanionNote(key)`
+
+- **Configuration PWA** :
+  - `manifest.json` avec shortcuts vers pages Companion
+  - Meta tags viewport et thème pour mobile
+  - Icônes et configuration standalone
+
+### Added - 2025-10-01 (Support Variables d'Environnement pour Sync)
+
+- **SyncModal avec .env support** : Automatisation de la configuration GitHub Gist
+  - Chargement automatique depuis `VITE_GITHUB_TOKEN`, `VITE_SYNC_PASSWORD`, `VITE_SYNC_GIST_ID`
+  - Champs pré-remplis et verrouillés si credentials dans .env.local
+  - Indicateur visuel "✅ Configuration chargée depuis .env.local"
+  - Fichier `.env.local.example` avec documentation complète
+  - Plus besoin de saisir manuellement les credentials à chaque session
+
+### Fixed - 2025-10-01
+
+- **HomePage Companion** : Simplification architecture panels
+  - Suppression PanelGrid inutile, utilisation pile simple (flexbox column)
+  - Fix bouton collapse qui n'ouvrait pas les widgets
+  - Utilisation `defaultCollapsed={true}` au lieu de `collapsed` (état interne)
+  - Architecture cohérente avec les rooms desktop
+
+- **AtelierPage Companion** : Ajout ProjectCarousel
+  - Navigation entre projets avec flèches ◀ ▶
+  - Remplacement titre statique + badge par carousel interactif
+
 ### Added - 2025-09-25 (Documentation Composants pour Dev Tools)
 
 - **Documentation PropTypes et @renders** : Amélioration des outils de développement

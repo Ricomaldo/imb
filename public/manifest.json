@@ -1,0 +1,49 @@
+{
+  "name": "IMB Companion - IRIMMetaBrain Mobile",
+  "short_name": "IMB Companion",
+  "description": "Interface mobile optimisée de IRIMMetaBrain - Meta-cerveau spatial pour développeurs",
+  "start_url": "/companion",
+  "display": "standalone",
+  "background_color": "#E8E2D6",
+  "theme_color": "#8B4513",
+  "orientation": "portrait-primary",
+  "scope": "/companion",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Home",
+      "short_name": "Home",
+      "description": "Accéder aux mantras et journal",
+      "url": "/companion/home",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dev Notes",
+      "short_name": "Dev",
+      "description": "Notes de développement",
+      "url": "/companion/dev",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Config",
+      "description": "Configuration et synchronisation",
+      "url": "/companion/settings",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

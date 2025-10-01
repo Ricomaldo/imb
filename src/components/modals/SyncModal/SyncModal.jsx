@@ -45,10 +45,16 @@ import useProjectMetaStore from '../../../stores/useProjectMetaStore';
  * @renders ConfigRow
  */
 const SyncModal = ({ isOpen, onClose }) => {
+  // Charger les credentials depuis .env si disponibles
+  const envToken = import.meta.env.VITE_GITHUB_TOKEN || '';
+  const envPassword = import.meta.env.VITE_SYNC_PASSWORD || '';
+  const envGistId = import.meta.env.VITE_SYNC_GIST_ID || '';
+  const hasEnvConfig = !!(envToken && envPassword);
+
   // États locaux pour l'UI
-  const [githubToken, setGithubToken] = useState('');
-  const [password, setPassword] = useState('');
-  const [gistId, setGistId] = useState('');
+  const [githubToken, setGithubToken] = useState(envToken);
+  const [password, setPassword] = useState(envPassword);
+  const [gistId, setGistId] = useState(envGistId);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -212,9 +218,10 @@ const SyncModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🔄 Synchronisation Multi-Device"
+      title="🔄 Synchronisation"
       size="large"
-      variant="roomCanvas"
+      variant="overlay"
+      showCloseButton={true}
     >
       <SyncContainer>
         {/* Section Configuration */}
@@ -222,6 +229,9 @@ const SyncModal = ({ isOpen, onClose }) => {
           <SyncTitle>⚙️ Configuration</SyncTitle>
           <SyncDescription>
             Synchronisez vos données entre appareils via GitHub Gist chiffré
+            {hasEnvConfig && <div style={{ color: '#4A9D4A', marginTop: '8px', fontSize: '13px' }}>
+              ✅ Configuration chargée depuis .env.local
+            </div>}
           </SyncDescription>
 
           <InputGroup>
@@ -230,8 +240,8 @@ const SyncModal = ({ isOpen, onClose }) => {
               type="password"
               value={githubToken}
               onChange={(e) => setGithubToken(e.target.value)}
-              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-              disabled={isLoading}
+              placeholder={hasEnvConfig ? "••••••••••••••••••••" : "ghp_xxxxxxxxxxxxxxxxxxxx"}
+              disabled={isLoading || !!envToken}
             />
             <ActionButton onClick={handleTestConnection} disabled={isLoading}>
               🔗 Tester connexion
@@ -244,8 +254,8 @@ const SyncModal = ({ isOpen, onClose }) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mot de passe fort pour chiffrer vos données"
-              disabled={isLoading}
+              placeholder={hasEnvConfig ? "••••••••••••••••••••" : "Mot de passe fort pour chiffrer vos données"}
+              disabled={isLoading || !!envPassword}
             />
           </InputGroup>
 
@@ -255,7 +265,7 @@ const SyncModal = ({ isOpen, onClose }) => {
               type="text"
               value={gistId}
               onChange={(e) => setGistId(e.target.value)}
-              placeholder="Ex: abc123def456..."
+              placeholder={envGistId || "Ex: abc123def456..."}
               disabled={isLoading}
             />
             <ActionButton onClick={handleListGists} disabled={isLoading}>

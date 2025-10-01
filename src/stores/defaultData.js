@@ -146,6 +146,30 @@ IRIMMetaBrain progresse bien ! L'architecture 4x3 rooms fonctionne parfaitement.
 3. Ajouter SystemOverview
 4. Tests et optimisations`,
   },
+
+  companionNotes: {
+    devNote: `# 💡 Dev Notes Mobile
+
+## Bienvenue dans IMB Companion
+
+Ceci est votre espace de notes de développement mobile synchronisé.
+
+## Fonctionnalités
+- ✅ Markdown complet
+- ✅ Sync Gist chiffré
+- ✅ LocalStorage persistant
+- ✅ Interface mobile optimisée
+
+## TODO
+- [ ] Tester la synchronisation
+- [ ] Explorer les autres onglets
+- [ ] Personnaliser vos mantras
+
+---
+
+Capturez vos idées en déplacement !`,
+    lastSync: null
+  }
 };
 
 // Les données projects restent telles quelles car elles sont déjà riches

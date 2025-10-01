@@ -162,14 +162,25 @@ class ProjectSyncAdapter {
 
       const data = await this.syncManager.downloadGist(gistId, encrypted);
 
+      // Debug: Vérifier les données reçues
+      console.log('🔍 Debug: Données reçues du Gist:', {
+        version: data.version,
+        architecture: data.architecture,
+        hasStores: !!data.stores,
+        dataKeys: Object.keys(data)
+      });
+
       // Vérifier la version et l'architecture
       if (data.version === '2.0.0' && data.architecture === 'multi-store') {
+        console.log('✅ Format v2.0.0 détecté, utilisation importMultiStoreData');
         return this.importMultiStoreData(data);
       } else if (data.version === '1.0.0') {
         // Format ancien, nécessite migration
+        console.log('⚠️ Format legacy v1.0.0 détecté, utilisation importLegacyData');
         return this.importLegacyData(data);
       } else {
-        throw new Error('Unknown data format version');
+        console.log('❌ Format non reconnu:', data.version, data.architecture);
+        throw new Error(`Unknown data format version: ${data.version}`);
       }
     } catch (error) {
       console.error('❌ Import failed:', error);

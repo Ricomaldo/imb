@@ -110,8 +110,16 @@ const SyncModal = ({ isOpen, onClose }) => {
       ProjectSyncAdapter.configure(githubToken, gistId);
       ProjectSyncAdapter.setPassword(password);
 
+      // Debug: Vérifier les données avant export
+      console.log('🔍 Debug: Vérification avant export...');
+      const currentData = ProjectSyncAdapter.collectAllStoreData();
+      console.log('🔍 Debug: Données collectées:', currentData);
+
       // Export avec le nouvel adaptateur
       const result = await ProjectSyncAdapter.exportToGist(true);
+
+      // Debug: Afficher le résultat export
+      console.log('🔍 Debug: Résultat export:', result);
 
       if (result.success) {
         // Sauvegarder l'ID du Gist pour futures mises à jour
@@ -121,6 +129,11 @@ const SyncModal = ({ isOpen, onClose }) => {
 
         showStatus('success', `✅ Export réussi ! ${projectCount} projets synchronisés`);
         showStatus('info', `📋 Gist ID: ${result.id} (copié dans le presse-papier)`);
+
+        // Fermer la modale après succès
+        setTimeout(() => {
+          onClose();
+        }, 2000);
       } else {
         showStatus('error', `❌ Erreur export: ${result.error}`);
       }
@@ -166,16 +179,30 @@ const SyncModal = ({ isOpen, onClose }) => {
         return;
       }
 
+      // Debug: Vérifier les données avant import
+      console.log('🔍 Debug: Vérification du Gist avant import...');
+      console.log('Token:', githubToken ? `${githubToken.slice(0, 8)}...` : 'none');
+      console.log('Gist ID:', gistId);
+      console.log('Password length:', password?.length || 0);
+
       // Import avec le nouvel adaptateur
       const result = await ProjectSyncAdapter.importFromGist(gistId, true);
+
+      // Debug: Afficher le résultat
+      console.log('🔍 Debug: Résultat import:', result);
 
       if (result.success) {
         showStatus('success', '✅ Import réussi ! Données synchronisées');
         if (result.migrated) {
           showStatus('info', '📦 Migration depuis l\'ancien format effectuée');
         }
-        // Recharger la page pour appliquer les changements
-        setTimeout(() => window.location.reload(), 2000);
+
+        showStatus('info', '💡 Conseil : Actualisez la page (F5) pour voir tous les changements');
+
+        // Fermer la modale après succès
+        setTimeout(() => {
+          onClose();
+        }, 3000);
       } else {
         showStatus('error', `❌ Erreur import: ${result.error}`);
       }
@@ -229,10 +256,10 @@ const SyncModal = ({ isOpen, onClose }) => {
           <SyncTitle>⚙️ Configuration</SyncTitle>
           <SyncDescription>
             Synchronisez vos données entre appareils via GitHub Gist chiffré
-            {hasEnvConfig && <div style={{ color: '#4A9D4A', marginTop: '8px', fontSize: '13px' }}>
-              ✅ Configuration chargée depuis .env.local
-            </div>}
           </SyncDescription>
+          {hasEnvConfig && <div style={{ color: '#4A9D4A', marginTop: '8px', fontSize: '13px' }}>
+            ✅ Configuration chargée depuis .env.local
+          </div>}
 
           <InputGroup>
             <Label>GitHub Personal Access Token</Label>

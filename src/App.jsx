@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import StudioHall from './components/layout/StudioHall/StudioHall';
 import ModalManager from './components/modals/ModalManager';
+import LoginPage from './components/auth/LoginPage';
 import exposeStoresToWindow from './utils/exposeStores';
 import { initializeStores, cleanupObsoleteStorage } from './stores/migrateProjectStores';
 import CompanionApp from './companion/CompanionApp';
@@ -12,6 +13,13 @@ import { openModal } from './utils/buttonMapping';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Vérifier l'état de connexion au démarrage
+  useEffect(() => {
+    const loggedIn = sessionStorage.getItem('irim-logged-in') === 'true';
+    setIsLoggedIn(loggedIn);
+  }, []);
 
   // Initialisation robuste des stores au démarrage
   useEffect(() => {
@@ -49,6 +57,20 @@ function App() {
 
     init();
   }, []);
+
+  // Fonction de connexion
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  // Si pas connecté, afficher la page de connexion
+  if (!isLoggedIn) {
+    return (
+      <ThemeProvider theme={theme}>
+        <LoginPage onLogin={handleLogin} />
+      </ThemeProvider>
+    );
+  }
 
   // Afficher un loader pendant l'initialisation
   if (initStatus === 'loading') {

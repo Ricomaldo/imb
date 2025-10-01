@@ -135,7 +135,10 @@ class SyncManager {
     }
 
     const timestamp = new Date().toISOString();
-    const storeData = {
+
+    // Si les données ont déjà un format complet (avec version, architecture, etc), les utiliser directement
+    // Sinon, les wrapper dans l'ancien format legacy pour compatibilité descendante
+    const storeData = data.version && data.architecture ? data : {
       version: '1.0.0',
       timestamp,
       stores: data
@@ -209,10 +212,14 @@ class SyncManager {
 
     try {
       const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.githubToken}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'IRIM-MetaBrain/1.0',
+          'X-GitHub-Api-Version': '2022-11-28'
+        },
+        mode: 'cors'
       });
 
       if (!response.ok) {
@@ -220,11 +227,25 @@ class SyncManager {
       }
 
       const gistData = await response.json();
-      const content = gistData.files['irim-sync.json']?.content;
+
+      // Debug: Lister tous les fichiers disponibles
+      const availableFiles = Object.keys(gistData.files || {});
+      console.log('🔍 Debug: Fichiers trouvés dans le Gist:', availableFiles);
+
+      // Essayer différents noms de fichiers possibles
+      let content = gistData.files['irim-sync.json']?.content;
+      if (!content) {
+        content = gistData.files['irim-metabrain-backup.json']?.content;
+      }
+      if (!content) {
+        content = gistData.files['irim-backup.json']?.content;
+      }
 
       if (!content) {
-        throw new Error('Sync file not found in Gist');
+        throw new Error(`Sync file not found in Gist. Available files: ${availableFiles.join(', ')}`);
       }
+
+      console.log('✅ Fichier trouvé et contenu récupéré');
 
       // Déchiffrer si nécessaire
       if (encrypted && this.password) {

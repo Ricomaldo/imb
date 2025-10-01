@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Fixed - 2025-10-01 (Import/Export Fix + Sécurité Symbolique)
+
+- **🔧 Fix Import/Export** : Correction bugs majeurs système de synchronisation
+  - **SyncManager** : Correction du bug qui forçait toujours la version à '1.0.0' lors des exports
+  - **ProjectSyncAdapter** : Préservation du format v2.0.0 multi-store pendant l'export/import
+  - **CORS Fix** : Résolution problème CORS avec headers GitHub API appropriés
+  - **Debug amélioré** : Logs détaillés pour diagnostiquer les problèmes de sync
+  - **Support multi-noms de fichiers** : Compatibilité `irim-sync.json`, `irim-metabrain-backup.json`, etc.
+  - **UX améliorée** : Fermeture automatique modal après export (2s) et import (3s)
+  - **Import intelligent** : Suggestion F5 au lieu de rechargement forcé
+
+- **🔐 Sécurité Symbolique** : Page de connexion minimaliste pour protéger l'accès
+  - **LoginPage** : Interface élégante avec thème cohérent, logo château 🏰
+  - **Authentification simple** : Mot de passe depuis `VITE_ACCESS_PASSWORD` (fallback: metabrain2024)
+  - **SessionStorage** : État de connexion persistant pendant la session navigateur
+  - **Wrapper sécurisé** : Vérification automatique état connexion dans App.jsx
+
+- **🧹 Structure HTML** : Correction erreur `<div>` dans `<p>` dans SyncModal
+
 ### Added - 2025-10-01 (IMB Companion - Interface Mobile)
 
 - **IMB Companion** : Interface mobile hyper-réduite avec navigation par onglets

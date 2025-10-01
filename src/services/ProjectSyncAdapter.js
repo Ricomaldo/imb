@@ -99,6 +99,35 @@ class ProjectSyncAdapter {
     const metaState = useProjectMetaStore.getState();
     const projectIds = Object.keys(metaState.projects || {});
 
+    // 🔍 Audit: Chercher tous les stores project-data-* dans localStorage
+    const allProjectDataKeys = Object.keys(localStorage).filter(key => key.startsWith('project-data-'));
+    const allProjectDataIds = allProjectDataKeys.map(key => key.replace('project-data-', ''));
+
+    // 🔍 Identifier les projets orphelins (data sans meta)
+    const orphanedProjects = allProjectDataIds.filter(id => !projectIds.includes(id));
+
+    if (orphanedProjects.length > 0) {
+      console.warn('🔍 Audit: Projets orphelins trouvés (data sans meta):', orphanedProjects);
+      console.warn('Ces projets ne seront PAS exportés car absents du projectMeta store');
+    }
+
+    // 🔍 Identifier les projets fantômes (meta sans data)
+    const ghostProjects = projectIds.filter(id => {
+      const storeKey = `project-data-${id}`;
+      return !localStorage.getItem(storeKey);
+    });
+
+    if (ghostProjects.length > 0) {
+      console.warn('🔍 Audit: Projets fantômes trouvés (meta sans data):', ghostProjects);
+    }
+
+    console.log('📊 Audit projets:', {
+      metaProjects: projectIds,
+      dataProjects: allProjectDataIds,
+      orphaned: orphanedProjects,
+      ghost: ghostProjects
+    });
+
     projectIds.forEach(projectId => {
       try {
         // Récupérer les données depuis localStorage directement

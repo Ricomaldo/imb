@@ -97,8 +97,7 @@ const NeedsSelector = ({ selectedNeeds = [], onChange, maxSelection = 5 }) => {
                         onClick={() => !isMaxReached && toggleNeed(need.id)}
                         style={{
                           cursor: isMaxReached ? 'not-allowed' : 'pointer',
-                          opacity: isMaxReached ? 0.5 : 1,
-                          color: isSelected ? 'white' : '#F7FAFC'
+                          opacity: isMaxReached ? 0.5 : 1
                         }}
                         title={isMaxReached ? `Max ${maxSelection} besoins` : need.label}
                       >
@@ -134,7 +133,6 @@ const NeedsSelector = ({ selectedNeeds = [], onChange, maxSelection = 5 }) => {
                 size="sm"
                 shape="pill"
                 onClick={() => toggleNeed(needId)}
-                style={{ cursor: 'pointer', color: 'white' }}
                 title="Cliquer pour retirer"
               >
                 {need.label}

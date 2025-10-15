@@ -90,14 +90,15 @@ const NeedsSelector = ({ selectedNeeds = [], onChange, maxSelection = 5 }) => {
                       <Badge
                         key={need.id}
                         icon={need.emoji}
-                        color={isSelected ? 'primary' : 'muted'}
-                        variant={isSelected ? 'solid' : 'subtle'}
+                        color={isSelected ? 'success' : 'secondary'}
+                        variant={isSelected ? 'solid' : 'outline'}
                         size="sm"
                         shape="pill"
                         onClick={() => !isMaxReached && toggleNeed(need.id)}
                         style={{
                           cursor: isMaxReached ? 'not-allowed' : 'pointer',
-                          opacity: isMaxReached ? 0.5 : 1
+                          opacity: isMaxReached ? 0.5 : 1,
+                          color: isSelected ? 'white' : '#F7FAFC'
                         }}
                         title={isMaxReached ? `Max ${maxSelection} besoins` : need.label}
                       >
@@ -128,12 +129,12 @@ const NeedsSelector = ({ selectedNeeds = [], onChange, maxSelection = 5 }) => {
               <Badge
                 key={needId}
                 icon={need.emoji}
-                color="primary"
+                color="success"
                 variant="solid"
                 size="sm"
                 shape="pill"
                 onClick={() => toggleNeed(needId)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', color: 'white' }}
                 title="Cliquer pour retirer"
               >
                 {need.label}

@@ -239,6 +239,54 @@ export const StyledButton = styled.button`
       `;
     }
 
+    // Variant Primary (bouton d'action principal)
+    if (props.$variant === 'primary') {
+      return `
+        ${primaryLevel}
+        background: ${props.theme.colors.accents.primary};
+        color: ${props.theme.colors.text.light};
+        font-weight: 600;
+        transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};
+        &:hover {
+          background: ${props.theme.colors.primary};
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px ${alpha(props.theme.colors.accents.primary, 0.4)};
+        }
+        &:active {
+          transform: translateY(0);
+          box-shadow: inset 0 2px 4px ${alpha(props.theme.colors.black, 0.3)};
+        }
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          &:hover {
+            transform: none;
+            box-shadow: none;
+          }
+        }
+      `;
+    }
+
+    // Variant Danger (bouton destructif)
+    if (props.$variant === 'danger') {
+      return `
+        ${primaryLevel}
+        background: ${props.theme.colors.accents.danger};
+        color: ${props.theme.colors.text.light};
+        font-weight: 600;
+        transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};
+        &:hover {
+          background: ${alpha(props.theme.colors.accents.danger, 0.8)};
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px ${alpha(props.theme.colors.accents.danger, 0.4)};
+        }
+        &:active {
+          transform: translateY(0);
+          box-shadow: inset 0 2px 4px ${alpha(props.theme.colors.black, 0.3)};
+        }
+      `;
+    }
+
     // Variant Default (comme IconButton default)
     return `
       transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};

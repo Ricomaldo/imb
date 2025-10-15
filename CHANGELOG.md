@@ -2,6 +2,102 @@
 
 ## [Unreleased]
 
+### Added - 2025-10-15 (Widget Moments OUI - Sanctuaire)
+
+- **Widget Moments OUI** : Capture et visualisation des moments de plénitude
+  - **3 champs de capture** : Quand (datetime), Quoi (200 char), Pourquoi nourrissant (500 char)
+  - **Taxonomie Rosenberg complète** : 7 familles de besoins CNV (30 besoins au total)
+    - Autonomie 🦅, Célébration ✨, Intégrité 💎, Interdépendance 🤝
+    - Jeu 🎪, Communion spirituelle 🕊️, Besoins physiques 🌱
+  - **Sélecteur de besoins accordéon** : Max 5 besoins par moment, badges cliquables
+  - **Timeline chronologique** : Affichage des moments avec dates intelligentes (Aujourd'hui/Hier/date complète)
+  - **Statistiques hebdomadaires** : Compteur "Cette semaine : X moments OUI ✨"
+  - **Mini heatmap** : Top 3 besoins avec barres de progression colorées
+  - **Modal de capture** : Formulaire avec validation, compteurs de caractères, pré-remplissage datetime
+  - **Actions sur moments** : Édition, suppression avec confirmation
+  - **Design médiéval cohérent** : Texture parchment, couleurs famille par besoin
+
+- **Extension useDiaryStore** : Nouvelle section `momentsOui` (+308 lignes)
+  - Structure complète : moments[], metadata (stats globales), settings (notifications/FAB)
+  - **10 actions CRUD** : addMomentOui, updateMomentOui, deleteMomentOui, getMomentsOui, etc.
+  - **Statistiques automatiques** : Calcul temps réel (totalMoments, needsStats, firstMomentDate)
+  - **Filtres avancés** : Par période, tags, mots-clés
+  - **Agrégation hebdomadaire** : getWeeklyStats() avec top 5 besoins
+
+- **8 composants créés** dans `src/components/room-modules/sanctuaire/MomentsOui/`
+  - `NeedsSelector.jsx` : Accordéon 7 familles avec sélection multi-besoins
+  - `CaptureModal.jsx` : Modal 3 champs + sélecteur besoins
+  - `MomentCard.jsx` : Carte expandable avec aperçu/détails
+  - `MomentsTimeline.jsx` : Liste chronologique avec empty state
+  - `WeeklyCounter.jsx` : Statistique semaine courante
+  - `NeedsMiniHeatmap.jsx` : Top 3 besoins avec barres colorées
+  - `MomentsOuiWidget.jsx` : Container principal orchestrant tous les composants
+  - `MomentsOui.styles.js` : 470 lignes de styled-components
+
+- **Constante rosenbergNeeds.js** : Taxonomie CNV complète (182 lignes)
+  - 7 familles avec couleurs, emojis, descriptions
+  - 30 besoins individuels avec IDs uniques
+  - Fonctions helper : getAllNeedsFlat(), getNeedById(), getFamilyByNeedId()
+
+- **Intégration Sanctuaire** : Panel 2x3 dans grille 5x5
+  - Titre "Moments OUI ✨", texture parchment
+  - État collapse persisté via useRoomsUIStore
+  - Position colonnes 4-6, lignes 2-5
+
+### Fixed - 2025-10-15 (Améliorations visuelles Widget Moments OUI)
+
+- **Badges besoins illisibles** : Amélioration drastique du contraste (NeedsSelector.jsx)
+  - Couleurs changées : `primary`/`muted` → `success`/`secondary`
+  - Variants changés : `solid`/`subtle` → `solid`/`outline`
+  - Ajout couleur texte explicite : blanc (sélectionné) / `#F7FAFC` (non sélectionné)
+  - Application aux 2 zones : grille sélection + badges sélectionnés
+
+- **Bouton save invisible au hover** : Ajout styling manquant (Button.styles.js)
+  - **Variant 'primary'** ajouté (+26 lignes) : background `accents.primary`, hover avec lift + shadow
+  - **Variant 'danger'** ajouté (+18 lignes) : background `accents.danger`, hover rouge adouci
+  - Texte blanc (`text.light`) pour contraste maximal
+  - Animation hover : `translateY(-2px)` + box-shadow avec alpha
+  - Support disabled state : opacity 0.5, cursor not-allowed, pas d'animation
+
+- **Utils de debug** : Exposition `window.stores.momentsOui` dans exposeStores.js
+  - Fonctions console : getAll, getById, add, update, delete, getWeeklyStats, getNeedsStats
+
+## [3.0.0] - 2025-10-01
+
+### 🚀 Major - Architecture Ultra-Simple v3.0
+
+- **📚 Documentation Complète v3.0** : Refonte totale cohérence documentation
+  - **Architecture Stores v2.0** : Documentation multi-stores (useNotesStore, useProjectMetaStore, useProjectDataStore, useDiaryStore, usePreferencesStore)
+  - **ADR 006-008** : Nouvelles décisions architecture (Sync Ultra-Simple, Mobile Companion, Sécurité Symbolique)
+  - **Guides Utilisateur** : Environment Setup, Sync System v3.0, Dev Tools mis à jour
+  - **Navigation Optimisée** : README principal restructuré, index ADR, guide contribution
+  - **Dead-docs Cleanup** : Fichiers obsolètes organisés en backup, zéro liens morts
+
+- **🔄 Sync Ultra-Simple v3.0** : Révolution interface synchronisation
+  - **2 boutons uniquement** : EXPORT/IMPORT sans configuration manuelle
+  - **Variables d'environnement** : Configuration robuste via VITE_GITHUB_TOKEN, VITE_SYNC_PASSWORD
+  - **Multi-stores complet** : Synchronisation 5 stores (notes, projectMeta, projectData, diary, preferences)
+  - **GitHub Gist chiffré** : AES-256 sécurisé avec gestion automatique Gist ID
+  - **UX perfectionnée** : Messages temps réel, auto-close, copy Gist ID
+
+- **📱 Mobile Companion PWA v3.0** : Interface mobile native
+  - **Architecture parallèle** : Stores Zustand partagés desktop ↔ mobile
+  - **4 pages optimisées** : Home (Diary/Mantras), Atelier (Projets), Dev (Notes), Settings (Sync)
+  - **PWA complète** : Installation iOS/Android, manifest optimisé
+  - **Icône château vectorielle** : SVG dessiné remplaçant emoji pour compatibilité
+  - **Routing isolé** : `/companion` séparé avec TabBar navigation
+
+### 🔒 Security & Accessibility
+
+- **🛡️ Sécurité Symbolique** : Protection élégante non-intrusive
+  - **LoginPage + AccessGate** : Interface cohérente avec thème château
+  - **SessionStorage temporaire** : Sécurité par session, re-login à fermeture onglet
+  - **Variables d'environnement** : VITE_ACCESS_PASSWORD configurable
+
+- **♿ Accessibility Fix** : Score Lighthouse 87→95+
+  - **Viewport optimisé** : Retrait user-scalable=no pour permettre zoom malvoyants
+  - **Standards WCAG** : Compatibilité screen magnifiers et pinch-to-zoom
+
 ### Fixed - 2025-10-01 (Import/Export Fix + Sécurité Symbolique)
 
 - **🔧 Fix Import/Export** : Correction bugs majeurs système de synchronisation

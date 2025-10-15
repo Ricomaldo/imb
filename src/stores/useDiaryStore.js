@@ -70,6 +70,27 @@ const useDiaryStore = create(
       // Archives mensuelles - Format: { 'YYYY-MM': { 'YYYY-MM-DD': 'contenu' } }
       monthlyArchives: {},
 
+      // Moments OUI - Capture moments de plénitude (Widget Sanctuaire)
+      momentsOui: {
+        // Moments capturés
+        moments: [],
+
+        // Métadonnées et statistiques
+        metadata: {
+          totalMoments: 0,
+          firstMomentDate: null,
+          lastMomentDate: null,
+          needsStats: {} // Format: { 'needId': count }
+        },
+
+        // Configuration du widget
+        settings: {
+          notificationEnabled: false,      // Toast 20h-22h
+          showFloatingButton: true,        // FAB Sanctuaire
+          autoSuggestTags: true            // Suggestions intelligentes
+        }
+      },
+
       addDiaryEntry: (entry) => set(state => ({
         entries: [
           ...state.entries,
@@ -239,6 +260,293 @@ const useDiaryStore = create(
       // Obtenir tous les logs incluant les cachés (pour Sanctuaire)
       getAllLogs: () => {
         return get().mindlog.logs;
+      },
+
+      // ==================== ACTIONS MOMENTS OUI ====================
+
+      /**
+       * Ajouter un nouveau moment OUI
+       * @param {Object} momentData - { quand, quoi, pourquoi, tags }
+       * @returns {number} ID du moment créé
+       */
+      addMomentOui: (momentData) => {
+        const momentId = Date.now();
+        const now = new Date().toISOString();
+
+        set(state => {
+          const newMoment = {
+            id: momentId,
+            timestamp: momentData.quand || now,
+            quoi: momentData.quoi || '',
+            pourquoi: momentData.pourquoi || '',
+            tags: momentData.tags || [],
+            archived: false,
+            createdAt: now,
+            modifiedAt: now
+          };
+
+          // Mettre à jour les statistiques des besoins
+          const updatedNeedsStats = { ...state.momentsOui.metadata.needsStats };
+          momentData.tags?.forEach(tagId => {
+            updatedNeedsStats[tagId] = (updatedNeedsStats[tagId] || 0) + 1;
+          });
+
+          return {
+            momentsOui: {
+              ...state.momentsOui,
+              moments: [...state.momentsOui.moments, newMoment],
+              metadata: {
+                ...state.momentsOui.metadata,
+                totalMoments: state.momentsOui.metadata.totalMoments + 1,
+                firstMomentDate: state.momentsOui.metadata.firstMomentDate || now,
+                lastMomentDate: now,
+                needsStats: updatedNeedsStats
+              }
+            }
+          };
+        });
+
+        return momentId;
+      },
+
+      /**
+       * Mettre à jour un moment existant
+       * @param {number} momentId - ID du moment
+       * @param {Object} updates - Champs à mettre à jour
+       */
+      updateMomentOui: (momentId, updates) => set(state => {
+        const momentIndex = state.momentsOui.moments.findIndex(m => m.id === momentId);
+        if (momentIndex === -1) return state;
+
+        const oldMoment = state.momentsOui.moments[momentIndex];
+        const updatedMoment = {
+          ...oldMoment,
+          ...updates,
+          modifiedAt: new Date().toISOString()
+        };
+
+        // Recalculer les stats si les tags ont changé
+        let updatedNeedsStats = { ...state.momentsOui.metadata.needsStats };
+        if (updates.tags && JSON.stringify(oldMoment.tags) !== JSON.stringify(updates.tags)) {
+          // Retirer les anciens tags
+          oldMoment.tags.forEach(tagId => {
+            if (updatedNeedsStats[tagId] > 0) {
+              updatedNeedsStats[tagId]--;
+            }
+          });
+          // Ajouter les nouveaux tags
+          updates.tags.forEach(tagId => {
+            updatedNeedsStats[tagId] = (updatedNeedsStats[tagId] || 0) + 1;
+          });
+        }
+
+        const updatedMoments = [...state.momentsOui.moments];
+        updatedMoments[momentIndex] = updatedMoment;
+
+        return {
+          momentsOui: {
+            ...state.momentsOui,
+            moments: updatedMoments,
+            metadata: {
+              ...state.momentsOui.metadata,
+              needsStats: updatedNeedsStats
+            }
+          }
+        };
+      }),
+
+      /**
+       * Supprimer définitivement un moment
+       * @param {number} momentId - ID du moment
+       */
+      deleteMomentOui: (momentId) => set(state => {
+        const moment = state.momentsOui.moments.find(m => m.id === momentId);
+        if (!moment) return state;
+
+        // Mettre à jour les stats des besoins
+        const updatedNeedsStats = { ...state.momentsOui.metadata.needsStats };
+        moment.tags.forEach(tagId => {
+          if (updatedNeedsStats[tagId] > 0) {
+            updatedNeedsStats[tagId]--;
+          }
+        });
+
+        return {
+          momentsOui: {
+            ...state.momentsOui,
+            moments: state.momentsOui.moments.filter(m => m.id !== momentId),
+            metadata: {
+              ...state.momentsOui.metadata,
+              totalMoments: state.momentsOui.metadata.totalMoments - 1,
+              needsStats: updatedNeedsStats
+            }
+          }
+        };
+      }),
+
+      /**
+       * Archiver/désarchiver un moment (masquer sans supprimer)
+       * @param {number} momentId - ID du moment
+       * @param {boolean} archived - true pour archiver, false pour désarchiver
+       */
+      archiveMomentOui: (momentId, archived = true) => set(state => ({
+        momentsOui: {
+          ...state.momentsOui,
+          moments: state.momentsOui.moments.map(m =>
+            m.id === momentId ? { ...m, archived, modifiedAt: new Date().toISOString() } : m
+          )
+        }
+      })),
+
+      /**
+       * Obtenir les moments avec filtres optionnels
+       * @param {Object} filters - { period, tags, keyword, includeArchived }
+       * @returns {Array} Moments filtrés
+       */
+      getMomentsOui: (filters = {}) => {
+        const state = get();
+        let moments = [...state.momentsOui.moments];
+
+        // Exclure archivés par défaut
+        if (!filters.includeArchived) {
+          moments = moments.filter(m => !m.archived);
+        }
+
+        // Filtrage par période
+        if (filters.period) {
+          const now = new Date();
+          const periodMap = {
+            today: 0,
+            week: 7,
+            month: 30,
+            quarter: 90,
+            semester: 180
+          };
+          const days = periodMap[filters.period];
+          if (days !== undefined) {
+            const cutoff = new Date(now - days * 24 * 60 * 60 * 1000);
+            moments = moments.filter(m => new Date(m.timestamp) >= cutoff);
+          }
+        }
+
+        // Filtrage par besoins (tags)
+        if (filters.tags && filters.tags.length > 0) {
+          moments = moments.filter(m =>
+            m.tags.some(tag => filters.tags.includes(tag))
+          );
+        }
+
+        // Filtrage par mot-clé
+        if (filters.keyword) {
+          const kw = filters.keyword.toLowerCase();
+          moments = moments.filter(m =>
+            m.quoi.toLowerCase().includes(kw) ||
+            m.pourquoi.toLowerCase().includes(kw)
+          );
+        }
+
+        // Tri chronologique inverse par défaut (plus récent en premier)
+        return moments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      },
+
+      /**
+       * Obtenir les statistiques de la semaine courante
+       * @returns {Object} { weekNumber, year, totalMoments, topNeeds }
+       */
+      getWeeklyStats: () => {
+        const state = get();
+        const now = new Date();
+
+        // Calculer le numéro de semaine
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const daysSinceStart = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
+        const weekNumber = Math.ceil((daysSinceStart + startOfYear.getDay() + 1) / 7);
+
+        // Obtenir le début de la semaine (lundi)
+        const startOfWeek = new Date(now);
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        startOfWeek.setDate(diff);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        // Filtrer les moments de cette semaine
+        const weekMoments = state.momentsOui.moments.filter(m => {
+          const momentDate = new Date(m.timestamp);
+          return momentDate >= startOfWeek && !m.archived;
+        });
+
+        // Compter les besoins de la semaine
+        const weekNeedsStats = {};
+        weekMoments.forEach(m => {
+          m.tags.forEach(tagId => {
+            weekNeedsStats[tagId] = (weekNeedsStats[tagId] || 0) + 1;
+          });
+        });
+
+        // Top 5 besoins de la semaine
+        const topNeeds = Object.entries(weekNeedsStats)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([needId, count]) => ({ needId, count }));
+
+        return {
+          weekNumber,
+          year: now.getFullYear(),
+          totalMoments: weekMoments.length,
+          topNeeds
+        };
+      },
+
+      /**
+       * Obtenir les statistiques des besoins sur une période
+       * @param {string} period - 'week' | 'month' | 'quarter' | 'semester' | 'all'
+       * @returns {Array} Stats triées par fréquence { needId, count, percentage }
+       */
+      getNeedsStats: (period = 'all') => {
+        const state = get();
+        const moments = get().getMomentsOui({ period });
+
+        const needsCount = {};
+        let totalTags = 0;
+
+        moments.forEach(m => {
+          m.tags.forEach(tagId => {
+            needsCount[tagId] = (needsCount[tagId] || 0) + 1;
+            totalTags++;
+          });
+        });
+
+        return Object.entries(needsCount)
+          .map(([needId, count]) => ({
+            needId,
+            count,
+            percentage: totalTags > 0 ? Math.round((count / totalTags) * 100) : 0
+          }))
+          .sort((a, b) => b.count - a.count);
+      },
+
+      /**
+       * Mettre à jour les settings du widget Moments OUI
+       * @param {Object} updates - Settings à mettre à jour
+       */
+      updateMomentsOuiSettings: (updates) => set(state => ({
+        momentsOui: {
+          ...state.momentsOui,
+          settings: {
+            ...state.momentsOui.settings,
+            ...updates
+          }
+        }
+      })),
+
+      /**
+       * Obtenir un moment spécifique par ID
+       * @param {number} momentId - ID du moment
+       * @returns {Object|null} Moment ou null
+       */
+      getMomentOuiById: (momentId) => {
+        const state = get();
+        return state.momentsOui.moments.find(m => m.id === momentId) || null;
       }
     }),
     {

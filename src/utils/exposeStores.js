@@ -4,6 +4,8 @@
 import useNotesStore from '../stores/useNotesStore';
 import useProjectMetaStore from '../stores/useProjectMetaStore';
 import { getProjectData } from '../stores/useProjectDataStore';
+import useDiaryStore from '../stores/useDiaryStore';
+import usePreferencesStore from '../stores/usePreferencesStore';
 import ProjectSyncAdapter from '../services/ProjectSyncAdapter';
 
 // Fonction pour exposer les stores et helpers
@@ -16,6 +18,8 @@ export const exposeStoresToWindow = (navigationHook = null) => {
     window.__ZUSTAND_STORES__.notes = useNotesStore;
     window.__ZUSTAND_STORES__.projectMeta = useProjectMetaStore;
     window.__ZUSTAND_STORES__.getProjectData = getProjectData;
+    window.__ZUSTAND_STORES__.diary = useDiaryStore;
+    window.__ZUSTAND_STORES__.preferences = usePreferencesStore;
 
     // Exposer la navigation si fournie
     if (navigationHook) {
@@ -57,10 +61,22 @@ export const exposeStoresToWindow = (navigationHook = null) => {
       notes: useNotesStore.getState,
       projectMeta: useProjectMetaStore.getState,
       projectData: (projectId) => getProjectData(projectId),
+      diary: useDiaryStore.getState,
+      preferences: usePreferencesStore.getState,
       // Alias pour actions communes
       selectProject: (id) => useProjectMetaStore.getState().selectProject(id),
       getCurrentProject: () => useProjectMetaStore.getState().getCurrentProject(),
-      getVisibleProjects: () => useProjectMetaStore.getState().getVisibleProjects()
+      getVisibleProjects: () => useProjectMetaStore.getState().getVisibleProjects(),
+      // Alias Moments OUI
+      momentsOui: {
+        getAll: () => useDiaryStore.getState().getMomentsOui(),
+        getById: (id) => useDiaryStore.getState().getMomentOuiById(id),
+        add: (data) => useDiaryStore.getState().addMomentOui(data),
+        update: (id, updates) => useDiaryStore.getState().updateMomentOui(id, updates),
+        delete: (id) => useDiaryStore.getState().deleteMomentOui(id),
+        getWeeklyStats: () => useDiaryStore.getState().getWeeklyStats(),
+        getNeedsStats: (period) => useDiaryStore.getState().getNeedsStats(period)
+      }
     };
 
     // Exposer les outils de maintenance

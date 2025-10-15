@@ -59,6 +59,12 @@
   - Animation hover : `translateY(-2px)` + box-shadow avec alpha
   - Support disabled state : opacity 0.5, cursor not-allowed, pas d'animation
 
+- **Hotfix: Badges disparaissent au hover** : Correction styles inline (NeedsSelector.jsx)
+  - **Cause:** Styles inline `color` écrasaient le `:hover` du Badge
+  - **Fix:** Suppression des styles inline `color`, le Badge gère maintenant lui-même
+  - **Résultat:** Hover fonctionne (translateY -1px + shadow) sans disparition
+  - Utilisation correcte des composants Badge du projet (variants solid/outline)
+
 - **Utils de debug** : Exposition `window.stores.momentsOui` dans exposeStores.js
   - Fonctions console : getAll, getById, add, update, delete, getWeeklyStats, getNeedsStats
 

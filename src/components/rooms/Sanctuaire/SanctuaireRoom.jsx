@@ -6,6 +6,7 @@ import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
 import MindLogSorter from "../../room-modules/sanctuaire/MindLogSorter/MindLogSorter";
+import MomentsOuiWidget from "../../room-modules/sanctuaire/MomentsOui";
 import usePreferencesStore from "../../../stores/usePreferencesStore";
 
 /**
@@ -36,6 +37,23 @@ const SanctuaireRoom = () => {
           }
         >
           <MindLogSorter />
+        </Panel>
+
+        {/* Widget Moments OUI - 2x3 à droite */}
+        <Panel
+          gridColumn="4 / 6"
+          gridRow="2 / 5"
+          title="Moments OUI"
+          icon="✨"
+          texture="parchment"
+          accentColor={theme.colors.accents.warm}
+          collapsible={true}
+          collapsed={getPanelState("sanctuaire", "moments_oui").collapsed}
+          onToggleCollapse={(val) =>
+            updatePanelState("sanctuaire", "moments_oui", { collapsed: val })
+          }
+        >
+          <MomentsOuiWidget />
         </Panel>
       </PanelGrid>
     </BaseRoom>

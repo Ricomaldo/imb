@@ -36,7 +36,7 @@ const BadgeContainer = styled.span`
 
   ${({ theme, $color, $variant }) => {
     // Définir les couleurs selon le type
-    let bgColor, textColor, borderColor;
+    let bgColor;
 
     switch($color) {
       // Status colors

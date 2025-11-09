@@ -14,17 +14,6 @@ const fadeIn = keyframes`
   }
 `;
 
-const slideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-`;
-
 // Overlay adaptable selon variante
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -83,7 +72,7 @@ export const ModalContainer = styled.div`
   flex-direction: column;
   overflow: hidden;
 
-  ${({ $variant, theme, $size }) => {
+  ${({ $variant, $size }) => {
     if ($variant === 'roomCanvas') {
       // Version qui remplace complètement RoomCanvas
       return css`

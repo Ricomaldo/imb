@@ -25,8 +25,8 @@ export const SanctuaireWrapper = styled.div`
 
   /* Ombre intérieure pour profondeur */
   box-shadow:
-    inset 0 2px 10px ${({ theme }) => alpha(theme.colors.black, 0.3)},
-    inset 0 0 30px ${({ theme }) => alpha('#111629', 0.4)};
+    inset 0 2px 10px ${alpha('#000000', 0.3)},
+    inset 0 0 30px ${alpha('#111629', 0.4)};
 `;
 
 export const SanctuaireGrid = styled.div`

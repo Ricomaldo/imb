@@ -141,7 +141,7 @@ const MindLogCompact = ({
   }, [showHidden]);
 
   // Handler pour supprimer un log (non utilisé mais gardé pour compatibilité)
-  const handleDeleteLog = useCallback((index) => {
+  const _handleDeleteLog = useCallback((index) => {
     const newLogs = localLogs.filter((_, i) => i !== index);
     setLocalLogs(newLogs);
 

@@ -80,10 +80,10 @@ export const exposeStoresToWindow = (navigationHook = null) => {
     };
 
     // Exposer les outils de maintenance
-    const projectSyncAdapter = new ProjectSyncAdapter();
+    // ProjectSyncAdapter est déjà une instance singleton exportée
     window.__SYNC_TOOLS__ = {
-      cleanupOrphanedProjects: () => projectSyncAdapter.cleanupOrphanedProjects(),
-      collectAllStoreData: () => projectSyncAdapter.collectAllStoreData()
+      cleanupOrphanedProjects: () => ProjectSyncAdapter.cleanupOrphanedProjects(),
+      collectAllStoreData: () => ProjectSyncAdapter.collectAllStoreData()
     };
 
     console.log('✅ Stores exposés dans window.__ZUSTAND_STORES__');

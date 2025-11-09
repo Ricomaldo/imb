@@ -1,7 +1,6 @@
 // src/components/rooms/Atelier/MindLog/MindLog.jsx
 
 import React from 'react';
-import { useTheme } from 'styled-components';
 
 /**
  * MindLog widget for tracking mood and quick notes

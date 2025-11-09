@@ -1,7 +1,7 @@
 // hooks/useRoomNavigation.js
 
 import { useState } from 'react';
-import { getAdjacentRooms, isValidPosition, roomExistsAt } from '../utils/roomPositions';
+import { getAdjacentRooms, roomExistsAt } from '../utils/roomPositions';
 import usePreferencesStore from '../stores/usePreferencesStore';
 
 export const useRoomNavigation = () => {

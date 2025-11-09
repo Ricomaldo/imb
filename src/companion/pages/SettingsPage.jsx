@@ -110,7 +110,7 @@ const Description = styled.p`
  * @renders Description
  */
 const SettingsPage = () => {
-  const [syncStatus, setSyncStatus] = useState('idle');
+  const [syncStatus, _setSyncStatus] = useState('idle');
 
   const handleOpenSyncModal = () => {
     openModal('sync');

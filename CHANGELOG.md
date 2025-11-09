@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Fixed - 2025-11-09 (Code Quality & ESLint Audit)
+
+- **🐛 Erreurs console critiques** : Correction de 2 erreurs bloquant le démarrage
+  - **exposeStores.js** : Correction instanciation singleton ProjectSyncAdapter (TypeError constructor)
+  - **ScriptoriumRoom.jsx** : Ajout hook `useTheme()` manquant (ReferenceError)
+
+- **🔧 Configuration ESLint** : Séparation configs Node.js vs React/Browser
+  - Configuration dédiée pour `scripts/**/*.js` avec `globals.node`
+  - Configuration React pour `src/**/*.{js,jsx}` avec extends complets
+  - Fix automatique de 19 erreurs `process is not defined` dans les scripts
+  - Ajout `argsIgnorePattern: '^_'` pour paramètres non utilisés
+
+- **🧹 Nettoyage variables orphelines** : 18 fichiers modifiés
+  - Suppression imports inutilisés (App.jsx, MindLog.jsx, migrateProjectStores.js)
+  - Suppression variables non utilisées (Badge.jsx, useDiaryStore.js, Modal.styles.js)
+  - Préfixe `_` pour paramètres non utilisés (SettingsPage, BibliothequeRoom, etc.)
+  - Nettoyage styled-components (LaboratoireRoom.styles, SanctuaireRoom.styles)
+  - **Résultat** : Réduction de 105 à 60 problèmes ESLint (-43%)
+
 ### Added - 2025-10-15 (Widget Moments OUI - Sanctuaire)
 
 - **Widget Moments OUI** : Capture et visualisation des moments de plénitude

@@ -1,13 +1,12 @@
 // src/components/rooms/Bibliotheque/BibliothequeRoom.jsx
 
-import React, { useState, useCallback } from 'react';
-import BaseRoom from '../../layout/BaseRoom';
-import PanelGrid from '../../layout/PanelGrid';
-import Panel from '../../common/Panel';
-import DiaryArchive from '../../widgets/DiaryArchive/DiaryArchive';
-import ProjectsDropdown from '../../room-modules/bibliotheque/ProjectsDropdown';
-import ProjectOverviewModal from '../../modals/ProjectOverviewModal/ProjectOverviewModal';
-import { useTheme } from 'styled-components';
+import React, { useState, useCallback } from "react";
+import BaseRoom from "../../layout/BaseRoom";
+import PanelGrid from "../../layout/PanelGrid";
+import Panel from "../../common/Panel";
+import ProjectsDropdown from "../../room-modules/bibliotheque/ProjectsDropdown";
+import ProjectOverviewModal from "../../modals/ProjectOverviewModal/ProjectOverviewModal";
+import { useTheme } from "styled-components";
 
 /**
  * Bibliotheque room component for knowledge management
@@ -19,7 +18,7 @@ const BibliothequeRoom = () => {
   const theme = useTheme();
   const [showProjectModal, setShowProjectModal] = useState(false);
 
-  const handleOpenProjectModal = useCallback((projectId) => {
+  const handleOpenProjectModal = useCallback((_projectId) => {
     setShowProjectModal(true);
   }, []);
 
@@ -30,20 +29,6 @@ const BibliothequeRoom = () => {
   return (
     <BaseRoom roomType="bibliotheque" layoutType="grid">
       <PanelGrid columns={5} rows={5}>
-        {/* Archives du Journal - Petit panneau en haut à gauche */}
-        <Panel
-          gridColumn="1 / 3"
-          gridRow="1 / 3"
-          title="Archives du Journal"
-          icon="📚"
-          texture="parchment"
-          accentColor={theme.colors.accents.warm}
-          collapsible={true}
-          collapsed={false}
-        >
-          <DiaryArchive />
-        </Panel>
-
         {/* Projets & Archives - Panneau principal */}
         <Panel
           gridColumn="3 / 6"
@@ -69,7 +54,9 @@ const BibliothequeRoom = () => {
           collapsible={true}
           collapsed={false}
         >
-          <div style={{ padding: '20px', textAlign: 'center', color: '#8b7355' }}>
+          <div
+            style={{ padding: "20px", textAlign: "center", color: "#8b7355" }}
+          >
             Notes et recherches
           </div>
         </Panel>
@@ -85,7 +72,9 @@ const BibliothequeRoom = () => {
           collapsible={true}
           collapsed={false}
         >
-          <div style={{ padding: '20px', textAlign: 'center', color: '#8b7355' }}>
+          <div
+            style={{ padding: "20px", textAlign: "center", color: "#8b7355" }}
+          >
             Collections et favoris
           </div>
         </Panel>

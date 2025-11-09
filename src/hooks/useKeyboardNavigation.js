@@ -50,15 +50,6 @@ export const useKeyboardNavigation = ({
   useEffect(() => { navigatingRef.current = isNavigating; }, [isNavigating]);
   useEffect(() => { positionRef.current = currentPosition; }, [currentPosition]);
 
-  const stepTowards = (from, to) => {
-    if (!from || !to) return null;
-    if (from.x < to.x) return 'right';
-    if (from.x > to.x) return 'left';
-    if (from.y < to.y) return 'down';
-    if (from.y > to.y) return 'up';
-    return null;
-  };
-
   const buildPath = (from, to) => {
     const path = [];
     if (!from || !to) return path;

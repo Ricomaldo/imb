@@ -39,7 +39,7 @@ const MarkdownEditor = ({
   let panelContext = null;
   try {
     panelContext = usePanelContext();
-  } catch (e) {
+  } catch (_e) {
     // Pas dans un PanelProvider, mode standalone
   }
 
@@ -51,7 +51,6 @@ const MarkdownEditor = ({
 
   // Utiliser context si disponible, sinon gestion interne
   const currentZoomLevel = panelContext ? panelContext.zoom : (variant === 'standalone' ? internalZoomLevel : zoomLevel);
-  const currentEditing = panelContext ? panelContext.editing : !readOnly;
 
   const handleZoomIn = () => {
     if (variant === 'standalone') {

@@ -119,7 +119,6 @@ const useDiaryStore = create(
         const state = get();
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0]; // YYYY-MM-DD
-        const currentMonth = today.toISOString().slice(0, 7); // YYYY-MM
 
         // Trouver toutes les entrées qui ne sont pas d'aujourd'hui
         const entriesToArchive = {};
@@ -503,7 +502,6 @@ const useDiaryStore = create(
        * @returns {Array} Stats triées par fréquence { needId, count, percentage }
        */
       getNeedsStats: (period = 'all') => {
-        const state = get();
         const moments = get().getMomentsOui({ period });
 
         const needsCount = {};

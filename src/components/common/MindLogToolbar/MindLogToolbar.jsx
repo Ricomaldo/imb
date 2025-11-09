@@ -15,18 +15,11 @@ const MindLogToolbar = ({
   onToggleView,
   onToggleEdit,
   onQuickLog,
-  onClearLogs,
-  showEditButton = true,
-  showClearButton = false
+  _onClearLogs,
+  _showEditButton = true,
+  _showClearButton = false
 }) => {
   const theme = useTheme();
-
-  // Labels pour les modes
-  const viewModeIcons = {
-    compact: '📊',
-    markdown: '📝',
-    logs: '📋'
-  };
 
   const viewModeLabels = {
     compact: 'Vue compacte',

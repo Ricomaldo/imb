@@ -2,10 +2,8 @@
 
 import styled from "styled-components";
 import {
-  woodBg,
   metalBg,
   primaryLevel,
-  secondaryLevel,
   tertiaryLevel,
 } from "../../../styles/mixins";
 

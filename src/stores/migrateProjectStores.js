@@ -1,8 +1,6 @@
 // src/stores/migrateProjectStores.js - Gestion de la migration et initialisation des stores
 
-import useProjectMetaStore from './useProjectMetaStore';
-import { getProjectData } from './useProjectDataStore';
-import { defaultProjectsData, initializeWithDefaultData } from './defaultProjectsData';
+import { initializeWithDefaultData } from './defaultProjectsData';
 
 // Fonction de migration depuis l'ancien format (v1 vers v2)
 export const migrateProjectStores = () => {

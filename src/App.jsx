@@ -1,6 +1,6 @@
 // App.jsx
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import StudioHall from './components/layout/StudioHall/StudioHall';

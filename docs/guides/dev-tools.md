@@ -1,6 +1,7 @@
 ---
 type: guide
-updated: 2025-09-18
+updated: 2025-10-01
+version: 3.0
 ---
 
 # 🎓 Guide des Outils de Développement - IRIMMetaBrain
@@ -462,3 +463,285 @@ Code → Introspection → Visualisation → Documentation → Mémoire
 ```
 
 C'est transformer ton processus de dev en système d'apprentissage continu !
+
+---
+
+## 5. 🛠 Debug Tools Architecture v3.0
+
+### Commandes Debug Console
+
+Avec l'architecture multi-stores v3.0, de nouvelles commandes de debug sont disponibles dans la console navigateur :
+
+#### Accès aux Stores Zustand
+```javascript
+// STORES PRINCIPAUX (Architecture v2.0)
+window.__ZUSTAND_STORES__.notes()           // useNotesStore complet
+window.__ZUSTAND_STORES__.projectMeta()     // useProjectMetaStore
+window.__ZUSTAND_STORES__.diary()           // useDiaryStore (nouveau)
+window.__ZUSTAND_STORES__.preferences()     // usePreferencesStore (nouveau)
+
+// STORES DYNAMIQUES
+window.__ZUSTAND_STORES__.projectData('irimmetabrain')  // Par projet
+window.__ZUSTAND_STORES__.projectData('moodcycle')     // Autre projet
+
+// ÉTAT COMPLET
+Object.keys(window.__ZUSTAND_STORES__).forEach(store => {
+  console.log(`${store}:`, window.__ZUSTAND_STORES__[store]())
+})
+```
+
+#### Outils de Synchronisation v3.0
+```javascript
+// DEBUG SYNC ULTRA-SIMPLE
+window.__SYNC_TOOLS__.collectAllStoreData()    // Collecte tous stores
+window.__SYNC_TOOLS__.cleanupOrphanedProjects() // Nettoie projets orphelins
+
+// DIAGNOSTIC CONFIGURATION
+console.log('GitHub Token:', !!import.meta.env.VITE_GITHUB_TOKEN)
+console.log('Sync Password:', !!import.meta.env.VITE_SYNC_PASSWORD)
+console.log('Gist ID:', import.meta.env.VITE_SYNC_GIST_ID || 'Auto-generated')
+
+// ÉTAT SESSION
+console.log('Logged in:', sessionStorage.getItem('irim-logged-in'))
+console.log('Last sync:', localStorage.getItem('last-sync-timestamp'))
+```
+
+#### Debug Multi-Stores
+```javascript
+// STATISTIQUES STORES
+const getStoreStats = () => {
+  const stats = {}
+
+  // Taille localStorage par store
+  const stores = [
+    'project-meta-store',
+    'irim-notes-store',
+    'diary-storage',
+    'irim-preferences-store'
+  ]
+
+  stores.forEach(key => {
+    const data = localStorage.getItem(key)
+    stats[key] = {
+      exists: !!data,
+      size: data ? `${(data.length / 1024).toFixed(1)} KB` : '0 KB',
+      lastModified: 'N/A' // Peut être étendu
+    }
+  })
+
+  // Stores projets dynamiques
+  Object.keys(localStorage)
+    .filter(key => key.startsWith('project-data-'))
+    .forEach(key => {
+      const data = localStorage.getItem(key)
+      stats[key] = {
+        exists: true,
+        size: `${(data.length / 1024).toFixed(1)} KB`
+      }
+    })
+
+  return stats
+}
+
+window.getStoreStats = getStoreStats
+```
+
+#### Commandes de Maintenance
+```javascript
+// RESET SÉLECTIF
+const resetStore = (storeName) => {
+  const storeKeys = {
+    'notes': 'irim-notes-store',
+    'projectMeta': 'project-meta-store',
+    'diary': 'diary-storage',
+    'preferences': 'irim-preferences-store'
+  }
+
+  if (storeKeys[storeName]) {
+    localStorage.removeItem(storeKeys[storeName])
+    console.log(`✅ Store ${storeName} reset`)
+    window.location.reload()
+  }
+}
+
+// BACKUP MANUEL
+const backupStores = () => {
+  const backup = {}
+
+  Object.keys(localStorage).forEach(key => {
+    if (key.includes('store') || key.includes('storage')) {
+      backup[key] = JSON.parse(localStorage.getItem(key))
+    }
+  })
+
+  console.log('📦 Backup stores:', backup)
+  return backup
+}
+
+// RESTORE BACKUP
+const restoreStores = (backup) => {
+  Object.keys(backup).forEach(key => {
+    localStorage.setItem(key, JSON.stringify(backup[key]))
+  })
+  console.log('✅ Stores restored')
+  window.location.reload()
+}
+
+// EXPOSE GLOBALEMENT
+window.resetStore = resetStore
+window.backupStores = backupStores
+window.restoreStores = restoreStores
+```
+
+### Scripts NPM Debug
+
+Ajout de nouveaux scripts dans package.json pour automatiser le debug :
+
+```json
+{
+  "scripts": {
+    "dev:debug": "npm run dev && open http://localhost:5173/?debug=true",
+    "capture:state": "node scripts/capture-state.js",
+    "debug:stores": "node scripts/debug-stores.js",
+    "debug:sync": "node scripts/test-sync.js"
+  }
+}
+```
+
+### Logs de Debug Architecture
+
+#### Format Debug Logs v3.0
+```javascript
+// Logs structurés pour debugging
+const debugLog = (category, action, data) => {
+  const timestamp = new Date().toISOString()
+  const log = {
+    timestamp,
+    category,    // 'STORE', 'SYNC', 'AUTH', 'UI'
+    action,      // 'UPDATE', 'LOAD', 'ERROR', 'SUCCESS'
+    data
+  }
+
+  console.log(`[${category}] ${action}:`, data)
+
+  // Optionnel: Stockage logs pour debugging avancé
+  const logs = JSON.parse(localStorage.getItem('debug-logs') || '[]')
+  logs.push(log)
+
+  // Garder seulement 100 derniers logs
+  if (logs.length > 100) {
+    logs.splice(0, logs.length - 100)
+  }
+
+  localStorage.setItem('debug-logs', JSON.stringify(logs))
+}
+
+window.debugLog = debugLog
+
+// USAGE EXEMPLES
+debugLog('STORE', 'UPDATE', { store: 'notes', key: 'chambre' })
+debugLog('SYNC', 'EXPORT', { success: true, gistId: 'abc123' })
+debugLog('AUTH', 'LOGIN', { success: true })
+```
+
+#### Debug Interface Mobile
+```javascript
+// Console spécifique mobile companion
+if (window.location.pathname.startsWith('/companion')) {
+  console.log('📱 Mobile Companion Debug Mode')
+
+  // Stats spécifiques mobile
+  window.mobileDebug = {
+    stores: () => window.__ZUSTAND_STORES__,
+    viewport: () => ({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      isMobile: window.innerWidth < 768
+    }),
+    pwa: () => ({
+      standalone: window.navigator.standalone,
+      installed: window.matchMedia('(display-mode: standalone)').matches
+    })
+  }
+}
+```
+
+### Debug Sécurité Symbolique
+
+```javascript
+// Debug système authentification
+window.authDebug = {
+  // État session
+  status: () => ({
+    loggedIn: sessionStorage.getItem('irim-logged-in') === 'true',
+    passwordConfigured: !!import.meta.env.VITE_ACCESS_PASSWORD,
+    fallbackPassword: import.meta.env.VITE_ACCESS_PASSWORD || 'metabrain2024'
+  }),
+
+  // Forcer connexion (dev only)
+  forceLogin: () => {
+    sessionStorage.setItem('irim-logged-in', 'true')
+    window.location.reload()
+  },
+
+  // Forcer déconnexion
+  forceLogout: () => {
+    sessionStorage.removeItem('irim-logged-in')
+    window.location.reload()
+  },
+
+  // Reset d'urgence
+  emergencyReset: () => {
+    sessionStorage.clear()
+    localStorage.clear()
+    window.location.reload()
+  }
+}
+```
+
+### Performance Monitoring
+
+```javascript
+// Monitoring performance stores
+window.performanceDebug = {
+  // Mesurer temps accès store
+  measureStoreAccess: (storeName) => {
+    const start = performance.now()
+    const data = window.__ZUSTAND_STORES__[storeName]()
+    const end = performance.now()
+
+    console.log(`⏱️ ${storeName} access: ${(end - start).toFixed(2)}ms`)
+    return data
+  },
+
+  // Taille mémoire stores
+  getMemoryUsage: () => {
+    const usage = {}
+
+    Object.keys(window.__ZUSTAND_STORES__).forEach(store => {
+      const data = JSON.stringify(window.__ZUSTAND_STORES__[store]())
+      usage[store] = `${(data.length / 1024).toFixed(1)} KB`
+    })
+
+    return usage
+  }
+}
+```
+
+---
+
+## 6. 🔗 Liens Documentation v3.0
+
+### Architecture Actuelle
+- **[Stores Architecture v2.0](../architecture/stores-architecture.md)** - Multi-stores détaillé
+- **[Sync System v3.0](sync-system.md)** - Synchronisation ultra-simple
+- **[Security System](../architecture/security-system.md)** - Authentification symbolique
+- **[Companion Architecture](../COMPANION_ARCHITECTURE.md)** - Interface mobile PWA
+
+### ADR Décisions
+- **[ADR-006](../decisions/ADR-006-sync-ultra-simple.md)** - Architecture sync v3.0
+- **[ADR-007](../decisions/ADR-007-mobile-companion.md)** - PWA mobile
+- **[ADR-008](../decisions/ADR-008-securite-symbolique.md)** - Sécurité symbolique
+
+### Setup et Configuration
+- **[Environment Setup](environment-setup.md)** - Variables d'environnement complètes

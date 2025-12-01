@@ -18,6 +18,7 @@ export const theme = {
 
     // Ajouts complémentaires (accents froids)
     accents: {
+      primary: '#6B8E23',      // Vert olive - Boutons d'action principaux
       cold: '#4A5568',         // Bleu ardoise - liens/boutons actifs
       success: '#68752C',      // Vert olive - validations/succès
       danger: '#8B3A3A',       // Rouge terre - alertes/erreurs

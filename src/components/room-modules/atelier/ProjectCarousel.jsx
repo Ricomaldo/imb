@@ -1,13 +1,13 @@
 // src/components/room-modules/atelier/ProjectCarousel.jsx
 
-import React from 'react';
-import styled from 'styled-components';
-import { metalBg, secondaryLevel } from '../../../styles/mixins';
-import useProjectMetaStore from '../../../stores/useProjectMetaStore';
+import React from "react";
+import styled from "styled-components";
+import { metalBg, secondaryLevel } from "../../../styles/mixins";
+import useProjectMetaStore from "../../../stores/useProjectMetaStore";
 
 const Container = styled.div`
   height: 50px;
-  min-width: 33%;
+  min-width: 40%;
   margin: 0 auto ${({ theme }) => theme.spacing.sm};
   ${metalBg}
   ${secondaryLevel}
@@ -52,7 +52,8 @@ const Title = styled.div`
 `;
 
 const ProjectCarousel = () => {
-  const { getCurrentProject, selectProject, visibleProjects } = useProjectMetaStore();
+  const { getCurrentProject, selectProject, visibleProjects } =
+    useProjectMetaStore();
   const currentProject = getCurrentProject();
 
   if (!currentProject || visibleProjects.length === 0) {
@@ -62,12 +63,14 @@ const ProjectCarousel = () => {
   const currentIndex = visibleProjects.indexOf(currentProject.id);
 
   const goPrev = () => {
-    const newIndex = currentIndex === 0 ? visibleProjects.length - 1 : currentIndex - 1;
+    const newIndex =
+      currentIndex === 0 ? visibleProjects.length - 1 : currentIndex - 1;
     selectProject(visibleProjects[newIndex]);
   };
 
   const goNext = () => {
-    const newIndex = currentIndex === visibleProjects.length - 1 ? 0 : currentIndex + 1;
+    const newIndex =
+      currentIndex === visibleProjects.length - 1 ? 0 : currentIndex + 1;
     selectProject(visibleProjects[newIndex]);
   };
 

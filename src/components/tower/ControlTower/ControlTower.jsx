@@ -1,9 +1,10 @@
 // src/components/tower/ControlTower/ControlTower.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { TowerContainer, TopRow, BottomRow, CenterRect, TimeDisplay, DateDisplay } from './ControlTower.styles';
+import { TowerContainer, TopRow, BottomRow, CenterRect, TimeDisplay, DateDisplay, SyncIndicator } from './ControlTower.styles';
 import IconButton from '../../common/IconButton/IconButton';
 import { controlButtons, quickActions } from '../../../utils/buttonMapping';
+import { useSyncStatus } from '../../../contexts/SyncContext';
 
 /**
  * Tour de contrôle avec horloge et actions rapides
@@ -17,6 +18,27 @@ import { controlButtons, quickActions } from '../../../utils/buttonMapping';
  */
 const ControlTower = React.memo(() => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { syncStatus, isConfigured } = useSyncStatus();
+
+  // Helper pour afficher l'icône et texte du sync
+  const getSyncDisplay = () => {
+    if (!isConfigured) return { icon: '⚠️', text: 'No sync' };
+
+    switch (syncStatus) {
+      case 'syncing':
+        return { icon: '🔄', text: 'Syncing' };
+      case 'pending':
+        return { icon: '⏳', text: 'Pending' };
+      case 'success':
+        return { icon: '✓', text: 'Synced' };
+      case 'error':
+        return { icon: '✗', text: 'Error' };
+      case 'offline':
+        return { icon: '📴', text: 'Offline' };
+      default:
+        return { icon: '☁️', text: 'Ready' };
+    }
+  };
 
   // Fonction de formatage optimisée
   const formatTime = useCallback((date) => {
@@ -45,6 +67,7 @@ const ControlTower = React.memo(() => {
 
   const calendarBtn = controlButtons.find(btn => btn.id === 'calendar');
   const timerBtn = controlButtons.find(btn => btn.id === 'timer');
+  const syncDisplay = getSyncDisplay();
 
   return (
     <TowerContainer>
@@ -64,6 +87,10 @@ const ControlTower = React.memo(() => {
             <span className="separator">-</span>
             <span className="day">{formatDate(currentTime).day}</span>
           </DateDisplay>
+          <SyncIndicator $status={syncStatus} title={`Sync: ${syncStatus}`}>
+            <span className="sync-icon">{syncDisplay.icon}</span>
+            <span className="sync-text">{syncDisplay.text}</span>
+          </SyncIndicator>
         </CenterRect>
         <IconButton
           icon={timerBtn?.icon}

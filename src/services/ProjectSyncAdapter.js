@@ -3,6 +3,8 @@
 import SyncManager from './SyncManager';
 import useProjectMetaStore from '../stores/useProjectMetaStore';
 import useNotesStore from '../stores/useNotesStore';
+import useDiaryStore from '../stores/useDiaryStore';
+import usePreferencesStore from '../stores/usePreferencesStore';
 import { defaultProjectsData } from '../stores/defaultProjectsData';
 
 /**
@@ -50,7 +52,13 @@ class ProjectSyncAdapter {
         projectMeta: this.collectProjectMetaData(),
 
         // 3. Project Data Stores (un par projet)
-        projectData: this.collectAllProjectData()
+        projectData: this.collectAllProjectData(),
+
+        // 4. Diary Store (journal personnel)
+        diary: this.collectDiaryData(),
+
+        // 5. Preferences Store (préférences UI et settings)
+        preferences: this.collectPreferencesData()
       }
     };
 
@@ -92,30 +100,66 @@ class ProjectSyncAdapter {
   }
 
   /**
+   * Collecte les données du store Diary
+   */
+  collectDiaryData() {
+    try {
+      const diaryState = useDiaryStore.getState();
+      return {
+        mindlog: diaryState.mindlog || {},
+        entries: diaryState.entries || [],
+        dailyDiary: diaryState.dailyDiary || {},
+        monthlyArchives: diaryState.monthlyArchives || {}
+      };
+    } catch (error) {
+      console.error('Error collecting diary data:', error);
+      return { mindlog: {}, entries: [], dailyDiary: {}, monthlyArchives: {} };
+    }
+  }
+
+  /**
+   * Collecte les données du store Preferences
+   */
+  collectPreferencesData() {
+    try {
+      const preferencesState = usePreferencesStore.getState();
+      return {
+        defaultRoom: preferencesState.defaultRoom || { x: 2, y: 2 },
+        customRoomLayout: preferencesState.customRoomLayout || null,
+        roomUIStates: preferencesState.roomUIStates || {}
+      };
+    } catch (error) {
+      console.error('Error collecting preferences data:', error);
+      return {
+        defaultRoom: { x: 2, y: 2 },
+        customRoomLayout: null,
+        roomUIStates: {}
+      };
+    }
+  }
+
+  /**
    * Collecte les données de tous les projets
    */
   collectAllProjectData() {
     const projectData = {};
     const metaState = useProjectMetaStore.getState();
-    const projectIds = Object.keys(metaState.projects || {});
+    const metaProjectIds = Object.keys(metaState.projects || {});
 
-    // 🔍 Audit: Chercher tous les stores project-data-* dans localStorage
+    // 🔍 Audit: Chercher TOUS les stores project-data-* dans localStorage
     const allProjectDataKeys = Object.keys(localStorage).filter(key => key.startsWith('project-data-'));
     const allProjectDataIds = allProjectDataKeys.map(key => key.replace('project-data-', ''));
 
     // 🔍 Identifier les projets orphelins (data sans meta)
-    const orphanedProjects = allProjectDataIds.filter(id => !projectIds.includes(id));
+    const orphanedProjects = allProjectDataIds.filter(id => !metaProjectIds.includes(id));
 
     if (orphanedProjects.length > 0) {
       console.warn('🔍 Audit: Projets orphelins trouvés (data sans meta):', orphanedProjects);
-      console.warn('Ces projets ne seront PAS exportés car absents du projectMeta store');
-
-      // Proposer un nettoyage automatique
-      console.warn('🧹 Suggestion: Nettoyer ces projets orphelins avec cleanupOrphanedProjects()');
+      console.log('✅ Ces projets SERONT exportés car les données sont la source de vérité');
     }
 
     // 🔍 Identifier les projets fantômes (meta sans data)
-    const ghostProjects = projectIds.filter(id => {
+    const ghostProjects = metaProjectIds.filter(id => {
       const storeKey = `project-data-${id}`;
       return !localStorage.getItem(storeKey);
     });
@@ -125,13 +169,14 @@ class ProjectSyncAdapter {
     }
 
     console.log('📊 Audit projets:', {
-      metaProjects: projectIds,
+      metaProjects: metaProjectIds,
       dataProjects: allProjectDataIds,
       orphaned: orphanedProjects,
       ghost: ghostProjects
     });
 
-    projectIds.forEach(projectId => {
+    // ✅ EXPORTER TOUS LES PROJECT-DATA, pas seulement ceux du meta
+    allProjectDataIds.forEach(projectId => {
       try {
         // Récupérer les données depuis localStorage directement
         const storeKey = `project-data-${projectId}`;
@@ -236,6 +281,14 @@ class ProjectSyncAdapter {
 
       // 2. Importer les métadonnées des projets
       if (stores.projectMeta) {
+        // 🔍 DEBUG: Vérifier les métadonnées reçues
+        console.log('🔍 Debug: Métadonnées reçues:', {
+          hasProjectMeta: !!stores.projectMeta,
+          projectsKeys: Object.keys(stores.projectMeta.projects || {}),
+          projectsCount: Object.keys(stores.projectMeta.projects || {}).length,
+          hasResetPulse: !!(stores.projectMeta.projects && stores.projectMeta.projects['reset-pulse'])
+        });
+
         // Nettoyer les stores existants
         this.clearAllProjectDataStores();
 
@@ -246,6 +299,13 @@ class ProjectSyncAdapter {
         };
         localStorage.setItem('project-meta-store', JSON.stringify(metaStoreData));
         console.log('✅ Project metadata imported');
+
+        // 🔍 DEBUG: Vérifier ce qui a été sauvé
+        const savedMeta = JSON.parse(localStorage.getItem('project-meta-store'));
+        console.log('🔍 Debug: Métadonnées sauvées:', {
+          savedProjectsKeys: Object.keys(savedMeta.state.projects || {}),
+          savedProjectsCount: Object.keys(savedMeta.state.projects || {}).length
+        });
       }
 
       // 3. Importer les données de chaque projet
@@ -259,6 +319,43 @@ class ProjectSyncAdapter {
           localStorage.setItem(storeKey, JSON.stringify(storeData));
           console.log(`✅ Project data imported: ${projectId}`);
         });
+      }
+
+      // 4. Importer les données du diary
+      if (stores.diary) {
+        const diaryStore = useDiaryStore.getState();
+        // Restaurer tous les champs du diary store
+        diaryStore.mindlog = stores.diary.mindlog || {};
+        diaryStore.entries = stores.diary.entries || [];
+        diaryStore.dailyDiary = stores.diary.dailyDiary || {};
+        diaryStore.monthlyArchives = stores.diary.monthlyArchives || {};
+
+        // Persister manuellement le diary store
+        const diaryStoreData = {
+          state: {
+            mindlog: stores.diary.mindlog || {},
+            entries: stores.diary.entries || [],
+            dailyDiary: stores.diary.dailyDiary || {},
+            monthlyArchives: stores.diary.monthlyArchives || {}
+          },
+          version: 1
+        };
+        localStorage.setItem('diary-storage', JSON.stringify(diaryStoreData));
+        console.log('✅ Diary data imported');
+      }
+
+      // 5. Importer les préférences
+      if (stores.preferences) {
+        const preferencesStoreData = {
+          state: {
+            defaultRoom: stores.preferences.defaultRoom || { x: 2, y: 2 },
+            customRoomLayout: stores.preferences.customRoomLayout || null,
+            roomUIStates: stores.preferences.roomUIStates || {}
+          },
+          version: 1
+        };
+        localStorage.setItem('irim-preferences-store', JSON.stringify(preferencesStoreData));
+        console.log('✅ Preferences data imported');
       }
 
       // Marquer comme synchronisé

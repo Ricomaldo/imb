@@ -10,6 +10,7 @@ import exposeStoresToWindow from './utils/exposeStores';
 import { initializeStores, cleanupObsoleteStorage } from './stores/migrateProjectStores';
 import CompanionApp from './companion/CompanionApp';
 import { openModal } from './utils/buttonMapping';
+import { SyncProvider } from './contexts/SyncContext';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
@@ -95,9 +96,11 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <SyncProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </SyncProvider>
     </ThemeProvider>
   );
 }

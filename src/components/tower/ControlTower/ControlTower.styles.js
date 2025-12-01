@@ -1,11 +1,22 @@
 // src/components/tower/ControlTower/ControlTower.styles.js
 
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import {
   metalBg,
   craftBorderHeavy,
   primaryLevel,
 } from "../../../styles/mixins";
+
+// Animation pour le spinner de sync
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+`;
 
 export const TowerContainer = styled.div`
   width: 100%;
@@ -90,5 +101,44 @@ export const DateDisplay = styled.div`
     color: ${({ theme }) => theme.colors.text.muted};
     opacity: 0.4;
     margin: 0 2px;
+  }
+`;
+
+// Indicateur de synchronisation
+export const SyncIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: ${({ theme }) => theme.typography.sizes.xs};
+  font-family: 'Orbitron', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  color: ${({ $status, theme }) => {
+    switch ($status) {
+      case 'success': return '#27ae60';
+      case 'syncing': return '#f39c12';
+      case 'pending': return '#f39c12';
+      case 'error': return '#e74c3c';
+      case 'offline': return '#95a5a6';
+      default: return theme.colors.text.muted;
+    }
+  }};
+
+  .sync-icon {
+    font-size: 10px;
+    ${({ $status }) => $status === 'syncing' && `
+      animation: ${spin} 1s linear infinite;
+    `}
+    ${({ $status }) => $status === 'pending' && `
+      animation: ${pulse} 1.5s ease-in-out infinite;
+    `}
+  }
+
+  .sync-text {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 `;

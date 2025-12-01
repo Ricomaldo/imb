@@ -16,6 +16,8 @@ version: 2.0
 useNotesStore          → Notes transversales (infrastructure)
 useProjectMetaStore    → Métadonnées globales des projets
 useProjectDataStore    → Données spécifiques par projet (dynamique)
+useDiaryStore          → Journal personnel (mindlog, archives)
+usePreferencesStore    → Préférences UI et settings (fusion legacy stores)
 ```
 
 ---
@@ -205,41 +207,195 @@ graph TD
 
 ---
 
+## Store: useDiaryStore
+
+**Fichier:** `stores/useDiaryStore.js`
+**Clé localStorage:** `diary-storage`
+**Version:** 1
+
+### Responsabilité
+Gestion du journal personnel, mindlog compact et archivage temporel.
+
+### État
+```js
+{
+  // MindLog personnel
+  mindlog: {
+    current: {
+      mood: number,           // 1-5
+      energy: number,         // 1-5
+      focus: number,          // 1-5
+      note: string            // Note contextuelle
+    },
+    logs: [{                  // Historique (max 50 entrées)
+      id: number,
+      timestamp: string,
+      mood: number,
+      energy: number,
+      focus: number,
+      note: string,
+      category: string,       // Catégorisation mentale
+      categoryDate: string,
+      hidden: boolean         // Visible par défaut
+    }],
+    markdownNotes: string     // Notes personnelles markdown
+  },
+
+  // Journal quotidien actif
+  dailyDiary: {
+    'YYYY-MM-DD': 'contenu markdown'
+  },
+
+  // Archives mensuelles (jours passés archivés automatiquement)
+  monthlyArchives: {
+    'YYYY-MM': {
+      'YYYY-MM-DD': 'contenu'
+    }
+  },
+
+  // Futures entrées journal (extension prévue)
+  entries: []
+}
+```
+
+### Actions principales
+```js
+// MindLog
+updateMindLogCurrent({ mood, energy, focus, note })
+addMindLogEntry({ mood, energy, focus, note })
+updateMarkdownNotes(notes)
+clearMindLogHistory()
+
+// Catégorisation mentale
+updateLogCategory(logId, category)
+getUncategorizedLogs()
+getCategorizedLogs(category)
+toggleLogVisibility(logId)
+deleteLog(logId)
+
+// Journal quotidien
+getDailyEntry(date)
+updateDailyEntry(date, content)
+archiveMonthlyEntries()          // Archive automatiquement jours passés
+
+// Archives
+getMonthlyArchive(yearMonth)
+getArchivedMonths()
+exportMonthToMarkdown(yearMonth)
+
+// Helpers
+getTodayLogs()
+getLastLog()
+getVisibleLogs()                 // Pour interface Chambre
+getAllLogs()                     // Pour interface Sanctuaire
+```
+
+---
+
+## Store: usePreferencesStore
+
+**Fichier:** `stores/usePreferencesStore.js`
+**Clé localStorage:** `irim-preferences-store`
+**Version:** 1
+
+### Responsabilité
+Fusion de `useSettingsStore` et `useRoomsUIStore` - Préférences UI globales et états des panneaux par room.
+
+### État
+```js
+{
+  // === PRÉFÉRENCES APPLICATION (ancien useSettingsStore) ===
+
+  // Navigation par défaut
+  defaultRoom: { x: 2, y: 2 },         // Pièce de démarrage (Atelier au centre)
+  customRoomLayout: null,              // Disposition personnalisée rooms (futur)
+
+  // === ÉTATS UI DES ROOMS (ancien useRoomsUIStore) ===
+
+  // État UI par room et par panel
+  roomUIStates: {
+    chambre: {
+      timer: { collapsed: false },
+      totem: { collapsed: false },
+      mindlog: { collapsed: false },
+      mantra: { collapsed: false },
+      notes: { collapsed: false },
+      navigation: { collapsed: false }
+    },
+    forge: {
+      mainPanel: { collapsed: false },
+      notes: { collapsed: false }
+    },
+    // ... autres rooms
+    sanctuaire: {
+      trimental: { collapsed: false }
+    }
+  }
+}
+```
+
+### Actions principales
+```js
+// Préférences application
+setDefaultRoom(position)
+getDefaultRoom()
+setCustomRoomLayout(layout)
+getCustomRoomLayout()
+
+// États UI des rooms (compatible ancien useRoomsUIStore)
+getPanelState(roomId, panelId)         // Retourne état panel avec fallback
+updatePanelState(roomId, panelId, stateUpdate)
+resetRoomState(roomId)                 // Reset complet room
+togglePanelCollapse(roomId, panelId)   // Helper toggle collapse
+
+// Migration automatique (appelé au chargement)
+migrateFromOldStores()                 // Migre depuis anciennes clés localStorage
+```
+
+### Migration automatique
+Le store migre automatiquement les données depuis :
+- `irim-settings-store` → `defaultRoom`
+- `irim-rooms-ui-store` → `roomUIStates`
+
+Les anciennes clés sont supprimées après migration réussie.
+
+---
+
 ## Synchronisation Multi-Device
 
-### Service: `ProjectSyncAdapter`
+### Service: `ProjectSyncAdapter` (MODIFIÉ v3.0)
 
 Adaptateur pour synchroniser l'architecture multi-stores avec GitHub Gist.
 
-```js
-// Configuration
-ProjectSyncAdapter.configure(githubToken, gistId);
-ProjectSyncAdapter.setPassword(password);
+**⚠️ NOUVELLE VERSION ULTRA-SIMPLE** : Configuration via variables d'environnement uniquement.
 
-// Export
-const result = await ProjectSyncAdapter.exportToGist(encrypted);
+```js
+// Plus de configuration manuelle - tout via .env.local :
+// VITE_GITHUB_TOKEN=ghp_token
+// VITE_SYNC_PASSWORD=password
+// VITE_SYNC_GIST_ID=gist_id (optionnel)
+
+// Export direct (collecte TOUS les stores automatiquement)
+const result = await exportToGist();
 // → { success: true, url: string, id: string }
 
-// Import
-const result = await ProjectSyncAdapter.importFromGist(gistId, encrypted);
+// Import direct (écrase tout + reload)
+const result = await importFromGist();
 // → { success: true, message: string, timestamp: string }
-
-// Helpers
-ProjectSyncAdapter.getSyncStats();
-ProjectSyncAdapter.needsSync();
 ```
 
-### Format de synchronisation v2
+### Format de synchronisation v2 (ÉTENDU)
 
 ```json
 {
   "version": "2.0.0",
   "architecture": "multi-store",
-  "timestamp": "2025-09-19T10:00:00Z",
+  "timestamp": "2025-10-01T10:00:00Z",
   "stores": {
     "notes": {
       "roomNotes": {},
-      "sideTowerNotes": {}
+      "sideTowerNotes": {},
+      "companionNotes": {}          // ← NOUVEAU (notes mobile)
     },
     "projectMeta": {
       "selectedProject": "id",
@@ -248,8 +404,19 @@ ProjectSyncAdapter.needsSync();
       "projects": {}
     },
     "projectData": {
-      "projectId1": { /* data */ },
-      "projectId2": { /* data */ }
+      "projectId1": { /* données projet */ },
+      "projectId2": { /* données projet */ }
+    },
+    "diary": {                      // ← NOUVEAU
+      "mindlog": {},
+      "dailyDiary": {},
+      "monthlyArchives": {},
+      "entries": []
+    },
+    "preferences": {                // ← NOUVEAU
+      "defaultRoom": { x: 2, y: 2 },
+      "customRoomLayout": null,
+      "roomUIStates": {}
     }
   }
 }
@@ -374,8 +541,11 @@ Total (4 projets)      : ~50-100KB
 // Console browser
 
 // Voir l'état complet
-window.stores.projectMeta.getState()
-window.stores.projectData('irimmetabrain')
+window.stores.projectMeta()              // useProjectMetaStore
+window.stores.projectData('irimmetabrain')  // useProjectDataStore
+window.stores.notes()                    // useNotesStore
+window.stores.diary()                    // useDiaryStore ← NOUVEAU
+window.stores.preferences()              // usePreferencesStore ← NOUVEAU
 
 // Forcer réinitialisation
 import { resetToDefaultData } from './stores/migrateProjectStores'
@@ -385,9 +555,14 @@ await resetToDefaultData()
 import { verifyMigration } from './stores/migrateProjectStores'
 verifyMigration()
 
-// Stats sync
-import ProjectSyncAdapter from './services/ProjectSyncAdapter'
-ProjectSyncAdapter.getSyncStats()
+// Stats sync (plus besoin d'import - tout via variables d'env)
+// Voir nouvelle documentation: docs/guides/sync-system.md
+
+// Debug collecte TOUS les stores
+window.__SYNC_TOOLS__.collectAllStoreData()
+
+// Nettoyage projets orphelins
+window.__SYNC_TOOLS__.cleanupOrphanedProjects()
 ```
 
 ---

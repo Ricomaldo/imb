@@ -1,370 +1,284 @@
 ---
 type: guide
-updated: 2025-09-19
-version: 2.0
+updated: 2025-10-01
+version: 3.0
 ---
 
-# 🔄 Système de Synchronisation Multi-Device - Documentation Technique
+# 🔄 Système de Synchronisation Ultra-Simple - Documentation v3.0
 
-> Documentation technique complète du système de synchronisation
+> Synchronisation chiffrée GitHub Gist avec 2 boutons seulement
 
-**Dernière mise à jour :** 19 septembre 2025
-**Version :** 2.0.0 (Architecture Multi-Stores)
+**Dernière mise à jour :** 1er octobre 2025
+**Version :** 3.0.0 (Architecture Ultra-Simple)
 
-⚠️ **Note :** Pour une explication simple et pédagogique, consultez le [Guide du Flux de Données](data-flow-guide.md)
+⚠️ **Note :** Cette version remplace complètement l'architecture complexe v2.0. Pour une explication détaillée de l'architecture stores, consultez [Architecture Stores](../architecture/stores-architecture.md)
 
-## 📦 Architecture v2 - Multi-Stores
+## 🎯 Vue d'ensemble Ultra-Simple
 
-### Vue d'ensemble du flux
+### Interface 2 boutons uniquement
+```
+📤 EXPORT  →  Sauvegarde TOUT vers GitHub Gist chiffré
+📥 IMPORT  →  Restaure TOUT depuis GitHub Gist + reload page
+```
 
+### Flow ultra-simplifié
 ```mermaid
 graph LR
-    A[useProjectMetaStore] --> D[ProjectSyncAdapter]
-    B[useProjectDataStore] --> D
-    C[useNotesStore] --> D
-    D --> E[SyncManager]
-    E --> F[GitHub Gist]
-    F --> G[Autre appareil]
+    A[Collecte tous stores] --> B[Chiffre AES-256]
+    B --> C[Upload GitHub Gist]
+
+    D[Download GitHub Gist] --> E[Déchiffre]
+    E --> F[Écrase localStorage]
+    F --> G[Reload page]
 ```
 
-### 1. **Service SyncManager** (`src/services/SyncManager.js`)
-Service générique singleton pour la synchronisation chiffrée.
+## 🚀 Setup Rapide (5 minutes)
 
-**Méthodes principales :**
-- `configure(githubToken, gistId)` - Configure les credentials
-- `setPassword(password)` - Définit le mot de passe de chiffrement
-- `encrypt(data)` - Chiffre avec AES-256 + PBKDF2 (10k iterations)
-- `decrypt(encryptedData)` - Déchiffre les données
-- `uploadGist(data, encrypted)` - Upload vers GitHub Gist
-- `downloadGist(gistId, encrypted)` - Download depuis GitHub Gist
-- `testConnection()` - Vérifie la validité du token
-- `listGists()` - Liste les Gists IRIM existants
+### 1. Variables d'environnement requises
 
-**Sécurité :**
-- AES-256 pour le chiffrement symétrique
-- PBKDF2 avec 10000 iterations (dérivation de clé)
-- Salt aléatoire pour chaque chiffrement
-- IV aléatoire pour chaque bloc
+Créer `.env.local` à la racine :
 
-### 2. **Système de modales** (`src/components/common/Modal/`)
+```bash
+# GitHub Personal Access Token (scope "gist")
+# Obtenir sur: https://github.com/settings/tokens
+VITE_GITHUB_TOKEN=ghp_votre_token_ici
 
-**Composant Modal de base :**
-- Utilise React Portal pour render au-dessus de tout
-- Design aligné sur Tower System (metalBg + primaryLevel)
-- Fermeture par Escape ou clic overlay
-- Animations fadeIn + slideUp
-- Tailles configurables : small, medium, large, fullscreen
+# Mot de passe chiffrement (min 8 caractères, complexe recommandé)
+VITE_SYNC_PASSWORD=VotreMotDePasseComplexe123!
 
-**Hook useModal** (`src/hooks/useModal.js`) :
+# ID Gist (optionnel - créé automatiquement au premier export)
+VITE_SYNC_GIST_ID=votre_gist_id_optionnel
+
+# Mot de passe accès app (sécurité symbolique)
+VITE_ACCESS_PASSWORD=votre_mot_de_passe_app
+```
+
+### 2. Obtenir GitHub Token
+
+1. **GitHub** → Settings → Developer settings
+2. **Personal access tokens** → Tokens (classic)
+3. **Generate new token (classic)**
+4. **Scope requis :** ✅ `gist` (Create gists)
+5. **Expiration :** 90 days recommandé
+6. Copier le token dans `VITE_GITHUB_TOKEN`
+
+### 3. Premier usage
+
+1. **Redémarrer le serveur dev** (pour charger les variables d'env)
+2. Cliquer **🔄** dans ControlTower → **Synchronisation**
+3. Si tout est configuré : **2 boutons actifs**
+4. Sinon : **Message d'erreur configuration**
+
+## 📤 Export (Sauvegarde)
+
+### Interface utilisateur
+1. Cliquer **📤 EXPORT**
+2. Messages en temps réel :
+   - "Collecte des données..."
+   - "Upload vers GitHub..."
+   - "✅ Export réussi! Gist ID: xxx"
+3. **Gist ID automatiquement copié** dans presse-papier
+4. **Modale se ferme automatiquement** après 3 secondes
+
+### Sous le capot
 ```javascript
-const modal = useModal();
-// modal.isOpen - état ouvert/fermé
-// modal.open(data) - ouvrir avec données optionnelles
-// modal.close() - fermer
-// modal.toggle() - basculer
-```
-
-### 3. **SyncModal spécifique** (`src/components/modals/SyncModal/`)
-
-Interface utilisateur pour la synchronisation :
-- Configuration GitHub token
-- Mot de passe de chiffrement
-- Export/Import des stores
-- Liste des Gists existants
-- Messages de statut colorés (success/error/info)
-
-### 4. **ProjectSyncAdapter** (`src/services/ProjectSyncAdapter.js`)
-
-**Nouvel adaptateur pour l'architecture multi-stores :**
-
-```javascript
-// Méthodes principales
-ProjectSyncAdapter.configure(githubToken, gistId)
-ProjectSyncAdapter.setPassword(password)
-ProjectSyncAdapter.exportToGist(encrypted)
-ProjectSyncAdapter.importFromGist(gistId, encrypted)
-ProjectSyncAdapter.getSyncStats()
-ProjectSyncAdapter.needsSync()
-```
-
-**Responsabilités :**
-- Collecte données depuis TOUS les stores (Meta + tous les ProjectData)
-- Combine en structure unifiée pour export
-- Distribue aux bons stores lors de l'import
-- Gère la compatibilité v1 → v2
-
-### 5. **Intégration stores Zustand v2**
-
-**Stores actuels :**
-- `useProjectMetaStore` - Métadonnées globales des projets
-- `useProjectDataStore(id)` - Données spécifiques par projet (dynamique)
-- `useNotesStore` - Notes transversales (inchangé)
-
-## 🔑 Configuration GitHub requise
-
-### Personal Access Token
-1. GitHub → Settings → Developer settings
-2. Personal access tokens → Tokens (classic)
-3. Generate new token (classic)
-4. **Scope requis :** `gist` (Create gists)
-5. Expiration : 90 days recommandé
-
-### Structure du Gist v2
-
-```json
-{
-  "version": "2.0.0",
-  "architecture": "multi-store",
-  "timestamp": "2025-09-19T10:00:00Z",
-  "stores": {
-    "notes": {
-      "roomNotes": {...},
-      "sideTowerNotes": {...}
-    },
-    "projectMeta": {
-      "selectedProject": "irimmetabrain",
-      "visibleProjects": ["id1", "id2"],
-      "categories": {...},
-      "projects": {
-        "id1": { /* métadonnées */ },
-        "id2": { /* métadonnées */ }
-      }
-    },
-    "projectData": {
-      "id1": {
-        "roadmapMarkdown": "...",
-        "todoMarkdown": "...",
-        "atelierModules": {...}
-      },
-      "id2": { /* données projet 2 */ }
-    }
+// Collecte TOUS les stores depuis localStorage
+const data = {
+  version: '2.0.0',
+  stores: {
+    notes: {...},           // useNotesStore
+    projectMeta: {...},     // useProjectMetaStore
+    projectData: {...},     // tous project-data-*
+    diary: {...},          // useDiaryStore (nouveau)
+    preferences: {...}     // usePreferencesStore (nouveau)
   }
 }
+
+// Chiffre avec AES-256 + mot de passe
+const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), password)
+
+// Upload vers GitHub Gist privé
+const gist = await uploadToGist(encrypted)
 ```
 
-**Différences clés v1 → v2 :**
-- `projects` → `projectMeta` + `projectData` (séparés)
-- `currentProjectId` → `selectedProject`
-- Ajout du champ `architecture` pour détection de version
+## 📥 Import (Restauration)
 
-## 🎨 Design System créé
+### Interface utilisateur
+1. Cliquer **📥 IMPORT**
+2. **Confirmation obligatoire** : "⚠️ ATTENTION: L'import va remplacer TOUTES vos données locales"
+3. Messages en temps réel :
+   - "Téléchargement depuis GitHub..."
+   - "Restauration des données..."
+   - "✅ Import réussi! Rechargement..."
+4. **Page rechargée automatiquement** après 2 secondes
 
-### Styles Modal (`Modal.styles.js`)
-- **Overlay** : `alpha(black, 0.6)` + `backdrop-filter: blur(8px)`
-- **Container** : `metalBg` + `primaryLevel` du système Tower
-- **Header** : `alpha(primary, 0.3)` avec titre uppercase
-- **Content** : Scrollable avec custom scrollbar Tower-style
-- **Footer** : Pour actions, aligné à droite
-
-### Patterns réutilisables
+### Sous le capot
 ```javascript
-// Import du système
-import Modal from 'components/common/Modal/Modal';
-import useModal from 'hooks/useModal';
+// Download depuis GitHub Gist
+const encrypted = await downloadFromGist(gistId)
 
-// Usage
-const myModal = useModal();
+// Déchiffre avec même mot de passe
+const data = CryptoJS.AES.decrypt(encrypted, password)
 
-<Modal
-  isOpen={myModal.isOpen}
-  onClose={myModal.close}
-  title="Ma Modal"
-  size="medium"
->
-  {/* Contenu */}
-</Modal>
-```
+// Écrase TOUT localStorage
+localStorage.setItem('project-meta-store', JSON.stringify(data.stores.projectMeta))
+localStorage.setItem('diary-storage', JSON.stringify(data.stores.diary))
+// ... tous les autres stores
 
-## 🚀 Usage avec la nouvelle architecture
-
-### Export des données
-
-#### Interface utilisateur
-1. Cliquer sur 🔄 dans ControlTower
-2. Entrer GitHub token
-3. Tester connexion
-4. Entrer mot de passe (min 8 caractères)
-5. Cliquer "Exporter vers GitHub"
-6. L'ID du Gist est copié dans le presse-papier
-
-#### Sous le capot
-```javascript
-// Le ProjectSyncAdapter fait :
-1. Collecte useProjectMetaStore.getState()
-2. Pour chaque projet, collecte localStorage[`project-data-${id}`]
-3. Collecte useNotesStore.getState()
-4. Combine tout en structure v2
-5. Chiffre avec le mot de passe
-6. Upload vers GitHub Gist
-```
-
-### Import des données
-
-#### Interface utilisateur
-1. Même processus initial
-2. Entrer ou récupérer l'ID du Gist
-3. Entrer le même mot de passe
-4. Cliquer "Importer depuis GitHub"
-5. Confirmer le remplacement des données locales
-6. Page rechargée automatiquement
-
-#### Sous le capot
-```javascript
-// Le ProjectSyncAdapter fait :
-1. Download le Gist
-2. Déchiffre avec le mot de passe
-3. Détecte la version (v1 ou v2)
-4. Si v1: migre vers v2
-5. Distribue dans les stores :
-   - projectMeta → localStorage['project-meta-store']
-   - projectData.id → localStorage['project-data-{id}']
-   - notes → localStorage['irim-notes-store']
-6. Recharge la page
+// Reload forcé pour recharger l'état complet
+window.location.reload()
 ```
 
 ## 🔒 Sécurité
 
 ### Chiffrement
-- **Algorithme** : AES-256-CBC
-- **Dérivation de clé** : PBKDF2 avec 10000 iterations
-- **Salt** : 128 bits aléatoire par chiffrement
-- **IV** : 128 bits aléatoire par bloc
+- **Algorithme** : AES-256 (CryptoJS)
+- **Mot de passe** : Variable d'environnement uniquement
+- **GitHub Gist** : Privé (non listé publiquement)
 
-### Stockage
-- GitHub Gist privé (non listé)
-- Token stocké uniquement en mémoire (pas persisté)
-- Mot de passe jamais stocké
+### Données sensibles
+- **Token GitHub** : Jamais stocké dans localStorage
+- **Mot de passe** : Jamais stocké, uniquement en mémoire
+- **Gist privé** : Accessible uniquement avec token
 
-## 📝 Notes d'apprentissage
+### Protection locale
+- **LoginPage** : Mot de passe `VITE_ACCESS_PASSWORD`
+- **SessionStorage** : État connexion temporaire
+- **Variables d'env** : Jamais committées (.env.local dans .gitignore)
 
-### Concepts maîtrisés
-1. **React Portals** - Render en dehors du flux DOM
-2. **Singleton pattern** - Instance unique de service
-3. **Chiffrement symétrique** - AES avec dérivation de clé
-4. **GitHub API** - Gestion des Gists via API REST
-5. **Custom hooks** - Logique réutilisable d'état
+## ⚡ Stores Synchronisés
 
-### Points d'attention
-- Le token GitHub expire (90 jours par défaut)
-- Le mot de passe n'est pas récupérable (pas de "forgot password")
-- Les Gists ont une limite de 1MB par fichier
-- La synchronisation écrase toutes les données locales
-
-## 🆕 Nouveautés v2.0
-
-### Architecture Multi-Stores
-- Séparation métadonnées / données projet
-- Stores dynamiques par projet
-- Performance améliorée (lazy loading)
-
-### Compatibilité descendante
-- Détection automatique v1/v2
-- Migration transparente v1 → v2
-- Pas de perte de données
-
-### Initialisation robuste
-- Données par défaut si localStorage vide
-- 4 projets démo pré-configurés
-- Détection et réparation stores corrompus
-
-## 🔮 Évolutions futures prévues
-
-1. **Auto-sync périodique**
-   - Sync automatique toutes les X minutes
-   - Indicateur de statut de sync
-
-2. **Conflict resolution**
-   - Comparer timestamps
-   - Merger intelligemment les changements
-
-3. **Selective sync**
-   - Choisir quels stores synchroniser
-   - Sync par room/projet spécifique
-
-4. **Multi-device tracking**
-   - Identifier chaque device
-   - Historique des sync par device
-
-## 🐛 Debug et diagnostics
-
-### Vérifier l'état actuel
-
-```javascript
-// Stores actuels
-window.stores.projectMeta()      // Métadonnées
-window.stores.projectData('id')  // Données projet
-
-// Stats de sync
-import ProjectSyncAdapter from './services/ProjectSyncAdapter'
-ProjectSyncAdapter.getSyncStats()
-
-// Debug complet
-window.__DEBUG_STORES__()
+### Architecture Multi-Stores v2.0
+```
+✅ useNotesStore          → Notes transversales rooms/tower
+✅ useProjectMetaStore    → Métadonnées projets (kanban, visibilité)
+✅ useProjectDataStore    → Données par projet (roadmap, todo, notes)
+✅ useDiaryStore          → Journal personnel (mindlog, archives)
+✅ usePreferencesStore    → Préférences UI (rooms, navigation)
 ```
 
-### Vérifier localStorage
+### Données exclues
+```
+❌ Sessions temporaires (modales ouvertes, etc.)
+❌ Cache navigateur
+❌ Variables d'environnement (.env.local)
+❌ États UI éphémères (focus, scroll, etc.)
+```
 
+## 🛠 Configuration Avancée
+
+### Gist ID optionnel
+- **Non défini** : Nouveau Gist créé automatiquement au premier export
+- **Défini** : Met à jour le Gist existant (recommandé pour setup multi-device)
+
+### Rotation des tokens
+1. Générer nouveau token GitHub (même scope)
+2. Mettre à jour `VITE_GITHUB_TOKEN`
+3. Redémarrer serveur dev
+4. Export/Import fonctionnent immédiatement
+
+### Backup manuel
 ```javascript
-// Voir toutes les clés
-Object.keys(localStorage).filter(k => k.startsWith('project-'))
+// Console navigateur - backup JSON non chiffré
+const backup = {
+  projectMeta: JSON.parse(localStorage.getItem('project-meta-store')),
+  notes: JSON.parse(localStorage.getItem('irim-notes-store')),
+  diary: JSON.parse(localStorage.getItem('diary-storage')),
+  preferences: JSON.parse(localStorage.getItem('irim-preferences-store'))
+}
+console.log(JSON.stringify(backup, null, 2))
+```
+
+## 🐛 Diagnostic et Debug
+
+### Messages d'erreur communes
+
+#### "❌ Configuration manquante"
+- **Cause** : Variables d'env absentes ou mal nommées
+- **Solution** : Vérifier `.env.local` et redémarrer serveur
+
+#### "❌ Erreur chiffrement: CryptoJS non disponible"
+- **Cause** : Import CryptoJS échoué
+- **Solution** : Vérifier `npm install crypto-js`
+
+#### "❌ GitHub API error: 401"
+- **Cause** : Token expiré ou invalide
+- **Solution** : Régénérer token avec scope "gist"
+
+#### "❌ Erreur déchiffrement"
+- **Cause** : Mot de passe incorrect ou données corrompues
+- **Solution** : Vérifier `VITE_SYNC_PASSWORD` identique
+
+#### "❌ VITE_SYNC_GIST_ID manquant pour l'import"
+- **Cause** : Gist ID non défini et aucun export préalable
+- **Solution** : Faire un export d'abord ou définir Gist ID existant
+
+### Debug localStorage
+```javascript
+// Voir toutes les clés projet
+Object.keys(localStorage).filter(k => k.includes('project'))
 
 // Taille des données
-const size = key => (localStorage.getItem(key)?.length || 0) / 1024
-console.log(`Meta: ${size('project-meta-store')} KB`)
-console.log(`Data: ${size('project-data-irimmetabrain')} KB`)
+const getSize = key => (localStorage.getItem(key)?.length || 0) / 1024
+console.log(`Meta: ${getSize('project-meta-store')} KB`)
+console.log(`Notes: ${getSize('irim-notes-store')} KB`)
+console.log(`Diary: ${getSize('diary-storage')} KB`)
 ```
 
-### Réinitialisation
-
+### Réinitialisation complète
 ```javascript
-// Reset complet avec données démo
-import { resetToDefaultData } from './stores/migrateProjectStores'
-await resetToDefaultData()
-
-// Ou manuellement
+// Vider localStorage (perte de données !)
 localStorage.clear()
 window.location.reload()
+
+// Ou depuis console dev tools
+window.__SYNC_TOOLS__.cleanupOrphanedProjects()
 ```
 
-### Erreurs communes
-- **"GitHub token not configured"** : Token non entré
-- **"Wrong password?"** : Mot de passe incorrect pour déchiffrer
-- **"401 Unauthorized"** : Token expiré ou invalide
-- **"404 Not Found"** : Gist ID incorrect
+## 🔄 Migration depuis v2.0
 
-### Test du chiffrement
+### Détection automatique
+Le système détecte automatiquement l'ancien format complexe et bascule vers l'interface ultra-simple.
 
-```javascript
-// Tester le chiffrement local
-import SyncManager from './services/SyncManager'
-const encrypted = SyncManager.encrypt({test: "data"}, "password123")
-const decrypted = SyncManager.decrypt(encrypted, "password123")
-console.log(decrypted) // {test: "data"}
-```
+### Données préservées
+- ✅ Tous les projets et métadonnées
+- ✅ Notes et configurations
+- ✅ Historique et préférences
+- ✅ Gists existants compatibles
 
-### Test de sync complète
+### Changements interface
+- ❌ Plus de configuration manuelle token/password
+- ❌ Plus d'options avancées (liste Gists, test connexion)
+- ❌ Plus de gestion multi-Gists
+- ✅ Variables d'environnement uniquement
+- ✅ 2 boutons simples
+- ✅ Feedback amélioré
 
-```javascript
-// Export manuel
-import ProjectSyncAdapter from './services/ProjectSyncAdapter'
-ProjectSyncAdapter.configure('ghp_yourtoken', null)
-ProjectSyncAdapter.setPassword('yourpassword')
-const result = await ProjectSyncAdapter.exportToGist(true)
-console.log('Gist ID:', result.id)
+## 📊 Performance
 
-// Import manuel
-const importResult = await ProjectSyncAdapter.importFromGist(result.id, true)
-console.log('Import:', importResult)
-```
+### Taille données typiques
+- **4 projets complets** : ~50-100 KB
+- **Chiffrement** : +30% taille
+- **Gist limite** : 1 MB par fichier (largement suffisant)
 
-## 📚 Documentation liée
+### Temps de sync typiques
+- **Export** : 2-5 secondes (collecte + chiffre + upload)
+- **Import** : 3-7 secondes (download + déchiffre + write + reload)
 
-- [🚀 Guide utilisateur simple](data-flow-guide.md) - Pour comprendre le flux
-- [🏗️ Architecture des stores](../architecture/stores-architecture.md) - Détails techniques
-- [📋 Changelog](../architecture/CHANGELOG-stores.md) - Historique des changements
+## 🚀 Évolutions v3.1 Prévues
+
+### Auto-sync (à venir)
+- Variables `VITE_AUTO_SYNC_ENABLED` et `VITE_AUTO_SYNC_INTERVAL`
+- Sync automatique toutes les X minutes
+- Indicateur de statut temps réel
+
+### Sync sélective (à venir)
+- Choisir quels stores synchroniser
+- Export partiel (projets spécifiques)
+- Import non destructif (merge intelligent)
 
 ---
 
 **Mainteneurs :** IRIM Team
-**Statut :** ✅ Production Ready (v2.0.0)
-**Licence :** MIT
+**Statut :** ✅ Production Ready (v3.0.0)
+**Migration depuis v2.0 :** ✅ Automatique et transparente

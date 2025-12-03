@@ -2,17 +2,17 @@
 //
 // Mission: imb-sync-mission - Chantier A
 // Élimine la friction Export manuel en sauvegardant automatiquement après modifications
+//
+// Approche: S'abonne aux stores Zustand via subscribe() pour détecter les changements
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import CryptoJS from 'crypto-js';
-
-// Clés localStorage des stores IMB à surveiller
-const IMB_STORE_KEYS = [
-  'irim-notes-store',
-  'project-meta-store',
-  'diary-storage',
-  'irim-preferences-store'
-];
+import useNotesStore from '../stores/useNotesStore';
+import useProjectMetaStore from '../stores/useProjectMetaStore';
+import useDiaryStore from '../stores/useDiaryStore';
+import usePreferencesStore from '../stores/usePreferencesStore';
+import { subscribeToProjectData } from '../stores/useProjectDataStore';
+import projectSyncAdapter from './ProjectSyncAdapter';
 
 // Préfixe pour les stores projet dynamiques
 const PROJECT_DATA_PREFIX = 'project-data-';
@@ -31,7 +31,6 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   const [error, setError] = useState(null);
 
   const debounceTimerRef = useRef(null);
-  const originalSetItemRef = useRef(null);
   const isInitializedRef = useRef(false);
 
   // Config depuis variables d'environnement
@@ -179,7 +178,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       localStorage.setItem('last-sync', now.toISOString());
 
       setSyncStatus('success');
-      console.log('[AutoSync] Sync successful at', now.toLocaleTimeString());
+      console.log('[AutoSync] ✅ Sync successful at', now.toLocaleTimeString());
 
       // Revenir à idle après 3 secondes
       setTimeout(() => {
@@ -187,7 +186,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       }, 3000);
 
     } catch (err) {
-      console.error('[AutoSync] Sync failed:', err);
+      console.error('[AutoSync] ❌ Sync failed:', err);
       setError(err.message);
       setSyncStatus('error');
 
@@ -209,6 +208,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       clearTimeout(debounceTimerRef.current);
     }
 
+    console.log('[AutoSync] ⏳ Pending - will sync in', debounceMs / 1000, 'seconds');
     setSyncStatus('pending');
 
     // Nouveau timer
@@ -229,34 +229,119 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   }, [performSync]);
 
   /**
-   * Vérifie si une clé localStorage est un store IMB
+   * Auto-import au démarrage si le Gist est plus récent
    */
-  const isIMBStoreKey = useCallback((key) => {
-    return IMB_STORE_KEYS.includes(key) || key.startsWith(PROJECT_DATA_PREFIX);
-  }, []);
+  const checkAndImportFromGist = useCallback(async () => {
+    if (!isConfigured || !gistId) {
+      console.log('[AutoSync] Auto-import skipped: not configured or no gistId');
+      return;
+    }
+
+    try {
+      console.log('[AutoSync] 🔍 Checking Gist for newer data...');
+
+      // Configurer le syncAdapter
+      projectSyncAdapter.configure(githubToken, gistId);
+      projectSyncAdapter.setPassword(encryptionPassword);
+
+      // Récupérer les données du Gist
+      const gistData = await projectSyncAdapter.syncManager.downloadGist(gistId, true);
+
+      if (!gistData || !gistData.timestamp) {
+        console.log('[AutoSync] No valid data in Gist');
+        return;
+      }
+
+      const gistTimestamp = new Date(gistData.timestamp);
+      const lastLocalSync = localStorage.getItem('last-sync');
+      const localTimestamp = lastLocalSync ? new Date(lastLocalSync) : null;
+
+      console.log('[AutoSync] Gist timestamp:', gistTimestamp.toISOString());
+      console.log('[AutoSync] Local timestamp:', localTimestamp?.toISOString() || 'none');
+
+      // Si le Gist est plus récent, importer
+      if (!localTimestamp || gistTimestamp > localTimestamp) {
+        console.log('[AutoSync] 📥 Gist is newer, importing...');
+        setSyncStatus('syncing');
+
+        const result = await projectSyncAdapter.importFromGist(gistId, true);
+
+        if (result.success) {
+          console.log('[AutoSync] ✅ Auto-import successful!');
+          localStorage.setItem('last-sync', gistData.timestamp);
+          setLastSyncTime(new Date(gistData.timestamp));
+          setSyncStatus('success');
+
+          // Recharger la page pour appliquer les données importées
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          console.error('[AutoSync] ❌ Auto-import failed:', result.error);
+          setSyncStatus('error');
+        }
+      } else {
+        console.log('[AutoSync] ✅ Local data is up to date');
+      }
+    } catch (err) {
+      console.error('[AutoSync] Auto-import error:', err);
+      // Ne pas bloquer l'app si l'import échoue
+    }
+  }, [isConfigured, gistId, githubToken, encryptionPassword]);
+
+  // Ref pour le trigger (évite les problèmes de closure)
+  const triggerRef = useRef(triggerDebouncedSync);
+  useEffect(() => {
+    triggerRef.current = triggerDebouncedSync;
+  }, [triggerDebouncedSync]);
 
   /**
-   * Setup: Intercepter localStorage.setItem pour détecter les changements
+   * Auto-import au montage initial
+   */
+  const hasCheckedImportRef = useRef(false);
+  useEffect(() => {
+    if (enabled && isConfigured && !hasCheckedImportRef.current) {
+      hasCheckedImportRef.current = true;
+      checkAndImportFromGist();
+    }
+  }, [enabled, isConfigured, checkAndImportFromGist]);
+
+  /**
+   * S'abonner aux changements des stores Zustand
    */
   useEffect(() => {
-    if (!enabled || isInitializedRef.current) return;
+    if (!enabled) return;
 
-    // Sauvegarder la référence originale
-    originalSetItemRef.current = localStorage.setItem.bind(localStorage);
+    console.log('[AutoSync] Setting up store subscriptions...');
 
-    // Intercepter setItem
-    localStorage.setItem = function(key, value) {
-      // Appeler l'original
-      originalSetItemRef.current(key, value);
+    const unsubscribers = [];
 
-      // Si c'est un store IMB, déclencher le sync
-      if (isIMBStoreKey(key)) {
-        triggerDebouncedSync();
-      }
-    };
+    // S'abonner à chaque store - utiliser triggerRef pour éviter les problèmes de closure
+    const notesUnsub = useNotesStore.subscribe(() => {
+      console.log('[AutoSync] 📝 Notes store changed');
+      triggerRef.current?.();
+    });
+    unsubscribers.push(notesUnsub);
 
-    isInitializedRef.current = true;
-    console.log('[AutoSync] Initialized - watching localStorage changes');
+    const metaUnsub = useProjectMetaStore.subscribe(() => {
+      console.log('[AutoSync] 📋 Project meta store changed');
+      triggerRef.current?.();
+    });
+    unsubscribers.push(metaUnsub);
+
+    const diaryUnsub = useDiaryStore.subscribe(() => {
+      console.log('[AutoSync] 📔 Diary store changed');
+      triggerRef.current?.();
+    });
+    unsubscribers.push(diaryUnsub);
+
+    const prefsUnsub = usePreferencesStore.subscribe(() => {
+      console.log('[AutoSync] ⚙️ Preferences store changed');
+      triggerRef.current?.();
+    });
+    unsubscribers.push(prefsUnsub);
+
+    console.log('[AutoSync] ✅ Initialized - subscribed to 4 Zustand stores');
 
     // Charger le dernier sync time
     const lastSync = localStorage.getItem('last-sync');
@@ -266,15 +351,73 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
 
     // Cleanup
     return () => {
-      if (originalSetItemRef.current) {
-        localStorage.setItem = originalSetItemRef.current;
-      }
+      console.log('[AutoSync] Cleaning up subscriptions...');
+      unsubscribers.forEach(unsub => unsub());
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
-      isInitializedRef.current = false;
     };
-  }, [enabled, isIMBStoreKey, triggerDebouncedSync]);
+  }, [enabled]); // Seulement enabled comme dépendance
+
+  /**
+   * S'abonner au store du projet actuellement sélectionné
+   */
+  useEffect(() => {
+    if (!enabled) return;
+
+    // Récupérer le projet sélectionné
+    const selectedProject = useProjectMetaStore.getState().selectedProject;
+    if (!selectedProject) {
+      console.log('[AutoSync] No project selected, skipping project data subscription');
+      return;
+    }
+
+    console.log('[AutoSync] 📁 Subscribing to project data:', selectedProject);
+
+    const unsub = subscribeToProjectData(selectedProject, () => {
+      console.log('[AutoSync] 📁 Project data changed:', selectedProject);
+      triggerRef.current?.();
+    });
+
+    return () => {
+      unsub();
+    };
+  }, [enabled]);
+
+  /**
+   * Ré-abonner quand le projet sélectionné change
+   */
+  const [currentProject, setCurrentProject] = useState(
+    useProjectMetaStore.getState().selectedProject
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    // Écouter les changements de projet sélectionné
+    const unsub = useProjectMetaStore.subscribe((state) => {
+      if (state.selectedProject !== currentProject) {
+        console.log('[AutoSync] 🔄 Project changed to:', state.selectedProject);
+        setCurrentProject(state.selectedProject);
+      }
+    });
+
+    return () => unsub();
+  }, [enabled, currentProject]);
+
+  // Quand le projet change, re-subscribe
+  useEffect(() => {
+    if (!enabled || !currentProject) return;
+
+    console.log('[AutoSync] 📁 Subscribing to new project:', currentProject);
+
+    const unsub = subscribeToProjectData(currentProject, () => {
+      console.log('[AutoSync] 📁 Project data changed:', currentProject);
+      triggerRef.current?.();
+    });
+
+    return () => unsub();
+  }, [enabled, currentProject]);
 
   /**
    * Écouter les changements de connexion réseau

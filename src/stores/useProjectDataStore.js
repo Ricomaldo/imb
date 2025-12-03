@@ -225,4 +225,18 @@ export const getProjectData = (projectId) => {
   return storeCache[projectId].getState();
 };
 
+// Fonction pour s'abonner aux changements d'un store projet
+export const subscribeToProjectData = (projectId, callback) => {
+  if (!projectId) return () => {};
+
+  if (!storeCache[projectId]) {
+    storeCache[projectId] = createProjectDataStore(projectId);
+  }
+
+  return storeCache[projectId].subscribe(callback);
+};
+
+// Fonction pour obtenir tous les IDs de projets dans le cache
+export const getCachedProjectIds = () => Object.keys(storeCache);
+
 export default useProjectData;

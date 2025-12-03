@@ -1,8 +1,19 @@
 // src/components/layout/RoomCanvas/RoomCanvas.styles.js
 
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { craftBorderHeavy, parchmentBg, medievalShadow, craftBorder } from '../../../styles/mixins';
 import { alpha } from '../../../styles/color';
+
+// Animation pour le spinner de sync
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+`;
 
 export const CanvasContainer = styled.div`
   width: 100%;
@@ -161,11 +172,54 @@ export const NavigationZone = styled.div`
     opacity: 1;
     background: ${({ theme }) => alpha(theme.colors.primary, 0.6)}; /* 60% opacity */
     border-color: ${({ theme }) => alpha(theme.colors.accent, 0.8)};
-    transform: ${props => 
+    transform: ${props =>
       props.className?.includes('zone-top') ? 'translateX(-50%) translateY(-2px)' :
       props.className?.includes('zone-bottom') ? 'translateX(-50%) translateY(2px)' :
       props.className?.includes('zone-left') ? 'translateY(-50%) translateX(-2px)' :
       'translateY(-50%) translateX(2px)'
     };
+  }
+`;
+
+// Indicateur de synchronisation - positionné en haut à gauche du RoomCanvas
+export const SyncIndicator = styled.div`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.md};
+  left: ${({ theme }) => theme.spacing.md};
+  z-index: ${({ theme }) => theme.zIndex.overlay || 15};
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: ${({ theme }) => theme.typography.sizes.xs};
+  font-family: 'Orbitron', monospace;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  color: ${({ $status, theme }) => {
+    switch ($status) {
+      case 'success': return '#27ae60';
+      case 'syncing': return '#f39c12';
+      case 'pending': return '#f39c12';
+      case 'error': return '#e74c3c';
+      case 'offline': return '#95a5a6';
+      default: return theme.colors.text.muted;
+    }
+  }};
+
+  .sync-icon {
+    font-size: 12px;
+    ${({ $status }) => $status === 'syncing' && css`
+      animation: ${spin} 1s linear infinite;
+    `}
+    ${({ $status }) => $status === 'pending' && css`
+      animation: ${pulse} 1.5s ease-in-out infinite;
+    `}
+  }
+
+  .sync-text {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 `;

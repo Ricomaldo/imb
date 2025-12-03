@@ -25,10 +25,11 @@ const LoginCard = styled.div`
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 `;
 
-const Logo = styled.div`
-  text-align: center;
-  font-size: 48px;
-  margin-bottom: 8px;
+const Logo = styled.img`
+  display: block;
+  margin: 0 auto 8px;
+  width: 64px;
+  height: 64px;
 `;
 
 const Title = styled.h1`
@@ -150,7 +151,7 @@ const LoginPage = ({ onLogin }) => {
   return (
     <LoginContainer>
       <LoginCard>
-        <Logo>🏰</Logo>
+        <Logo src="/icon-192.png" alt="IRIM MetaBrain" />
         <Title>IRIM MetaBrain</Title>
         <Subtitle>Studio Hall • Accès sécurisé</Subtitle>
 

@@ -12,7 +12,7 @@ const SyncContext = createContext(null);
  */
 export function SyncProvider({ children }) {
   const syncState = useAutoSync({
-    debounceMs: 30000, // 30 secondes
+    debounceMs: 10000, // 10 secondes
     enabled: true
   });
 

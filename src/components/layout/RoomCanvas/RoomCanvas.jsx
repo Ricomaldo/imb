@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import {
   CanvasContainer,
   RoomsGrid,
-  RoomSlot
+  RoomSlot,
+  SyncIndicator
 } from './RoomCanvas.styles';
 import { getRoomComponent, DefaultRoomRenderer } from '../../../utils/RoomRegistry.jsx';
 import { roomConfig } from '../../../utils/roomPositions';
 import { roomColors } from '../../../utils/assetMapping';
 import NavigationArrows from '../../navigation/NavigationArrows';
 import useKeyboardNavigation from '../../../hooks/useKeyboardNavigation';
+import { useSyncStatus } from '../../../contexts/SyncContext';
 
 /**
  * Conteneur principal pour la navigation entre les pièces
@@ -33,10 +35,33 @@ import useKeyboardNavigation from '../../../hooks/useKeyboardNavigation';
 const RoomCanvas = ({ roomNavHook }) => {
   const { currentRoom, navigateToRoom, getAvailableDirections } = roomNavHook;
   const availableDirections = getAvailableDirections();
+  const { syncStatus, isConfigured } = useSyncStatus();
 
   // État pour tracker la navigation
   const [isNavigating, setIsNavigating] = useState(false);
   const [activeDirection, setActiveDirection] = useState(null);
+
+  // Helper pour afficher l'icône et texte du sync
+  const getSyncDisplay = () => {
+    if (!isConfigured) return { icon: '⚠️', text: 'No sync' };
+
+    switch (syncStatus) {
+      case 'syncing':
+        return { icon: '🔄', text: 'Syncing' };
+      case 'pending':
+        return { icon: '⏳', text: 'Pending' };
+      case 'success':
+        return { icon: '✓', text: 'Synced' };
+      case 'error':
+        return { icon: '✗', text: 'Error' };
+      case 'offline':
+        return { icon: '📴', text: 'Offline' };
+      default:
+        return { icon: '☁️', text: 'Ready' };
+    }
+  };
+
+  const syncDisplay = getSyncDisplay();
 
   // Calcul pour centrer la pièce courante dans le viewport
   // Chaque pièce fait 16.67% de la largeur totale (100%/6) et 20% de la hauteur totale (100%/5)
@@ -81,6 +106,12 @@ const RoomCanvas = ({ roomNavHook }) => {
 
   return (
     <CanvasContainer id="room-canvas-container">
+      {/* Indicateur de sync en haut à gauche */}
+      <SyncIndicator $status={syncStatus} title={`Sync: ${syncStatus}`}>
+        <span className="sync-icon">{syncDisplay.icon}</span>
+        <span className="sync-text">{syncDisplay.text}</span>
+      </SyncIndicator>
+
       <RoomsGrid style={{ transform: `translate(${translateX}%, ${translateY}%)` }}>
         {fullGrid.map((cell, index) => (
           <RoomSlot

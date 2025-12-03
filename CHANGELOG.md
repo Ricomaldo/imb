@@ -2,6 +2,35 @@
 
 ## [Unreleased]
 
+### Added - 2025-12-04 (Auto-Sync Gist & Indicateur Sync)
+
+- **🔄 Auto-Sync vers GitHub Gist** : Synchronisation automatique après modifications
+  - **Détection changements Zustand** : Subscribe direct aux 5 stores (Notes, ProjectMeta, ProjectData, Diary, Preferences)
+  - **Debounce 10 secondes** : Sync après inactivité pour éviter spam API
+  - **Cycle visuel complet** : Ready ☁️ → Pending ⏳ → Syncing 🔄 → Synced ✓
+  - **Auto-import au démarrage** : Compare timestamp Gist vs local, importe si plus récent
+  - **Support multi-device** : Modifications sur un appareil, récupérées sur l'autre au refresh
+
+- **📍 Indicateur Sync Desktop** : Déplacé en haut à gauche du RoomCanvas
+  - Position absolue avec backdrop blur
+  - Animations CSS pour états syncing (spin) et pending (pulse)
+  - Retiré de la ControlTower pour meilleure visibilité
+
+- **📱 Indicateur Sync Companion** : Centré en bas au-dessus de la TabBar
+  - Style pill arrondi avec fond semi-transparent
+  - Mêmes animations et états que la version desktop
+  - Position fixe pour visibilité permanente
+
+- **🏗️ Architecture useAutoSync refactorisée** :
+  - Abandon de l'interception localStorage.setItem (problèmes de race condition)
+  - Utilisation de Zustand subscribe() pour détection fiable des changements
+  - Refs pour éviter les problèmes de stale closures
+  - Support stores dynamiques project-data-* via subscribeToProjectData()
+
+- **📦 Nouveau export useProjectDataStore** :
+  - `subscribeToProjectData(projectId, callback)` : S'abonner aux changements d'un projet
+  - `getCachedProjectIds()` : Liste des projets en cache
+
 ### Fixed - 2025-11-09 (Code Quality & ESLint Audit)
 
 - **🐛 Erreurs console critiques** : Correction de 2 erreurs bloquant le démarrage

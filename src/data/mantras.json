@@ -1,39 +1,60 @@
 {
-    "meta": {
-      "icons": {
-        "liberateurs": "🕊️",
-        "ancrage": "⚓",
-        "presence": "🧘",
-        "creatifs": "🎨",
-        "action": "⚡"
-      }
-    },
-    "liberateurs": [
-      "Mon alignement personnel ne dépend pas de ton évolution relationnelle",
-      "Je t'aime profondément ET mon bien-être ne dépend pas du tien",
-      "Je suis un phare, pas un sauveteur",
-      "L'amour n'attend rien"
-    ],
-    "ancrage": [
-      "L'air circule dans les poumons. L'énergie circule. Je suis libre",
-      "Être mon incarnation la plus alignée avec celui que je suis au fond de mon être",
-      "Il y a des limites au sacrificiel",
-      "Chaque émotion est un guide"
-    ],
-    "presence": [
-      "Ma présence suffit",
-      "Go 90 ans",
-      "Mon équilibre ne dépend pas de son évolution relationnelle"
-    ],
-    "creatifs": [
-      "Chaque accord strummé avec rage est une chaîne brisée",
-      "Ma créativité comme expression de ma vitalité spirituelle",
-      "MoodCycle comme terrain de créativité transcendant les enjeux conjugaux",
-      "J'organise le minimum pour pouvoir lâcher-prise sur le maximum"
-    ],
-    "action": [
-      "Je rayonne la grâce reçue",
-      "Je respire depuis mon centre",
-      "La sophistication sert l'action, ou elle ne sert rien"
-    ]
-  }
+  "meta": {
+    "version": "V4",
+    "updated": "2025-12-04",
+    "icons": {
+      "liberateurs": "🕊️",
+      "ancrage": "⚓",
+      "presence": "🧘",
+      "creatifs": "🎨",
+      "action": "⚡"
+    }
+  },
+  "liberateurs": [
+    "Mon alignement personnel ne dépend pas de ton évolution relationnelle",
+    "Je t'aime profondément ET mon bien-être ne dépend pas du tien",
+    "Je suis un phare, pas un sauveteur",
+    "Nommer mes besoins constitutifs n'est pas du contrôle, c'est de la clarté",
+    "L'amour n'attend rien",
+    "Mon patrimoine sert notre amour, pas l'inverse",
+    "Arthur et moi construisons notre propre aventure",
+    "Je rayonne ma plénitude, elle choisira librement",
+    "Ne rien initier, ne rien attendre, recevoir ce qu'elle donne, vivre ma vie",
+    "Rompre avec une femme rompue n'a pas de vertu",
+    "Rompre avec une femme fracturée ne restaurera pas ma continuité",
+    "Je n'ai pas d'autre choix cohérent avec ma continuité"
+  ],
+  "ancrage": [
+    "L'air circule dans les poumons. L'énergie circule. Je suis libre",
+    "Être mon incarnation la plus alignée avec celui que je suis au fond de mon être",
+    "Il y a des limites au sacrificiel",
+    "Chaque émotion est un guide",
+    "Les doutes c'est le terreau",
+    "L'incertitude est mon terrain d'entraînement spirituel",
+    "Porter espérance silence",
+    "Vivre pleinement",
+    "Ne rien forcer"
+  ],
+  "presence": [
+    "Ma présence suffit",
+    "Go 90 ans",
+    "Mon équilibre ne dépend pas de son évolution relationnelle",
+    "C'est déjà assez",
+    "J'ai pris soin de ma capacité à être heureux",
+    "Je suis le Paon. Ma roue est déjà déployée. Elle la verra si elle regarde.",
+    "Le Paon fait de sa beauté sa plus belle protection"
+  ],
+  "creatifs": [
+    "Chaque accord strummé avec rage est une chaîne brisée",
+    "Ma créativité comme expression de ma vitalité spirituelle",
+    "MoodCycle comme terrain de créativité transcendant les enjeux conjugaux",
+    "J'organise le minimum pour pouvoir lâcher-prise sur le maximum",
+    "Offre au monde la beauté de ton âme"
+  ],
+  "action": [
+    "Je rayonne la grâce reçue",
+    "Je respire depuis mon centre",
+    "La sophistication sert l'action, ou elle ne sert rien",
+    "Jezabel est la femme de ma vie et je suis son époux. Fier."
+  ]
+}

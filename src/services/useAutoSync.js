@@ -6,16 +6,12 @@
 // Approche: S'abonne aux stores Zustand via subscribe() pour détecter les changements
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import CryptoJS from 'crypto-js';
 import useNotesStore from '../stores/useNotesStore';
 import useProjectMetaStore from '../stores/useProjectMetaStore';
 import useDiaryStore from '../stores/useDiaryStore';
 import usePreferencesStore from '../stores/usePreferencesStore';
 import { subscribeToProjectData } from '../stores/useProjectDataStore';
 import projectSyncAdapter from './ProjectSyncAdapter';
-
-// Préfixe pour les stores projet dynamiques
-const PROJECT_DATA_PREFIX = 'project-data-';
 
 /**
  * Hook pour l'auto-sync vers GitHub Gist
@@ -41,118 +37,15 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   const isConfigured = !!(githubToken && encryptionPassword);
 
   /**
-   * Collecte tous les stores depuis localStorage
+   * Configure le projectSyncAdapter avec les credentials
    */
-  const collectAllStores = useCallback(() => {
-    const data = {
-      version: '2.0.0',
-      timestamp: new Date().toISOString(),
-      architecture: 'multi-store',
-      stores: {}
-    };
-
-    try {
-      // Notes Store
-      const notesData = localStorage.getItem('irim-notes-store');
-      if (notesData) {
-        data.stores.notes = JSON.parse(notesData).state;
-      }
-
-      // Project Meta Store
-      const metaData = localStorage.getItem('project-meta-store');
-      if (metaData) {
-        data.stores.projectMeta = JSON.parse(metaData).state;
-      }
-
-      // Diary Store
-      const diaryData = localStorage.getItem('diary-storage');
-      if (diaryData) {
-        data.stores.diary = JSON.parse(diaryData).state;
-      }
-
-      // Preferences Store
-      const preferencesData = localStorage.getItem('irim-preferences-store');
-      if (preferencesData) {
-        data.stores.preferences = JSON.parse(preferencesData).state;
-      }
-
-      // Project Data Stores (tous les project-data-*)
-      data.stores.projectData = {};
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith(PROJECT_DATA_PREFIX)) {
-          const projectId = key.replace(PROJECT_DATA_PREFIX, '');
-          const projectData = localStorage.getItem(key);
-          if (projectData) {
-            data.stores.projectData[projectId] = JSON.parse(projectData).state;
-          }
-        }
-      });
-
-      return data;
-    } catch (err) {
-      console.error('[AutoSync] Error collecting stores:', err);
-      throw new Error('Failed to collect store data');
-    }
-  }, []);
+  const configureSyncAdapter = useCallback(() => {
+    projectSyncAdapter.configure(githubToken, gistId);
+    projectSyncAdapter.setPassword(encryptionPassword);
+  }, [githubToken, gistId, encryptionPassword]);
 
   /**
-   * Chiffre les données avec AES
-   */
-  const encryptData = useCallback((data) => {
-    if (!encryptionPassword) {
-      throw new Error('Encryption password not configured');
-    }
-    const jsonString = JSON.stringify(data);
-    return CryptoJS.AES.encrypt(jsonString, encryptionPassword).toString();
-  }, [encryptionPassword]);
-
-  /**
-   * Upload vers GitHub Gist
-   */
-  const uploadToGist = useCallback(async (data) => {
-    if (!githubToken) {
-      throw new Error('GitHub token not configured');
-    }
-
-    const encryptedData = encryptData(data);
-
-    const gistData = {
-      description: 'IRIM MetaBrain Sync Data',
-      public: false,
-      files: {
-        'irim-sync.json': {
-          content: encryptedData
-        }
-      }
-    };
-
-    const url = gistId
-      ? `https://api.github.com/gists/${gistId}`
-      : 'https://api.github.com/gists';
-
-    const method = gistId ? 'PATCH' : 'POST';
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Authorization': `Bearer ${githubToken}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(gistData)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GitHub API error: ${response.status} - ${errorText}`);
-    }
-
-    const result = await response.json();
-    return result;
-  }, [githubToken, gistId, encryptData]);
-
-  /**
-   * Exécute la synchronisation
+   * Exécute la synchronisation via projectSyncAdapter
    */
   const performSync = useCallback(async () => {
     if (!isConfigured) {
@@ -170,8 +63,14 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       setSyncStatus('syncing');
       setError(null);
 
-      const data = collectAllStores();
-      await uploadToGist(data);
+      // Configurer et utiliser projectSyncAdapter pour l'export
+      // (même chiffrement que l'import = compatible)
+      configureSyncAdapter();
+      const result = await projectSyncAdapter.exportToGist(true);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Export failed');
+      }
 
       const now = new Date();
       setLastSyncTime(now);
@@ -195,7 +94,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
         setSyncStatus('idle');
       }, 5000);
     }
-  }, [isConfigured, collectAllStores, uploadToGist]);
+  }, [isConfigured, configureSyncAdapter]);
 
   /**
    * Déclenche un sync avec debounce
@@ -241,8 +140,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       console.log('[AutoSync] 🔍 Checking Gist for newer data...');
 
       // Configurer le syncAdapter
-      projectSyncAdapter.configure(githubToken, gistId);
-      projectSyncAdapter.setPassword(encryptionPassword);
+      configureSyncAdapter();
 
       // Récupérer les données du Gist
       const gistData = await projectSyncAdapter.syncManager.downloadGist(gistId, true);
@@ -285,9 +183,10 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       }
     } catch (err) {
       console.error('[AutoSync] Auto-import error:', err);
-      // Ne pas bloquer l'app si l'import échoue
+      // Ne pas bloquer l'app si l'import échoue (ex: format incompatible)
+      console.log('[AutoSync] ⚠️ Will re-sync with correct format on next change');
     }
-  }, [isConfigured, gistId, githubToken, encryptionPassword]);
+  }, [isConfigured, gistId, configureSyncAdapter]);
 
   // Ref pour le trigger (évite les problèmes de closure)
   const triggerRef = useRef(triggerDebouncedSync);

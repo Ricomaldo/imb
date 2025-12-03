@@ -213,10 +213,14 @@ class ProjectSyncAdapter {
       // Extraire l'ID du Gist depuis l'URL pour le copier
       const gistId = gistUrl.split('/').pop();
 
-      // Copier l'ID dans le presse-papier si possible
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(gistId);
-        console.log(`📋 Gist ID copied to clipboard: ${gistId}`);
+      // Copier l'ID dans le presse-papier si possible (silencieux si pas d'activation)
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(gistId);
+          console.log(`📋 Gist ID copied to clipboard: ${gistId}`);
+        }
+      } catch {
+        // Clipboard non accessible (auto-sync sans activation utilisateur) - silencieux
       }
 
       console.log('✅ Export successful:', gistUrl);

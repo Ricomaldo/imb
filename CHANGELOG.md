@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+### Fixed - 2025-12-04 (Auto-Sync Encryption & Companion)
+
+- **🔐 Chiffrement compatible** : useAutoSync utilise projectSyncAdapter.exportToGist()
+  - Abandon du chiffrement CryptoJS simple incompatible avec import PBKDF2
+  - Export et import utilisent maintenant le même format SyncManager
+  - Suppression code dupliqué (collectAllStores, encryptData)
+
+- **📋 Clipboard silencieux** : Pas d'erreur quand auto-sync sans activation utilisateur
+
+- **📱 Widget Moments OUI sur Companion** : Ajouté à la HomePage
+  - Texture metal, collapsible
+  - Même fonctionnalité que version Desktop
+  - Store useDiaryStore déjà subscribed pour auto-sync
+
 ### Added - 2025-12-04 (Auto-Sync Gist & Indicateur Sync)
 
 - **🔄 Auto-Sync vers GitHub Gist** : Synchronisation automatique après modifications

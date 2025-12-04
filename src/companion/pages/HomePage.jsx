@@ -1,10 +1,11 @@
 // src/companion/pages/HomePage.jsx
 
-import React from 'react';
-import styled from 'styled-components';
-import QuoteCarousel from '../../components/widgets/QuoteCarousel/QuoteCarousel';
-import Diary from '../../components/widgets/Diary/Diary';
-import Panel from '../../components/common/Panel/Panel';
+import React from "react";
+import styled from "styled-components";
+import QuoteCarousel from "../../components/widgets/QuoteCarousel/QuoteCarousel";
+import Diary from "../../components/widgets/Diary/Diary";
+import Panel from "../../components/common/Panel/Panel";
+import { MomentsOuiWidget } from "../../components/room-modules/sanctuaire/MomentsOui";
 
 const PageContainer = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ const PageContainer = styled.div`
 
 const PageTitle = styled.h1`
   font-family: ${({ theme }) => theme.typography.families.primary};
-  font-size: ${({ theme }) => theme.typography.sizes['2xl']};
+  font-size: ${({ theme }) => theme.typography.sizes["2xl"]};
   font-weight: ${({ theme }) => theme.typography.weights.bold};
   color: ${({ theme }) => theme.colors.text.primary};
   text-align: center;
@@ -59,9 +60,21 @@ const HomePage = () => {
         accentColor="#4A5568"
         contentType="markdown"
         collapsible={true}
-        defaultCollapsed={true}
+        defaultCollapsed={false}
       >
         <Diary />
+      </Panel>
+
+      {/* Moments OUI */}
+      <Panel
+        title="Moments OUI"
+        icon="✨"
+        texture="metal"
+        contentType="moments"
+        collapsible={true}
+        defaultCollapsed={true}
+      >
+        <MomentsOuiWidget />
       </Panel>
     </PageContainer>
   );

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed - 2025-12-04 (Import Encryption Compatibility)
+
+- **🔐 Import compatible PBKDF2** : SyncModal utilise maintenant projectSyncAdapter
+  - **Cause** : L'auto-export utilisait PBKDF2 (salt+iv+encrypted) mais l'import manuel utilisait le chiffrement simple CryptoJS
+  - **Fix** : SyncModal.jsx refactorisé pour utiliser `projectSyncAdapter.importFromGist()` et `exportToGist()`
+  - **Résultat** : Export manuel et auto-sync produisent le même format, l'import fonctionne dans les deux cas
+  - Suppression du code dupliqué (collectAllStores, encryptData, decryptData, uploadToGist, downloadFromGist)
+
 ### Fixed - 2025-12-04 (Auto-Sync Encryption & Companion)
 
 - **🔐 Chiffrement compatible** : useAutoSync utilise projectSyncAdapter.exportToGist()

@@ -1,6 +1,7 @@
 // src/components/common/Panel/Panel.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import {
   PanelWrapper,
@@ -9,7 +10,11 @@ import {
   PanelContent,
   PanelBadge,
   ToggleButton,
-  HeaderContent
+  HeaderContent,
+  FocusOverlay,
+  FocusContainer,
+  FocusHeader,
+  FocusContent
 } from './Panel.styles';
 import { PanelProvider, usePanelContext } from './PanelContext';
 import MarkdownToolbar from '../MarkdownToolbar';
@@ -71,6 +76,27 @@ const PanelInner = ({
     }
   };
 
+  // Gestion Escape et body scroll pour le mode Focus
+  useEffect(() => {
+    if (!panelContext.isExpanded) return;
+
+    // Bloquer le scroll du body
+    document.body.style.overflow = 'hidden';
+
+    // Écouter la touche Escape
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        panelContext.handleToggleExpand();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [panelContext.isExpanded, panelContext.handleToggleExpand]);
+
   if (isCollapsed) {
     // Mode collapsed : fond texture + header simple (sans outils)
     return (
@@ -110,66 +136,124 @@ const PanelInner = ({
 
   // Mode ouvert : panneau complet
   return (
-    <PanelWrapper
-      $gridColumn={gridColumn}
-      $gridRow={gridRow}
-      onClick={onClick}
-    >
-      <PanelContainer $maxHeight={maxHeight} $collapsed={false} $texture={texture} $borderType={borderType}>
-        <PanelHeader $accentColor={accentColor}>
-          <HeaderContent>
-            {!hideHeaderTitleWhenCollapsed && <span>{icon} {title}</span>}
-            {hideHeaderTitleWhenCollapsed && <span>{icon}</span>}
-            {badge && (
-              <PanelBadge >
-                {badge}
-              </PanelBadge>
-            )}
-          </HeaderContent>
+    <>
+      <PanelWrapper
+        $gridColumn={gridColumn}
+        $gridRow={gridRow}
+        onClick={onClick}
+      >
+        <PanelContainer $maxHeight={maxHeight} $collapsed={false} $texture={texture} $borderType={borderType}>
+          <PanelHeader $accentColor={accentColor}>
+            <HeaderContent>
+              {!hideHeaderTitleWhenCollapsed && <span>{icon} {title}</span>}
+              {hideHeaderTitleWhenCollapsed && <span>{icon}</span>}
+              {badge && (
+                <PanelBadge >
+                  {badge}
+                </PanelBadge>
+              )}
+            </HeaderContent>
 
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-            {/* Toolbox selon le type de contenu */}
-            {panelContext.contentType === 'markdown' && (
-              <MarkdownToolbar
-                zoomLevel={panelContext.zoom}
-                onZoomIn={panelContext.handleZoomIn}
-                onZoomOut={panelContext.handleZoomOut}
-                isEditing={panelContext.editing}
-                onToggleEdit={panelContext.handleToggleEdit}
-                showEditButton={true}
-              />
-            )}
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+              {/* Toolbox selon le type de contenu */}
+              {panelContext.contentType === 'markdown' && (
+                <MarkdownToolbar
+                  zoomLevel={panelContext.zoom}
+                  onZoomIn={panelContext.handleZoomIn}
+                  onZoomOut={panelContext.handleZoomOut}
+                  isEditing={panelContext.editing}
+                  onToggleEdit={panelContext.handleToggleEdit}
+                  isExpanded={panelContext.isExpanded}
+                  onToggleExpand={panelContext.handleToggleExpand}
+                  showEditButton={true}
+                  showExpandButton={true}
+                />
+              )}
 
-            {panelContext.contentType === 'mantras' && (
-              <CategoryFilters
-                categories={panelContext.categories || []}
-                activeFilters={panelContext.activeFilters || []}
-                onToggleFilter={panelContext.handleToggleFilter}
-                onClearFilters={panelContext.handleClearFilters}
-                iconsMap={panelContext.iconsMap}
-              />
-            )}
+              {panelContext.contentType === 'mantras' && (
+                <CategoryFilters
+                  categories={panelContext.categories || []}
+                  activeFilters={panelContext.activeFilters || []}
+                  onToggleFilter={panelContext.handleToggleFilter}
+                  onClearFilters={panelContext.handleClearFilters}
+                  iconsMap={panelContext.iconsMap}
+                />
+              )}
 
-            {/* Actions custom toujours en mode ouvert */}
-            {customActions && customActions}
+              {/* Actions custom toujours en mode ouvert */}
+              {customActions && customActions}
 
-            {collapsible && (
-              <ToggleButton
-                onClick={handleToggleCollapse}
-                $active={false}
-                title="Réduire"
-              >
-                📁
-              </ToggleButton>
-            )}
-          </div>
-        </PanelHeader>
+              {collapsible && (
+                <ToggleButton
+                  onClick={handleToggleCollapse}
+                  $active={false}
+                  title="Réduire"
+                >
+                  📁
+                </ToggleButton>
+              )}
+            </div>
+          </PanelHeader>
 
-        <PanelContent $accentColor={accentColor} $transparentContent={transparentContent}>
-          {children}
-        </PanelContent>
-      </PanelContainer>
-    </PanelWrapper>
+          <PanelContent $accentColor={accentColor} $transparentContent={transparentContent}>
+            {children}
+          </PanelContent>
+        </PanelContainer>
+      </PanelWrapper>
+
+      {/* Focus Mode - Custom Portal Overlay */}
+      {panelContext.isExpanded && createPortal(
+        <FocusOverlay onClick={(e) => {
+          // Fermer seulement si on clique sur l'overlay lui-même
+          if (e.target === e.currentTarget) {
+            panelContext.handleToggleExpand();
+          }
+        }}>
+          <FocusContainer>
+            <FocusHeader $accentColor={accentColor}>
+              <span style={{ fontSize: '1.2em', fontWeight: 'bold' }}>
+                {icon} {title}
+              </span>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                {panelContext.contentType === 'markdown' && (
+                  <MarkdownToolbar
+                    zoomLevel={panelContext.zoom}
+                    onZoomIn={panelContext.handleZoomIn}
+                    onZoomOut={panelContext.handleZoomOut}
+                    isEditing={panelContext.editing}
+                    onToggleEdit={panelContext.handleToggleEdit}
+                    isExpanded={true}
+                    onToggleExpand={panelContext.handleToggleExpand}
+                    showEditButton={true}
+                    showExpandButton={true}
+                  />
+                )}
+                <button
+                  onClick={panelContext.handleToggleExpand}
+                  style={{
+                    background: '#dc3545',
+                    border: 'none',
+                    borderRadius: '6px',
+                    color: 'white',
+                    padding: '6px 12px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                  title="Fermer (Esc)"
+                >
+                  ✕ Fermer
+                </button>
+              </div>
+            </FocusHeader>
+            <FocusContent>
+              {children}
+            </FocusContent>
+          </FocusContainer>
+        </FocusOverlay>,
+        document.body
+      )}
+    </>
   );
 };
 

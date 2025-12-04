@@ -113,3 +113,67 @@ export const PanelContent = styled.div`
   min-height: 0;
 
 `;
+
+// ============================================
+// Focus Mode Styles (Mode plein écran)
+// ============================================
+
+export const FocusOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: ${({ theme }) => alpha(theme.colors.black, 0.85)};
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+`;
+
+export const FocusContainer = styled.div`
+  width: 90%;
+  max-width: 1200px;
+  height: 85vh;
+  background-image: url(${textures.parchment});
+  background-size: cover;
+  border-radius: ${({ theme }) => theme.radii.xl};
+  border: 3px solid ${({ theme }) => theme.colors.border};
+  box-shadow: 0 25px 50px ${({ theme }) => alpha(theme.colors.black, 0.5)};
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+export const FocusHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+  background: ${props => props.$accentColor || props.theme.colors.accents.cold};
+  color: ${({ theme }) => theme.colors.text.light};
+  border-bottom: 2px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const FocusContent = styled.div`
+  flex: 1;
+  overflow: auto;
+  padding: ${({ theme }) => theme.spacing.lg};
+
+  /* Zoom boost: augmente la taille de base de 50% */
+  font-size: 1.5em;
+  line-height: 1.6;
+
+  /* Override pour que le MarkdownEditor prenne tout l'espace */
+  & > * {
+    height: 100%;
+  }
+`;

@@ -13,7 +13,10 @@ const MarkdownToolbar = ({
   onZoomOut,
   isEditing,
   onToggleEdit,
-  showEditButton = true
+  isExpanded,
+  onToggleExpand,
+  showEditButton = true,
+  showExpandButton = true
 }) => {
   return (
     <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
@@ -73,6 +76,26 @@ const MarkdownToolbar = ({
           title={isEditing ? 'Mode lecture' : 'Mode édition'}
         >
           {isEditing ? '👁️' : '✏️'}
+        </button>
+      )}
+
+      {/* Bouton expand (mode focus) */}
+      {showExpandButton && (
+        <button
+          onClick={onToggleExpand}
+          style={{
+            background: isExpanded ? 'white' : '#F0F0F0',
+            border: '1px solid currentColor',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
+            cursor: 'pointer',
+            minWidth: '32px',
+            height: '24px'
+          }}
+          title={isExpanded ? 'Réduire' : 'Mode focus (plein écran)'}
+        >
+          {isExpanded ? '⛶' : '⛶'}
         </button>
       )}
     </div>

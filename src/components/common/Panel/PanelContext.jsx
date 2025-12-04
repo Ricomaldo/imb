@@ -12,6 +12,7 @@ export const PanelProvider = ({ children, contentType = "default" }) => {
   // États selon le type de contenu
   const [zoom, setZoom] = useState(0);
   const [editing, setEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // États spécifiques mantras (filtres)
   const [activeFilters, setActiveFilters] = useState([]);
@@ -32,10 +33,16 @@ export const PanelProvider = ({ children, contentType = "default" }) => {
     setEditing(!editing);
   };
 
+  // Fonction expand toggle (mode focus)
+  const handleToggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const value = {
     // États
     zoom,
     editing,
+    isExpanded,
     contentType,
     activeFilters,
     categories,
@@ -44,9 +51,11 @@ export const PanelProvider = ({ children, contentType = "default" }) => {
     // Actions
     setZoom,
     setEditing,
+    setIsExpanded,
     handleZoomIn,
     handleZoomOut,
     handleToggleEdit,
+    handleToggleExpand,
 
     // Actions mantras
     setCategories,

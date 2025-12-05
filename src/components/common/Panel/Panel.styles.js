@@ -168,8 +168,8 @@ export const FocusContent = styled.div`
   overflow: auto;
   padding: ${({ theme }) => theme.spacing.lg};
 
-  /* Zoom boost: augmente la taille de base de 50% */
-  font-size: 1.5em;
+  /* Zoom boost: augmente la taille de base de 150% */
+  font-size: 2.5em;
   line-height: 1.6;
 
   /* Override pour que le MarkdownEditor prenne tout l'espace */

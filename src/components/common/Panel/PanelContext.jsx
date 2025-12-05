@@ -19,9 +19,9 @@ export const PanelProvider = ({ children, contentType = "default" }) => {
   const [categories, setCategories] = useState([]);
   const [iconsMap, setIconsMap] = useState({});
 
-  // Fonctions zoom
+  // Fonctions zoom (range étendue: -2 à +5)
   const handleZoomIn = () => {
-    setZoom(prev => Math.min(prev + 1, 2));
+    setZoom(prev => Math.min(prev + 1, 5)); // Max +5 (au lieu de +2)
   };
 
   const handleZoomOut = () => {

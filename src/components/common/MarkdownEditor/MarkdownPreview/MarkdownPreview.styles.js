@@ -21,8 +21,9 @@ export const PreviewContainer = styled.div.withConfig({
   padding: ${({ theme }) => theme.spacing.sm};
   /* Font-size de base avec zoom - tous les enfants vont hériter */
   font-size: ${({ theme, compact, zoomLevel = 0 }) => {
-    const baseSize = compact ? theme.typography.sizes.xs : theme.typography.sizes.sm;
-    const scale = 1 + (zoomLevel * 0.15); // 15% par niveau
+    // Base augmentée : sm (16px) en compact, base (18px) en normal
+    const baseSize = compact ? theme.typography.sizes.sm : theme.typography.sizes.base;
+    const scale = 1 + (zoomLevel * 0.20); // 20% par niveau (au lieu de 15%)
     return `calc(${baseSize} * ${scale})`;
   }};
   font-family: ${({ theme }) => theme.typography.families.primary};

@@ -5,108 +5,77 @@ import styled from 'styled-components';
 export const ArchiveContainer = styled.div`
   display: flex;
   height: 100%;
-  background: linear-gradient(135deg, #f9f7f4 0%, #f0ebe3 100%);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 `;
 
 export const MonthsList = styled.div`
-  width: 220px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-  border-right: 2px solid rgba(139, 115, 85, 0.15);
-  padding: 20px 16px;
+  width: 140px;
+  background: rgba(255, 255, 255, 0.3);
+  border-right: 1px solid rgba(139, 115, 85, 0.2);
+  padding: 8px;
   overflow-y: auto;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(139, 115, 85, 0.05);
-    border-radius: 4px;
-    margin: 4px;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(139, 115, 85, 0.3) 0%, rgba(139, 115, 85, 0.4) 100%);
-    border-radius: 4px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(139, 115, 85, 0.3);
+    border-radius: 2px;
 
     &:hover {
-      background: linear-gradient(180deg, rgba(139, 115, 85, 0.4) 0%, rgba(139, 115, 85, 0.5) 100%);
+      background: rgba(139, 115, 85, 0.4);
     }
   }
 `;
 
 export const MonthItem = styled.div`
-  padding: 12px 14px;
-  margin-bottom: 6px;
-  border-radius: 10px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 15px;
-  font-weight: ${props => props.$isActive ? '600' : '500'};
-  color: ${props => props.$isActive ? '#3a2a1a' : '#6a5a4a'};
-  background: ${props => props.$isActive
-    ? 'linear-gradient(135deg, rgba(139, 115, 85, 0.2) 0%, rgba(139, 115, 85, 0.15) 100%)'
-    : 'transparent'};
-  border: 1px solid ${props => props.$isActive ? 'rgba(139, 115, 85, 0.3)' : 'transparent'};
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 12px;
+  font-weight: ${props => props.$isActive ? '600' : '400'};
+  color: ${props => props.$isActive ? '#3a2a1a' : '#5a4a3a'};
+  background: ${props => props.$isActive ? 'rgba(139, 115, 85, 0.15)' : 'transparent'};
+  transition: all 0.2s ease;
   text-transform: capitalize;
-  letter-spacing: 0.3px;
-  box-shadow: ${props => props.$isActive ? '0 2px 6px rgba(139, 115, 85, 0.15)' : 'none'};
-  position: relative;
-
-  &::before {
-    content: '📅';
-    margin-right: 8px;
-    opacity: ${props => props.$isActive ? '1' : '0.6'};
-    font-size: 14px;
-    transition: opacity 0.25s ease;
-  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
-    background: ${props => props.$isActive
-      ? 'linear-gradient(135deg, rgba(139, 115, 85, 0.25) 0%, rgba(139, 115, 85, 0.2) 100%)'
-      : 'rgba(139, 115, 85, 0.08)'};
-    border-color: rgba(139, 115, 85, 0.25);
-    transform: translateX(2px);
-
-    &::before {
-      opacity: 1;
-    }
-  }
-
-  &:active {
-    transform: translateX(1px);
+    background: rgba(139, 115, 85, 0.1);
   }
 `;
 
 export const ArchiveContent = styled.div`
   flex: 1;
-  padding: 28px 32px;
+  padding: 12px;
   overflow-y: auto;
+  min-width: 0;
 
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(139, 115, 85, 0.05);
-    border-radius: 5px;
-    margin: 8px 0;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(139, 115, 85, 0.25) 0%, rgba(139, 115, 85, 0.35) 100%);
-    border-radius: 5px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(139, 115, 85, 0.3);
+    border-radius: 3px;
 
     &:hover {
-      background: linear-gradient(180deg, rgba(139, 115, 85, 0.35) 0%, rgba(139, 115, 85, 0.45) 100%);
+      background: rgba(139, 115, 85, 0.4);
     }
   }
 `;
@@ -115,125 +84,78 @@ export const ArchiveHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 3px double rgba(139, 115, 85, 0.2);
-  font-size: 22px;
-  font-weight: 700;
-  color: #3a2a1a;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a3a2a;
   text-transform: capitalize;
-  letter-spacing: 0.5px;
-
-  &::before {
-    content: '📚';
-    margin-right: 12px;
-    font-size: 24px;
-  }
+  gap: 8px;
 `;
 
 export const ExportButton = styled.button`
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #8b7355 0%, #6d5a45 100%);
+  padding: 4px 8px;
+  background: rgba(139, 115, 85, 0.7);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-  letter-spacing: 0.3px;
-
-  &::before {
-    content: '📥 ';
-    margin-right: 4px;
-  }
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.18);
-    background: linear-gradient(135deg, #9a8264 0%, #7c6954 100%);
+    background: rgba(139, 115, 85, 0.85);
   }
 
   &:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    transform: scale(0.95);
   }
 `;
 
 export const NoArchivesMessage = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 60px 40px;
+  height: 100%;
+  padding: 20px;
   text-align: center;
   color: #8b7355;
-  font-size: 15px;
-  line-height: 1.8;
-
-  &::before {
-    content: '📖';
-    font-size: 48px;
-    margin-bottom: 20px;
-    opacity: 0.5;
-  }
+  font-size: 13px;
+  line-height: 1.6;
 `;
 
 export const DayEntry = styled.div`
-  margin-bottom: 28px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-  border-radius: 12px;
-  padding: 20px 24px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  padding: 10px 12px;
   border: 1px solid rgba(139, 115, 85, 0.15);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: all 0.25s ease;
-  position: relative;
 
-  /* Effet "page de livre" avec coin plié */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 16px 16px 0;
-    border-color: transparent rgba(139, 115, 85, 0.1) transparent transparent;
-    border-radius: 0 0 0 4px;
-  }
-
-  &:hover {
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
 export const DayHeader = styled.h3`
-  margin: 0 0 16px 0;
-  color: #3a2a1a;
-  font-size: 17px;
+  margin: 0 0 8px 0;
+  color: #4a3a2a;
+  font-size: 13px;
   font-weight: 600;
   text-transform: capitalize;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(139, 115, 85, 0.12);
-  letter-spacing: 0.3px;
-
-  &::before {
-    content: '📄';
-    margin-right: 8px;
-    font-size: 16px;
-  }
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.1);
 `;
 
 export const DayContent = styled.div`
-  min-height: 80px;
+  min-height: 40px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5a4a3a;
 
   // Style pour le MarkdownEditor en lecture seule
   .markdown-editor-container {
@@ -242,40 +164,41 @@ export const DayContent = styled.div`
   }
 
   .markdown-preview {
-    padding: 12px 8px !important;
+    padding: 4px 0 !important;
     background: transparent !important;
-    color: #4a3a2a;
-    font-size: 14px;
-    line-height: 1.7;
+    font-size: 12px;
+    line-height: 1.6;
 
     h1, h2, h3, h4, h5, h6 {
       color: #3a2a1a;
-      margin-top: 16px;
-      margin-bottom: 8px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      font-size: 13px;
     }
 
     p {
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     ul, ol {
-      margin-left: 20px;
-      margin-bottom: 12px;
+      margin-left: 16px;
+      margin-bottom: 8px;
     }
 
     code {
       background: rgba(139, 115, 85, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 13px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
     }
 
     blockquote {
-      border-left: 3px solid rgba(139, 115, 85, 0.3);
-      padding-left: 16px;
+      border-left: 2px solid rgba(139, 115, 85, 0.3);
+      padding-left: 8px;
       margin-left: 0;
       color: #6a5a4a;
       font-style: italic;
+      font-size: 11px;
     }
   }
 `;

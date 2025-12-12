@@ -99,7 +99,6 @@ const DiaryArchive = () => {
   return (
     <ArchiveContainer>
       <MonthsList>
-        <ArchiveHeader>Archives du journal</ArchiveHeader>
         {archivedMonths.map(month => (
           <MonthItem
             key={month}
@@ -115,9 +114,9 @@ const DiaryArchive = () => {
         {selectedMonth && (
           <>
             <ArchiveHeader>
-              {formatMonthName(selectedMonth)}
+              <span>{formatMonthName(selectedMonth)}</span>
               <ExportButton onClick={handleExport}>
-                Exporter en Markdown
+                Export
               </ExportButton>
             </ArchiveHeader>
 

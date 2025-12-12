@@ -54,29 +54,23 @@
   - Beaucoup d'espace vide (centre et bas) pour futurs composants
   - Effet bureau minimaliste propice à la créativité
 
-### Improved - 2025-12-12 (UI Polish)
-
-- **✨ DiaryArchive UI upgrade** : Effet "livre ancien" élégant
-  - Icônes contextuelles : 📅 mois, 📚 header, 📥 export, 📄 jours
-  - Effet "page de livre" avec coin plié sur chaque entrée de jour
-  - Gradients subtils et ombres douces pour profondeur
-  - Animation hover sur entrées de jour (lift effect)
-  - Typography améliorée : poids, letterspacing, line-height
-  - Scrollbars personnalisées avec gradients
-  - Mise en forme markdown enrichie dans preview (blockquotes, code, listes)
-  - Transitions cubic-bezier pour animations fluides
-  - MonthsList avec effet slide au hover
-
 ### Fixed - 2025-12-12
 
 - **🔧 RoomRegistry.jsx** : Fix erreurs ESLint react-refresh
   - Ajout `/* eslint-disable react-refresh/only-export-components */`
   - Fichier conserve extension .jsx pour support JSX dans DefaultRoomRenderer
-  - Plus d'erreurs de build liées aux exports mixtes
 
-- **📱 Panel Companion** : Fix layout AtelierPage
-  - Correction positionnement panels après restructuration
-  - Layout cohérent entre Desktop et Companion
+- **📚 DiaryArchive** : Version compacte et fonctionnelle
+  - Fix layout complètement cassé (composant illisible)
+  - MonthsList: 220px → 140px largeur
+  - Font sizes drastiquement réduits (14px headers, 12-13px contenu)
+  - Paddings/margins réduits de 50-70%
+  - Suppression emojis décoratifs superflus
+  - Suppression effets "luxueux" (coin plié, gradients complexes)
+  - Scrollbars minimalistes (4-6px au lieu de 8-10px)
+  - Layout simple rgba backgrounds
+  - Bouton "Export" au lieu de "Exporter en Markdown"
+  - **Principe** : Design fonctionnel > Design décoratif pour espaces restreints
 
 ### Fixed - 2025-12-04 (Import Encryption Compatibility)
 

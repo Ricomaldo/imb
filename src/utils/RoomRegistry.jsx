@@ -1,5 +1,7 @@
-// src/utils/RoomRegistry.js
+// src/utils/RoomRegistry.jsx
 // Auto-découverte des composants Room
+
+/* eslint-disable react-refresh/only-export-components */
 
 // Import de tous les composants Room
 import AtelierRoom from '../components/rooms/Atelier/AtelierRoom';

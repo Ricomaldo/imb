@@ -44,18 +44,18 @@ const AtelierRoom = () => {
   const todoState = getModuleState
     ? getModuleState("todo")
     : { collapsed: true };
-  const screentvState = getModuleState
-    ? getModuleState("screentv")
-    : { collapsed: true };
-  const mindlogState = getModuleState
-    ? getModuleState("mindlog")
-    : { collapsed: false };
+  // const screentvState = getModuleState
+  //   ? getModuleState("screentv")
+  //   : { collapsed: true };
+  // const mindlogState = getModuleState
+  //   ? getModuleState("mindlog")
+  //   : { collapsed: false };
   const notesState = getModuleState
     ? getModuleState("notes")
     : { collapsed: false };
 
   // Référence pour le handler de log du MindLog
-  const mindLogHandlerRef = React.useRef(null);
+  // const mindLogHandlerRef = React.useRef(null);
 
   if (!project) {
     return (
@@ -84,8 +84,8 @@ const AtelierRoom = () => {
       <PanelGrid columns={5} rows={5}>
         {/* Roadmap */}
         <Panel
-          gridColumn="1 / 4"
-          gridRow="3 / 6"
+          gridColumn="3 / 6"
+          gridRow="1 / 6"
           title="Roadmap"
           icon="🗺️"
           texture="parchment"
@@ -111,8 +111,8 @@ const AtelierRoom = () => {
 
         {/* Todo */}
         <Panel
-          gridColumn="4 / 6"
-          gridRow="1 / 4"
+          gridColumn="1 / 3"
+          gridRow="3 / 6"
           title="Todo"
           icon="✅"
           texture="parchment"
@@ -136,70 +136,10 @@ const AtelierRoom = () => {
           />
         </Panel>
 
-        {/* ScreenTV */}
+        {/* Notes */}
         <Panel
           gridColumn="1 / 3"
           gridRow="1 / 3"
-          title="ScreenTV"
-          icon="📺"
-          texture="metal"
-          accentColor={theme.colors.accents.cold}
-          collapsible={true}
-          collapsed={screentvState.collapsed ?? true}
-          onToggleCollapse={(newCollapsed) =>
-            updateModuleState &&
-            updateModuleState("screentv", { collapsed: newCollapsed })
-          }
-        >
-          <div style={{ padding: "8px", textAlign: "center" }}>
-            📺 Upload screenshots here
-          </div>
-        </Panel>
-
-        {/* MindLog Compact */}
-        <Panel
-          gridColumn="3 / 4"
-          gridRow="1 / 3"
-          title="MindLog"
-          icon="🌈"
-          texture="wood"
-          accentColor={theme.colors.accents.warm}
-          collapsible={true}
-          collapsed={mindlogState.collapsed ?? false}
-          onToggleCollapse={(newCollapsed) =>
-            updateModuleState &&
-            updateModuleState("mindlog", { collapsed: newCollapsed })
-          }
-          hideHeaderTitleWhenCollapsed={true}
-          customActions={
-            <MindLogToolbar
-              viewMode={mindLogHandlerRef.current?.viewMode || 'compact'}
-              isEditing={mindLogHandlerRef.current?.isEditing || false}
-              logsCount={mindLogHandlerRef.current?.logsCount || 0}
-              onToggleView={() => mindLogHandlerRef.current?.handleToggleView?.()}
-              onToggleEdit={() => mindLogHandlerRef.current?.handleToggleEdit?.()}
-              onQuickLog={() => mindLogHandlerRef.current?.handleQuickLog?.()}
-              onClearLogs={() => mindLogHandlerRef.current?.handleClearLogs?.()}
-              showEditButton={true}
-              showClearButton={false}
-            />
-          }
-        >
-          <MindLogCompact
-            context="project"
-            onMount={(handlers) => {
-              mindLogHandlerRef.current = handlers;
-            }}
-            onLogSave={(log) => {
-              console.log("📊 MindLog saved (project):", log);
-            }}
-          />
-        </Panel>
-
-        {/* Notes */}
-        <Panel
-          gridColumn="4 / 6"
-          gridRow="4 / 6"
           title="Notes"
           icon="📝"
           texture="parchment"

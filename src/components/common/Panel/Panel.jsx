@@ -14,7 +14,8 @@ import {
   FocusOverlay,
   FocusContainer,
   FocusHeader,
-  FocusContent
+  FocusContent,
+  FocusCloseButton
 } from './Panel.styles';
 import { PanelProvider, usePanelContext } from './PanelContext';
 import MarkdownToolbar from '../MarkdownToolbar';
@@ -228,22 +229,12 @@ const PanelInner = ({
                     showExpandButton={true}
                   />
                 )}
-                <button
+                <FocusCloseButton
                   onClick={panelContext.handleToggleExpand}
-                  style={{
-                    background: '#dc3545',
-                    border: 'none',
-                    borderRadius: '6px',
-                    color: 'white',
-                    padding: '6px 12px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: 'bold'
-                  }}
                   title="Fermer (Esc)"
                 >
-                  ✕ Fermer
-                </button>
+                  ✕
+                </FocusCloseButton>
               </div>
             </FocusHeader>
             <FocusContent>

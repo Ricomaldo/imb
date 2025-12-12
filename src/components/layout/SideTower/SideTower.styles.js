@@ -3,6 +3,20 @@
 import styled from 'styled-components';
 import { craftBorder, stoneBg } from '../../../styles/mixins';
 
+export const TowerWrapper = styled.div`
+  position: fixed;
+  right: ${({ theme }) => theme.spacing.sm};
+  top: ${({ theme }) => theme.spacing.sm};
+  bottom: ${({ theme }) => theme.spacing.sm};
+  width: calc(20% - ${({ theme }) => theme.spacing.sm});
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  transform: translateX(${({ collapsed }) => collapsed ? '100%' : '0'});
+  opacity: ${({ collapsed }) => collapsed ? '0' : '1'};
+  visibility: ${({ collapsed }) => collapsed ? 'hidden' : 'visible'};
+  pointer-events: ${({ collapsed }) => collapsed ? 'none' : 'auto'};
+`;
+
 export const TowerContainer = styled.div`
   width: 100%;
   height: 100%;

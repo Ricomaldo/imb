@@ -1,15 +1,15 @@
 // src/companion/pages/AtelierPage.jsx
 
-import React from 'react';
-import styled, { useTheme } from 'styled-components';
-import useProjectMetaStore from '../../stores/useProjectMetaStore';
-import { useProjectData } from '../../stores/useProjectDataStore';
-import Panel from '../../components/common/Panel/Panel';
-import MarkdownEditor from '../../components/common/MarkdownEditor/MarkdownEditor';
-import MindLogCompact from '../../components/widgets/MindLog/MindLogCompact';
-import MindLogToolbar from '../../components/common/MindLogToolbar';
-import ProjectCarousel from '../../components/room-modules/atelier/ProjectCarousel';
-import { usePanelContent } from '../../hooks/usePanelContent';
+import React from "react";
+import styled, { useTheme } from "styled-components";
+import useProjectMetaStore from "../../stores/useProjectMetaStore";
+import { useProjectData } from "../../stores/useProjectDataStore";
+import Panel from "../../components/common/Panel/Panel";
+import MarkdownEditor from "../../components/common/MarkdownEditor/MarkdownEditor";
+import MindLogCompact from "../../components/widgets/MindLog/MindLogCompact";
+import MindLogToolbar from "../../components/common/MindLogToolbar";
+import ProjectCarousel from "../../components/room-modules/atelier/ProjectCarousel";
+import { usePanelContent } from "../../hooks/usePanelContent";
 
 const PageContainer = styled.div`
   display: flex;
@@ -21,7 +21,7 @@ const PageContainer = styled.div`
 
 const PageTitle = styled.h1`
   font-family: ${({ theme }) => theme.typography.families.primary};
-  font-size: ${({ theme }) => theme.typography.sizes['2xl']};
+  font-size: ${({ theme }) => theme.typography.sizes["2xl"]};
   font-weight: ${({ theme }) => theme.typography.weights.bold};
   color: ${({ theme }) => theme.colors.text.primary};
   text-align: center;
@@ -64,24 +64,26 @@ const AtelierPage = () => {
     updateRoadmapContent,
     updateTodoContent,
     updateNotesContent,
-  } = usePanelContent(project?.id || 'default');
+  } = usePanelContent(project?.id || "default");
 
   // États collapse des modules
-  const roadmapState = getModuleState ? getModuleState('roadmap') : { collapsed: true };
-  const todoState = getModuleState ? getModuleState('todo') : { collapsed: true };
-  const screentvState = getModuleState ? getModuleState('screentv') : { collapsed: true };
-  const mindlogState = getModuleState ? getModuleState('mindlog') : { collapsed: true };
-  const notesState = getModuleState ? getModuleState('notes') : { collapsed: true };
+  const roadmapState = getModuleState
+    ? getModuleState("roadmap")
+    : { collapsed: true };
+  const todoState = getModuleState
+    ? getModuleState("todo")
+    : { collapsed: true };
 
-  // Référence pour le handler de log du MindLog
-  const mindLogHandlerRef = React.useRef(null);
+  const notesState = getModuleState
+    ? getModuleState("notes")
+    : { collapsed: true };
 
   if (!project) {
     return (
       <PageContainer>
         <PageTitle>🛠️ Atelier</PageTitle>
         <Panel title="Aucun projet" icon="⚠️" collapsible={false}>
-          <div style={{ padding: '20px', textAlign: 'center' }}>
+          <div style={{ padding: "20px", textAlign: "center" }}>
             Aucun projet sélectionné. Créez un projet depuis la version desktop.
           </div>
         </Panel>
@@ -92,28 +94,28 @@ const AtelierPage = () => {
   return (
     <PageContainer>
       <ProjectCarousel />
-
-      {/* Roadmap */}
+      {/* Notes */}
       <Panel
-        title="Roadmap"
-        icon="🗺️"
+        title="Notes"
+        icon="📝"
         texture="parchment"
-        accentColor={theme.colors.accents.cold}
+        accentColor={theme.colors.accents.neutral}
         contentType="markdown"
         collapsible={true}
-        collapsed={roadmapState.collapsed}
+        collapsed={notesState.collapsed}
         onToggleCollapse={(newCollapsed) =>
-          updateModuleState && updateModuleState('roadmap', { collapsed: newCollapsed })
+          updateModuleState &&
+          updateModuleState("notes", { collapsed: newCollapsed })
         }
       >
         <MarkdownEditor
-          value={roadmapContent}
-          onChange={updateRoadmapContent}
-          placeholder="Définissez votre roadmap en markdown..."
+          value={notesContent}
+          onChange={updateNotesContent}
+          placeholder="Capturez vos idées et notes importantes..."
           height="300px"
           compact={true}
           variant="embedded"
-          accentColor={theme.colors.accents.cold}
+          accentColor={theme.colors.accents.neutral}
         />
       </Panel>
 
@@ -127,7 +129,8 @@ const AtelierPage = () => {
         collapsible={true}
         collapsed={todoState.collapsed}
         onToggleCollapse={(newCollapsed) =>
-          updateModuleState && updateModuleState('todo', { collapsed: newCollapsed })
+          updateModuleState &&
+          updateModuleState("todo", { collapsed: newCollapsed })
         }
       >
         <MarkdownEditor
@@ -141,80 +144,28 @@ const AtelierPage = () => {
         />
       </Panel>
 
-      {/* MindLog */}
+      {/* Roadmap */}
       <Panel
-        title="MindLog"
-        icon="🌈"
-        texture="wood"
-        accentColor={theme.colors.accents.warm}
-        collapsible={true}
-        collapsed={mindlogState.collapsed}
-        onToggleCollapse={(newCollapsed) =>
-          updateModuleState && updateModuleState('mindlog', { collapsed: newCollapsed })
-        }
-        customActions={
-          <MindLogToolbar
-            viewMode={mindLogHandlerRef.current?.viewMode || 'compact'}
-            isEditing={mindLogHandlerRef.current?.isEditing || false}
-            logsCount={mindLogHandlerRef.current?.logsCount || 0}
-            onToggleView={() => mindLogHandlerRef.current?.handleToggleView?.()}
-            onToggleEdit={() => mindLogHandlerRef.current?.handleToggleEdit?.()}
-            onQuickLog={() => mindLogHandlerRef.current?.handleQuickLog?.()}
-            onClearLogs={() => mindLogHandlerRef.current?.handleClearLogs?.()}
-            showEditButton={true}
-            showClearButton={false}
-          />
-        }
-      >
-        <MindLogCompact
-          context="project"
-          onMount={(handlers) => {
-            mindLogHandlerRef.current = handlers;
-          }}
-          onLogSave={(log) => {
-            console.log('📊 MindLog saved (project):', log);
-          }}
-        />
-      </Panel>
-
-      {/* ScreenTV */}
-      <Panel
-        title="ScreenTV"
-        icon="📺"
-        texture="metal"
-        accentColor={theme.colors.accents.cold}
-        collapsible={true}
-        collapsed={screentvState.collapsed}
-        onToggleCollapse={(newCollapsed) =>
-          updateModuleState && updateModuleState('screentv', { collapsed: newCollapsed })
-        }
-      >
-        <div style={{ padding: '20px', textAlign: 'center' }}>
-          📺 Upload screenshots (Phase 2)
-        </div>
-      </Panel>
-
-      {/* Notes */}
-      <Panel
-        title="Notes"
-        icon="📝"
+        title="Roadmap"
+        icon="🗺️"
         texture="parchment"
-        accentColor={theme.colors.accents.neutral}
+        accentColor={theme.colors.accents.cold}
         contentType="markdown"
         collapsible={true}
-        collapsed={notesState.collapsed}
+        collapsed={roadmapState.collapsed}
         onToggleCollapse={(newCollapsed) =>
-          updateModuleState && updateModuleState('notes', { collapsed: newCollapsed })
+          updateModuleState &&
+          updateModuleState("roadmap", { collapsed: newCollapsed })
         }
       >
         <MarkdownEditor
-          value={notesContent}
-          onChange={updateNotesContent}
-          placeholder="Capturez vos idées et notes importantes..."
+          value={roadmapContent}
+          onChange={updateRoadmapContent}
+          placeholder="Définissez votre roadmap en markdown..."
           height="300px"
           compact={true}
           variant="embedded"
-          accentColor={theme.colors.accents.neutral}
+          accentColor={theme.colors.accents.cold}
         />
       </Panel>
     </PageContainer>

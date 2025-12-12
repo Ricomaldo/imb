@@ -124,14 +124,19 @@ export const FocusOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: ${({ theme }) => alpha(theme.colors.black, 0.85)};
-  backdrop-filter: blur(8px);
+  background: ${({ theme }) => alpha(theme.colors.black, 0.9)};
+  backdrop-filter: blur(4px);
   z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px; /* Desktop: padding confortable */
   animation: fadeIn 0.2s ease-out;
+
+  /* Mobile: padding minimal */
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
 
   @keyframes fadeIn {
     from { opacity: 0; }
@@ -140,14 +145,26 @@ export const FocusOverlay = styled.div`
 `;
 
 export const FocusContainer = styled.div`
+  /* Desktop: taille raisonnable, centrée */
   width: 90%;
   max-width: 1200px;
   height: 85vh;
+  max-height: 85vh;
+
+  /* Mobile: plein écran */
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: ${({ theme }) => theme.radii.sm};
+  }
+
   background-image: url(${textures.parchment});
   background-size: cover;
-  border-radius: ${({ theme }) => theme.radii.xl};
-  border: 3px solid ${({ theme }) => theme.colors.border};
-  box-shadow: 0 25px 50px ${({ theme }) => alpha(theme.colors.black, 0.5)};
+  border-radius: ${({ theme }) => theme.radii.lg};
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  box-shadow: 0 10px 30px ${({ theme }) => alpha(theme.colors.black, 0.5)};
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -157,23 +174,80 @@ export const FocusHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.lg}`};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
   background: ${props => props.$accentColor || props.theme.colors.accents.cold};
   color: ${({ theme }) => theme.colors.text.light};
   border-bottom: 2px solid ${({ theme }) => theme.colors.border};
+  flex-shrink: 0;
+
+  /* Mobile: header plus compact */
+  @media (max-width: 768px) {
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+
+    span {
+      font-size: 1em;
+    }
+  }
 `;
 
 export const FocusContent = styled.div`
   flex: 1;
-  overflow: auto;
-  padding: ${({ theme }) => theme.spacing.lg};
+  overflow: hidden; /* Pas auto, le MarkdownEditor gère son scroll */
+  padding: ${({ theme }) => theme.spacing.sm};
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Important pour flexbox */
 
-  /* Zoom boost: augmente la taille de base de 150% */
+  /* Zoom boost: augmente la taille de base */
   font-size: 2.5em;
   line-height: 1.6;
 
-  /* Override pour que le MarkdownEditor prenne tout l'espace */
+  /* Mobile: zoom moins agressif */
+  @media (max-width: 768px) {
+    font-size: 1.8em;
+    padding: ${({ theme }) => theme.spacing.xs};
+  }
+
+  /* Force toute la chaîne flex à prendre 100% de hauteur */
   & > * {
+    flex: 1 1 auto;
     height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Forcer les enfants imbriqués (EditorContent, Textarea, Preview) */
+  & > * > *,
+  & > * > * > * {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Textarea spécifique: forcer 100% hauteur */
+  textarea {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    min-height: 200px;
+  }
+`;
+
+export const FocusCloseButton = styled.button`
+  background: ${({ theme }) => theme.colors.accents.danger};
+  border: none;
+  border-radius: ${({ theme }) => theme.radii.sm};
+  color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.9;
   }
 `;

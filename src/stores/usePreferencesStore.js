@@ -15,6 +15,14 @@ const usePreferencesStore = create(
       // Disposition personnalisée des pièces (null = utiliser la disposition par défaut)
       customRoomLayout: null,
 
+      // === PRÉFÉRENCES SIDETOWER ===
+
+      // État de collapse de la SideTower
+      sideTowerCollapsed: false,
+
+      // Source de notes active dans SideTowerNotes ('sidetower' | 'companion')
+      sideTowerNotesSource: 'sidetower',
+
       // === ÉTATS UI DES ROOMS (ancien useRoomsUIStore) ===
 
       // État UI par room et par panel
@@ -64,6 +72,30 @@ const usePreferencesStore = create(
       // Récupérer la disposition personnalisée
       getCustomRoomLayout: () => {
         return get().customRoomLayout;
+      },
+
+      // === ACTIONS POUR SIDETOWER ===
+
+      // Toggle collapse de la SideTower
+      toggleSideTowerCollapse: () => {
+        set((state) => ({ sideTowerCollapsed: !state.sideTowerCollapsed }));
+      },
+
+      // Setter pour sideTowerCollapsed
+      setSideTowerCollapsed: (collapsed) => {
+        set({ sideTowerCollapsed: collapsed });
+      },
+
+      // Toggle source de notes SideTower
+      toggleSideTowerNotesSource: () => {
+        set((state) => ({
+          sideTowerNotesSource: state.sideTowerNotesSource === 'sidetower' ? 'companion' : 'sidetower'
+        }));
+      },
+
+      // Setter pour sideTowerNotesSource
+      setSideTowerNotesSource: (source) => {
+        set({ sideTowerNotesSource: source });
       },
 
       // === ACTIONS POUR ÉTATS UI DES ROOMS ===

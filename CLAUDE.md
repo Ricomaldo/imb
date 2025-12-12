@@ -1,21 +1,12 @@
+---
+created: '2025-12-07'
+updated: '2025-12-07'
+status: active
+---
+
 # CLAUDE.md - IRIMMetaBrain
 
 > Meta-cerveau spatial pour cerveaux créatifs neuro-atypiques
-
-## Pilote IA : Chrysalis
-
-Tu es **Chrysalis**, architecte-développeuse spécialisée innovation technique & créative.
-
-**Ta signature** : Transformation contraintes en opportunités, révélation potentiel caché, architecture de projets scalables.
-
-**Domaines d'intervention** :
-- Architecture cognitive (IMB opérationnel, extensions)
-- Innovations méthodologiques et optimisation espaces travail
-- Projets créatifs techniques (passage développeur → utilisateur)
-
-**Métaphores** : organismes vivants, construction évolutive, métamorphose technique.
-
-**Supervision** : Merlin depuis `~/system/infrastructure/cockpit/`
 
 ---
 
@@ -92,7 +83,7 @@ src/
 
 ### Standards Documentation
 - Front matter YAML obligatoire (`type`, `updated`)
-- ADR pour décisions architecturales (`docs/decisions/ADR-XXX-*.md`)
+- ADR pour décisions architecturales (`_docs_/decisions/ADR-XXX-*.md`)
 - Liens internes en chemins relatifs
 
 ---
@@ -100,7 +91,7 @@ src/
 ## Missions Actives
 
 ### Mission Prioritaire : IMB Sync — Auto-export Gist
-**Fichier** : `~/system/infrastructure/cockpit/imb-sync-mission.md`
+**Fichier** : `__cockpit__/active/imb-sync-mission.md`
 **Statut** : GO reçu
 
 **Objectif** : Éliminer la friction Export/Import manuel. L'IMB sauvegarde automatiquement vers le Gist.
@@ -117,7 +108,7 @@ src/
 ---
 
 ### Mission Secondaire : IMB Upgrade — MCP + Sages
-**Fichier** : `~/system/infrastructure/cockpit/imb-upgrade-mission.md`
+**Fichier** : `__cockpit__/backlog/imb-upgrade-mission.md`
 
 **Chantiers** :
 - A. MCP Endpoint IMB (API Vercel Serverless → lecture Gist)
@@ -133,15 +124,45 @@ src/
 ## Références
 
 ### Documentation Projet
-- [Architecture Stores](docs/architecture/stores-architecture.md)
-- [Architecture Companion](docs/COMPANION_ARCHITECTURE.md)
-- [Guide Sync](docs/guides/sync-system.md)
-- [Contributing](docs/CONTRIBUTING.md)
-- [ADR Index](docs/decisions/README.md)
+- [Architecture Stores](_docs_/architecture/stores-architecture.md)
+- [Architecture Companion](_docs_/COMPANION_ARCHITECTURE.md)
+- [Guide Sync](_docs_/guides/sync-system.md)
+- [Contributing](_docs_/CONTRIBUTING.md)
+- [ADR Index](_docs_/decisions/README.md)
 
-### Système (read-only)
-- Standards : `~/system/references/standards/`
-- Cockpit : `~/system/infrastructure/cockpit/`
+### Références Système
+
+Ce projet suit l'Architecture V2. Sources de vérité :
+
+| Document | Emplacement |
+|----------|-------------|
+| Index Références | `~/dev/_ref/LINKS.md` |
+| ADR-01 Architecture | `~/dev/_ref/standards/ADR-01-architecture-v2.md` |
+| ADR-02 Conventions | `~/dev/_ref/standards/ADR-02-conventions-nommage.md` |
+| ADR-03 Linking | `~/dev/_ref/standards/ADR-03-strategie-linking.md` |
+| Framework Cockpit | `~/dev/_ref/frameworks/cockpit.md` |
+| Framework Documentation | `~/dev/_ref/frameworks/documentation.md` |
+
+### Conventions Appliquées (ADR-02)
+
+| Contexte | Convention | Exemple |
+|----------|------------|---------|
+| Fichiers/dossiers | kebab-case | `user-profile.tsx` |
+| Composants | PascalCase | `UserProfile` |
+| Variables/fonctions | camelCase | `getUserData` |
+| Constantes | SCREAMING_SNAKE | `MAX_RETRIES` |
+
+### Frontmatter Obligatoire
+
+Tous les fichiers `.md` :
+
+```yaml
+---
+created: 'YYYY-MM-DD'
+updated: 'YYYY-MM-DD'
+status: draft | active | archived
+---
+```
 
 ---
 

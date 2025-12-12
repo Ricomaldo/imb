@@ -11,7 +11,7 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: ${({ theme }) => theme.spacing['2xs']};
+  gap: 2px;
   width: 100%;
   height: 100%;
   padding: ${props => props.theme.spacing.xs};
@@ -21,7 +21,9 @@ const GridContainer = styled.div`
 `;
 
 const RoomCell = styled.div`
-  background-color: ${props => props.color};
+  background: ${props => props.$background ? `url(${props.$background})` : props.color};
+  background-size: cover;
+  background-position: center;
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.radii.md};
   cursor: pointer;
@@ -32,17 +34,36 @@ const RoomCell = styled.div`
   font-weight: 600;
   text-align: center;
   transition: all 0.2s ease;
-  opacity: ${props => props.$isCurrent ? 1 : 0.8};
-  box-shadow: ${props => props.$isCurrent ? `0 0 8px ${props.color}` : '0 2px 4px rgba(0,0,0,0.2)'};
+  opacity: ${props => props.$isCurrent ? 1 : 0.7};
+  box-shadow: ${props => props.$isCurrent ? `0 0 12px ${props.color}` : '0 2px 4px rgba(0,0,0,0.2)'};
   width: 90%;
   height: 90%;
   aspect-ratio: 1.5;
+  position: relative;
+  overflow: hidden;
+
+  /* Overlay sombre pour améliorer la lisibilité */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: ${props => props.theme.radii.md};
+    transition: background 0.2s ease;
+  }
 
   &:hover {
     opacity: 1;
     transform: scale(1.08);
-    box-shadow: 0 0 12px ${props => props.color};
+    box-shadow: 0 0 16px ${props => props.color};
     z-index: 1;
+
+    &::before {
+      background: rgba(0, 0, 0, 0.2);
+    }
   }
 
   &:active {
@@ -51,10 +72,18 @@ const RoomCell = styled.div`
 `;
 
 const RoomLabel = styled.span`
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
   color: ${props => props.theme.colors.text.light};
-  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9);
   line-height: 1.2;
   font-family: ${props => props.theme.typography.families.primary};
+  z-index: 2;
+  font-size: 8px;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
 `;
 
 /**
@@ -200,6 +229,7 @@ const NavigationGrid = () => {
         <RoomCell
           key={`${room.x}-${room.y}`}
           color={roomColors[room.type]}
+          $background={room.background}
           $isCurrent={room.type === currentRoomType}
           onClick={() => handleRoomClick(room.type)}
           title={`Aller vers ${room.name}`}

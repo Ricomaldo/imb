@@ -1,16 +1,18 @@
 // src/components/layout/SideTower/SideTower.jsx
 
-import React from 'react';
 import {
+  TowerWrapper,
   TowerContainer,
   TopTowerFloor,
   MiddleTowerFloor,
   BottomTowerFloor
 } from './SideTower.styles';
 import { ControlTower, WorkbenchDrawer, SideTowerNotes } from '../../tower';
+import usePreferencesStore from '../../../stores/usePreferencesStore';
 
 /**
  * Tour latérale contenant les contrôles et outils
+ * @renders TowerWrapper
  * @renders TowerContainer
  * @renders TopTowerFloor
  * @renders ControlTower
@@ -20,20 +22,24 @@ import { ControlTower, WorkbenchDrawer, SideTowerNotes } from '../../tower';
  * @renders SideTowerNotes
  */
 const SideTower = () => {
+  const sideTowerCollapsed = usePreferencesStore((state) => state.sideTowerCollapsed);
+
   return (
-    <TowerContainer>
-      <TopTowerFloor id="control-tower-floor">
-        <ControlTower />
-      </TopTowerFloor>
+    <TowerWrapper collapsed={sideTowerCollapsed}>
+      <TowerContainer>
+        <TopTowerFloor id="control-tower-floor">
+          <ControlTower />
+        </TopTowerFloor>
 
-      <MiddleTowerFloor id="workbench-floor">
-        <WorkbenchDrawer />
-      </MiddleTowerFloor>
+        <MiddleTowerFloor id="workbench-floor">
+          <WorkbenchDrawer />
+        </MiddleTowerFloor>
 
-      <BottomTowerFloor id="notes-floor">
-        <SideTowerNotes />
-      </BottomTowerFloor>
-    </TowerContainer>
+        <BottomTowerFloor id="notes-floor">
+          <SideTowerNotes />
+        </BottomTowerFloor>
+      </TowerContainer>
+    </TowerWrapper>
   );
 };
 

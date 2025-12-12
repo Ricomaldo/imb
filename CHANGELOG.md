@@ -2,6 +2,61 @@
 
 ## [Unreleased]
 
+### Added - 2025-12-12 (UX Improvements & Navigation)
+
+- **📐 Mode Focus Panel** : Agrandissement plein écran des panels
+  - Nouveau bouton dans Panel header pour basculer en mode focus
+  - Panel s'étend sur toute la grille en mode focus
+  - État persisté dans usePreferencesStore par panel
+  - Améliore la lisibilité pour édition markdown ou visualisation de contenu
+
+- **🎯 SideTower Collapsible** : Masquer/afficher la tour latérale
+  - Bouton toggle vertical sur le bord droit de l'écran
+  - Animation slide smooth avec transition cubic-bezier
+  - RoomCanvas s'étend à 100% quand SideTower collapsed
+  - Position fixed pour la SideTower (hors du grid flow)
+  - État persisté dans preferences store
+
+- **🔄 SideTowerNotes avec toggle source** : Basculer entre notes Desktop/Mobile
+  - Bouton "⇄" dans le header pour switcher entre sources
+  - 📝 Notes SideTower (Desktop) - couleur neutral
+  - 💡 Notes Dev Companion (Mobile) - couleur cold
+  - Même éditeur markdown, données séparées dans useNotesStore
+  - Synchronisation garantie via Gist pour les deux sources
+
+- **🗺️ NavigationGrid avec backgrounds** : Vignettes visuelles des pièces
+  - Affichage des images de background dans les vignettes navigation
+  - Noms des pièces en petit overlay bas-gauche
+  - Gap drastiquement réduit (2px) pour compacité
+  - Overlay sombre pour améliorer lisibilité
+  - Ratio 4:3 respecté via positionnement grille
+
+### Changed - 2025-12-12 (Rooms Reorganization)
+
+- **🏰 Chambre redesignée** : Grille 12x8 pour meilleure flexibilité
+  - **Journal Quotidien** : Pleine largeur droite (colonnes 7-13, lignes 1-5)
+  - **Navigation** : Bas droite avec ratio 4:3 parfait (colonnes 7-13, lignes 5-9)
+  - Quart bas gauche laissé vide pour futures fonctionnalités
+  - Suppression : Totem, Mantras, TimeTimer, MindLog, Notes
+
+- **🕉️ Sanctuaire enrichi** : Accueil de Totem + Mantras depuis Chambre
+  - Layout grille 5x5 optimisé
+  - **Totem** 🗿 : Haut gauche (colonnes 1-3, lignes 1-3)
+  - **Mantras** 🕉️ : Haut droite (colonnes 3-6, lignes 1-3)
+  - **Tri Mental** 🧘 : Bas gauche (colonnes 1-3, lignes 3-6)
+  - **Moments OUI** ✨ : Bas droite (colonnes 3-6, lignes 3-6)
+
+### Fixed - 2025-12-12
+
+- **🔧 RoomRegistry.jsx** : Fix erreurs ESLint react-refresh
+  - Ajout `/* eslint-disable react-refresh/only-export-components */`
+  - Fichier conserve extension .jsx pour support JSX dans DefaultRoomRenderer
+  - Plus d'erreurs de build liées aux exports mixtes
+
+- **📱 Panel Companion** : Fix layout AtelierPage
+  - Correction positionnement panels après restructuration
+  - Layout cohérent entre Desktop et Companion
+
 ### Fixed - 2025-12-04 (Import Encryption Compatibility)
 
 - **🔐 Import compatible PBKDF2** : SyncModal utilise maintenant projectSyncAdapter

@@ -6,49 +6,68 @@ import BaseRoom from "../../layout/BaseRoom";
 import { ScriptoriumGrid } from "./ScriptoriumRoom.styles";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
-import Diary from "../../widgets/Diary/Diary";
+import MarkdownEditor from "../../common/MarkdownEditor";
 import DiaryArchive from "../../widgets/DiaryArchive/DiaryArchive";
+import useNotesStore from "../../../stores/useNotesStore";
+import usePreferencesStore from "../../../stores/usePreferencesStore";
 
 /**
  * Scriptorium room component for writing and documentation
  * @renders BaseRoom
  * @renders PanelGrid
  * @renders Panel
- * @renders Diary
+ * @renders MarkdownEditor
+ * @renders DiaryArchive
  */
 const ScriptoriumRoom = () => {
   const theme = useTheme();
+  const { getRoomNote, updateRoomNote } = useNotesStore();
+  const { getPanelState, updatePanelState } = usePreferencesStore();
+
+  const brouillonNote = getRoomNote('scriptorium');
 
   return (
     <BaseRoom roomType="scriptorium" layoutType="grid">
       <PanelGrid columns={4} rows={4}>
-        {/* Journal quotidien - côté droit */}
+        {/* Brouillon - côté gauche */}
         <Panel
           gridColumn="1 / 3"
-          gridRow="1 / 4"
-          title="Journal Quotidien"
-          icon="📖"
-          texture="wood"
+          gridRow="1 / 5"
+          title="Brouillon"
+          icon="📝"
+          texture="parchment"
+          accentColor={theme.colors.accents.neutral}
           contentType="markdown"
           collapsible={true}
-          defaultCollapsed={false}
+          collapsed={getPanelState("scriptorium", "brouillon").collapsed}
+          onToggleCollapse={(val) =>
+            updatePanelState("scriptorium", "brouillon", { collapsed: val })
+          }
         >
-          <Diary />
+          <MarkdownEditor
+            value={brouillonNote}
+            onChange={(value) => updateRoomNote('scriptorium', value)}
+            placeholder="Brouillon de travail..."
+            height="100%"
+            variant="embedded"
+          />
         </Panel>
-        {/* Archives du Journal - Petit panneau en haut à gauche */}
+        {/* Archives du Journal - côté droit */}
         <Panel
           gridColumn="3 / 5"
-          gridRow="1 / 4"
+          gridRow="1 / 5"
           title="Archives du Journal"
           icon="📚"
           texture="parchment"
           accentColor={theme.colors.accents.warm}
           collapsible={true}
-          collapsed={false}
+          collapsed={getPanelState("scriptorium", "archives").collapsed}
+          onToggleCollapse={(val) =>
+            updatePanelState("scriptorium", "archives", { collapsed: val })
+          }
         >
           <DiaryArchive />
         </Panel>
-        {/* Espace pour futurs widgets à gauche */}
       </PanelGrid>
     </BaseRoom>
   );

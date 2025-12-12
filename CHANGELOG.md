@@ -46,6 +46,13 @@
   - **Tri Mental** 🧘 : Bas gauche (colonnes 1-3, lignes 3-6)
   - **Moments OUI** ✨ : Bas droite (colonnes 3-6, lignes 3-6)
 
+- **📝 Scriptorium simplifié** : Brouillon au lieu du Journal dupliqué
+  - Suppression du widget Diary (déplacé vers Chambre, évite doublon)
+  - **Brouillon** 📝 : Note simple connectée au store (gauche, colonnes 1-3)
+  - **Archives du Journal** 📚 : Conservées (droite, colonnes 3-5)
+  - Layout grille 4x4, les deux panels en pleine hauteur
+  - Notes Brouillon syncées avec Gist via useNotesStore.roomNotes.scriptorium
+
 ### Fixed - 2025-12-12
 
 - **🔧 RoomRegistry.jsx** : Fix erreurs ESLint react-refresh

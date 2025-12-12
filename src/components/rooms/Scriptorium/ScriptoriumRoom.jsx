@@ -13,6 +13,7 @@ import usePreferencesStore from "../../../stores/usePreferencesStore";
 
 /**
  * Scriptorium room component for writing and documentation
+ * Layout 12x8 "effet bureau" - espacé et inspirant
  * @renders BaseRoom
  * @renders PanelGrid
  * @renders Panel
@@ -28,10 +29,10 @@ const ScriptoriumRoom = () => {
 
   return (
     <BaseRoom roomType="scriptorium" layoutType="grid">
-      <PanelGrid columns={4} rows={4}>
-        {/* Brouillon - côté gauche */}
+      <PanelGrid columns={12} rows={8}>
+        {/* Brouillon - comme un document posé sur le bureau (gauche haut) */}
         <Panel
-          gridColumn="1 / 3"
+          gridColumn="1 / 6"
           gridRow="1 / 5"
           title="Brouillon"
           icon="📝"
@@ -52,13 +53,14 @@ const ScriptoriumRoom = () => {
             variant="embedded"
           />
         </Panel>
-        {/* Archives du Journal - côté droit */}
+
+        {/* Archives du Journal - comme un classeur/bibliothèque (droite) */}
         <Panel
-          gridColumn="3 / 5"
-          gridRow="1 / 5"
+          gridColumn="7 / 13"
+          gridRow="1 / 7"
           title="Archives du Journal"
           icon="📚"
-          texture="parchment"
+          texture="wood"
           accentColor={theme.colors.accents.warm}
           collapsible={true}
           collapsed={getPanelState("scriptorium", "archives").collapsed}
@@ -68,6 +70,15 @@ const ScriptoriumRoom = () => {
         >
           <DiaryArchive />
         </Panel>
+
+        {/* Espace vide pour inspiration - centre et bas du bureau
+            Disponible pour futurs composants:
+            - Notes rapides / Post-its
+            - Planner hebdomadaire
+            - Citations / inspiration
+            - Outils d'écriture
+            - etc.
+        */}
       </PanelGrid>
     </BaseRoom>
   );

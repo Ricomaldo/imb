@@ -46,12 +46,26 @@
   - **Tri Mental** 🧘 : Bas gauche (colonnes 1-3, lignes 3-6)
   - **Moments OUI** ✨ : Bas droite (colonnes 3-6, lignes 3-6)
 
-- **📝 Scriptorium simplifié** : Brouillon au lieu du Journal dupliqué
-  - Suppression du widget Diary (déplacé vers Chambre, évite doublon)
-  - **Brouillon** 📝 : Note simple connectée au store (gauche, colonnes 1-3)
-  - **Archives du Journal** 📚 : Conservées (droite, colonnes 3-5)
-  - Layout grille 4x4, les deux panels en pleine hauteur
-  - Notes Brouillon syncées avec Gist via useNotesStore.roomNotes.scriptorium
+- **📝 Scriptorium "effet bureau"** : Layout 12x8 aéré et inspirant
+  - Migration vers grille 12x8 (nouveau pattern standard)
+  - **Brouillon** 📝 : Document posé sur le bureau (colonnes 1-6, lignes 1-5)
+  - **Archives du Journal** 📚 : Classeur/bibliothèque (colonnes 7-13, lignes 1-7)
+  - Texture wood pour Archives au lieu de parchment
+  - Beaucoup d'espace vide (centre et bas) pour futurs composants
+  - Effet bureau minimaliste propice à la créativité
+
+### Improved - 2025-12-12 (UI Polish)
+
+- **✨ DiaryArchive UI upgrade** : Effet "livre ancien" élégant
+  - Icônes contextuelles : 📅 mois, 📚 header, 📥 export, 📄 jours
+  - Effet "page de livre" avec coin plié sur chaque entrée de jour
+  - Gradients subtils et ombres douces pour profondeur
+  - Animation hover sur entrées de jour (lift effect)
+  - Typography améliorée : poids, letterspacing, line-height
+  - Scrollbars personnalisées avec gradients
+  - Mise en forme markdown enrichie dans preview (blockquotes, code, listes)
+  - Transitions cubic-bezier pour animations fluides
+  - MonthsList avec effet slide au hover
 
 ### Fixed - 2025-12-12
 

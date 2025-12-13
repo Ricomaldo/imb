@@ -149,6 +149,38 @@ export const DayHeader = styled.h3`
   text-transform: capitalize;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const DeleteButton = styled.button`
+  background: rgba(220, 60, 60, 0.7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:hover {
+    background: rgba(220, 60, 60, 0.9);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 export const DayContent = styled.div`

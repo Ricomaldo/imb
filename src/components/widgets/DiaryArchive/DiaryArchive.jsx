@@ -1,9 +1,10 @@
 // src/components/widgets/DiaryArchive/DiaryArchive.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import useDiaryStore from '../../../stores/useDiaryStore';
 import MarkdownEditor from '../../common/MarkdownEditor';
+import { debounce } from '../../../utils/debounce';
 import {
   ArchiveContainer,
   MonthsList,
@@ -14,7 +15,8 @@ import {
   NoArchivesMessage,
   DayEntry,
   DayHeader,
-  DayContent
+  DayContent,
+  DeleteButton
 } from './DiaryArchive.styles';
 
 /**
@@ -36,11 +38,21 @@ const DiaryArchive = () => {
   const {
     getArchivedMonths,
     getMonthlyArchive,
-    exportMonthToMarkdown
+    exportMonthToMarkdown,
+    updateArchivedEntry,
+    deleteArchivedEntry
   } = useDiaryStore();
 
   const [selectedMonth, setSelectedMonth] = useState(null);
   const archivedMonths = getArchivedMonths();
+
+  // Debounced update pour sauvegarder automatiquement
+  const debouncedUpdate = useMemo(
+    () => debounce((yearMonth, date, content) => {
+      updateArchivedEntry(yearMonth, date, content);
+    }, 500),
+    [updateArchivedEntry]
+  );
 
   // Sélectionner automatiquement le premier mois si aucun n'est sélectionné
   React.useEffect(() => {
@@ -62,6 +74,19 @@ const DiaryArchive = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const handleDelete = (date) => {
+    if (!selectedMonth) return;
+
+    if (window.confirm(`Supprimer l'entrée du ${formatDayName(date)} ?`)) {
+      deleteArchivedEntry(selectedMonth, date);
+    }
+  };
+
+  const handleUpdate = (date, content) => {
+    if (!selectedMonth) return;
+    debouncedUpdate(selectedMonth, date, content);
   };
 
   const formatMonthName = (yearMonth) => {
@@ -122,16 +147,24 @@ const DiaryArchive = () => {
 
             {sortedDays.map(([date, content]) => (
               <DayEntry key={date}>
-                <DayHeader>{formatDayName(date)}</DayHeader>
+                <DayHeader>
+                  <span>{formatDayName(date)}</span>
+                  <DeleteButton
+                    onClick={() => handleDelete(date)}
+                    title="Supprimer cette entrée"
+                  >
+                    ×
+                  </DeleteButton>
+                </DayHeader>
                 <DayContent>
                   <MarkdownEditor
                     value={content}
-                    onChange={() => {}} // Lecture seule
-                    placeholder=""
+                    onChange={(newContent) => handleUpdate(date, newContent)}
+                    placeholder="Entrée vide..."
                     variant="embedded"
-                    showPreview={true}
+                    showPreview={false}
                     height="auto"
-                    readOnly={true}
+                    readOnly={false}
                   />
                 </DayContent>
               </DayEntry>

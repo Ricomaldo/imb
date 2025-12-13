@@ -194,6 +194,33 @@ const useDiaryStore = create(
         return markdown;
       },
 
+      // Modifier une entrée archivée
+      updateArchivedEntry: (yearMonth, date, content) => set(state => ({
+        monthlyArchives: {
+          ...state.monthlyArchives,
+          [yearMonth]: {
+            ...(state.monthlyArchives[yearMonth] || {}),
+            [date]: content
+          }
+        }
+      })),
+
+      // Supprimer une entrée archivée
+      deleteArchivedEntry: (yearMonth, date) => set(state => {
+        const monthArchive = { ...(state.monthlyArchives[yearMonth] || {}) };
+        delete monthArchive[date];
+
+        // Si le mois est vide après suppression, supprimer le mois entier
+        const newMonthlyArchives = { ...state.monthlyArchives };
+        if (Object.keys(monthArchive).length === 0) {
+          delete newMonthlyArchives[yearMonth];
+        } else {
+          newMonthlyArchives[yearMonth] = monthArchive;
+        }
+
+        return { monthlyArchives: newMonthlyArchives };
+      }),
+
       // Getters
       getTodayLogs: () => {
         const today = new Date().toDateString();

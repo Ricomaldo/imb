@@ -156,13 +156,20 @@ export const DayHeader = styled.h3`
 `;
 
 export const DeleteButton = styled.button`
-  background: rgba(220, 60, 60, 0.7);
+  background: ${props => {
+    if (props.$isEdit) {
+      return props.$isActive
+        ? 'rgba(60, 150, 220, 0.9)'
+        : 'rgba(100, 100, 100, 0.6)';
+    }
+    return 'rgba(220, 60, 60, 0.7)';
+  }};
   color: white;
   border: none;
   border-radius: 4px;
   width: 24px;
   height: 24px;
-  font-size: 18px;
+  font-size: ${props => props.$isEdit ? '14px' : '18px'};
   font-weight: bold;
   line-height: 1;
   cursor: pointer;
@@ -174,7 +181,14 @@ export const DeleteButton = styled.button`
   padding: 0;
 
   &:hover {
-    background: rgba(220, 60, 60, 0.9);
+    background: ${props => {
+      if (props.$isEdit) {
+        return props.$isActive
+          ? 'rgba(60, 150, 220, 1)'
+          : 'rgba(100, 100, 100, 0.8)';
+      }
+      return 'rgba(220, 60, 60, 0.9)';
+    }};
     transform: scale(1.1);
   }
 

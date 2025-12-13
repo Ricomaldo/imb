@@ -44,6 +44,7 @@ const DiaryArchive = () => {
   } = useDiaryStore();
 
   const [selectedMonth, setSelectedMonth] = useState(null);
+  const [editingDate, setEditingDate] = useState(null);
   const archivedMonths = getArchivedMonths();
 
   // Debounced update pour sauvegarder automatiquement
@@ -81,12 +82,20 @@ const DiaryArchive = () => {
 
     if (window.confirm(`Supprimer l'entrée du ${formatDayName(date)} ?`)) {
       deleteArchivedEntry(selectedMonth, date);
+      // Si on supprime l'entrée en cours d'édition, sortir du mode édition
+      if (editingDate === date) {
+        setEditingDate(null);
+      }
     }
   };
 
   const handleUpdate = (date, content) => {
     if (!selectedMonth) return;
     debouncedUpdate(selectedMonth, date, content);
+  };
+
+  const toggleEdit = (date) => {
+    setEditingDate(editingDate === date ? null : date);
   };
 
   const formatMonthName = (yearMonth) => {
@@ -145,30 +154,43 @@ const DiaryArchive = () => {
               </ExportButton>
             </ArchiveHeader>
 
-            {sortedDays.map(([date, content]) => (
-              <DayEntry key={date}>
-                <DayHeader>
-                  <span>{formatDayName(date)}</span>
-                  <DeleteButton
-                    onClick={() => handleDelete(date)}
-                    title="Supprimer cette entrée"
-                  >
-                    ×
-                  </DeleteButton>
-                </DayHeader>
-                <DayContent>
-                  <MarkdownEditor
-                    value={content}
-                    onChange={(newContent) => handleUpdate(date, newContent)}
-                    placeholder="Entrée vide..."
-                    variant="embedded"
-                    showPreview={false}
-                    height="auto"
-                    readOnly={false}
-                  />
-                </DayContent>
-              </DayEntry>
-            ))}
+            {sortedDays.map(([date, content]) => {
+              const isEditing = editingDate === date;
+              return (
+                <DayEntry key={date}>
+                  <DayHeader>
+                    <span>{formatDayName(date)}</span>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <DeleteButton
+                        onClick={() => toggleEdit(date)}
+                        title={isEditing ? "Annuler l'édition" : "Éditer cette entrée"}
+                        $isEdit={true}
+                        $isActive={isEditing}
+                      >
+                        ✏️
+                      </DeleteButton>
+                      <DeleteButton
+                        onClick={() => handleDelete(date)}
+                        title="Supprimer cette entrée"
+                      >
+                        ×
+                      </DeleteButton>
+                    </div>
+                  </DayHeader>
+                  <DayContent>
+                    <MarkdownEditor
+                      value={content}
+                      onChange={(newContent) => handleUpdate(date, newContent)}
+                      placeholder="Entrée vide..."
+                      variant="embedded"
+                      showPreview={!isEditing}
+                      height="auto"
+                      readOnly={!isEditing}
+                    />
+                  </DayContent>
+                </DayEntry>
+              );
+            })}
           </>
         )}
       </ArchiveContent>

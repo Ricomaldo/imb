@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added - 2025-12-13 (Archive Management)
+
+- **✏️ DiaryArchive CRUD** : Édition et suppression des entrées archivées
+  - Édition inline avec MarkdownEditor (auto-save debounce 500ms)
+  - Bouton suppression (×) dans chaque en-tête de jour
+  - Confirmation avant suppression
+  - Store : `updateArchivedEntry()` et `deleteArchivedEntry()`
+  - Cleanup automatique : si mois vide après suppression, le mois est supprimé
+  - Interface cohérente : fonctionnalités READ + UPDATE + DELETE
+
 ### Added - 2025-12-12 (UX Improvements & Navigation)
 
 - **📐 Mode Focus Panel** : Agrandissement plein écran des panels

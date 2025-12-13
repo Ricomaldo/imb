@@ -5,9 +5,12 @@
 ### Added - 2025-12-13 (Archive Management)
 
 - **✏️ DiaryArchive CRUD** : Édition et suppression des entrées archivées
+  - **Bouton édition ✏️** : Toggle explicite entre mode lecture/édition
+    - États visuels : gris (inactif) / bleu (actif) / rouge (suppression)
+    - Une seule entrée éditable à la fois
+    - Mode lecture par défaut, édition sur demande
   - Édition inline avec MarkdownEditor (auto-save debounce 500ms)
-  - Bouton suppression (×) dans chaque en-tête de jour
-  - Confirmation avant suppression
+  - **Bouton suppression ×** : Confirmation avant suppression
   - Store : `updateArchivedEntry()` et `deleteArchivedEntry()`
   - Cleanup automatique : si mois vide après suppression, le mois est supprimé
   - Interface cohérente : fonctionnalités READ + UPDATE + DELETE

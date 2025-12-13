@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-### Added - 2025-12-13 (Archive Management)
+### Added - 2025-12-13 (Archive Management & Polish)
 
 - **✏️ DiaryArchive CRUD** : Édition et suppression des entrées archivées
   - **Bouton édition ✏️** : Toggle explicite entre mode lecture/édition
@@ -14,6 +14,14 @@
   - Store : `updateArchivedEntry()` et `deleteArchivedEntry()`
   - Cleanup automatique : si mois vide après suppression, le mois est supprimé
   - Interface cohérente : fonctionnalités READ + UPDATE + DELETE
+
+### Improved - 2025-12-13
+
+- **🎨 Icons avec padding** : Meilleur centrage de l'icône château
+  - Ajout padding transparent sur toutes les tailles
+  - icon-512: +40px, icon-192: +15px, apple-touch: +14px
+  - favicons: +1-2px selon taille
+  - Château maintenant bien centré, ne touche plus les bords
 
 ### Added - 2025-12-12 (UX Improvements & Navigation)
 

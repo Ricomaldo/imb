@@ -166,6 +166,39 @@ status: draft | active | archived
 
 ---
 
+## 🗺️ Framework Navigation
+
+**You're here**: Working on IRIMMetaBrain (React + Zustand spatial interface for ADHD/creative brains).
+
+### Quick Reads (New Session)
+- **System overview** (5min): `~/dev/_ref/guides/framework-momentum.md`
+- **Agent onboarding** (20min): `~/dev/_ref/guides/agent-onboarding.md` ← **Read this first if new to project**
+- **Audit methodology** (reference): `~/dev/_ref/guides/audit-cycles.md`
+
+### Active Work
+- **Current mission**: `__cockpit__/active/imb-sync-mission.md` (Auto-export Gist, Phase A+B)
+- **Backlog mission**: `__cockpit__/backlog/imb-upgrade-mission.md` (MCP + Sages integration)
+- **Project state**: Stores + sync + 12 rooms spatial interface
+
+### Project Documentation
+- **Stores architecture**: `_docs_/architecture/stores-architecture.md`
+- **Companion PWA**: `_docs_/COMPANION_ARCHITECTURE.md`
+- **Sync system**: `_docs_/guides/sync-system.md`
+- **ADRs**: `_docs_/decisions/` (architecture decisions)
+- **Contributing**: `_docs_/CONTRIBUTING.md`
+
+### System Standards (System-Level)
+- **ADR-01** (Architecture): `~/dev/_ref/standards/ADR-01-architecture-v2.md`
+- **ADR-02** (Conventions): `~/dev/_ref/standards/ADR-02-conventions-nommage.md`
+- **Cockpit Framework**: `~/dev/_ref/frameworks/cockpit.md`
+- **Documentation Framework**: `~/dev/_ref/frameworks/documentation.md`
+
+### Tooling
+- **Validate frontmatter**: `~/dev/_infra/scripts/validate-frontmatter.sh`
+- **Check all active missions**: `~/dev/_infra/scripts/check-missions.sh`
+
+---
+
 ## Commandes Utiles
 
 ```bash

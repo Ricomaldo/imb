@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import MarkdownEditor from '../../common/MarkdownEditor';
 import useDiaryStore from '../../../stores/useDiaryStore';
+import { usePanelContext } from '../../common/Panel/PanelContext';
 
 /**
  * Daily Diary widget with Markdown support
@@ -14,6 +15,9 @@ const Diary = () => {
     updateDailyEntry,
     archiveMonthlyEntries
   } = useDiaryStore();
+
+  // Détecter le mode Focus pour adapter les styles
+  const { isExpanded } = usePanelContext();
 
   // Obtenir la date du jour au format YYYY-MM-DD
   const today = new Date().toISOString().split('T')[0];
@@ -36,24 +40,32 @@ const Diary = () => {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      padding: '12px'
+      padding: isExpanded ? '0' : '12px'
     }}>
-      <div style={{
-        marginBottom: '8px',
-        fontSize: '14px',
-        fontWeight: '600',
-        color: '#8b7355',
-        textAlign: 'center'
-      }}>
-        Journal du {new Date().toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}
-      </div>
+      {/* Masquer le header en mode Focus (le Panel affiche déjà le titre) */}
+      {!isExpanded && (
+        <div style={{
+          marginBottom: '8px',
+          fontSize: '14px',
+          fontWeight: '600',
+          color: '#8b7355',
+          textAlign: 'center'
+        }}>
+          Journal du {new Date().toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })}
+        </div>
+      )}
 
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div style={{
+        flex: 1,
+        overflow: isExpanded ? 'hidden' : 'auto',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
         <MarkdownEditor
           value={todayEntry}
           onChange={handleContentChange}

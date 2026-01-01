@@ -4,8 +4,8 @@ import styled from "styled-components";
 import sagesData from "../../../../data/sagesConfig.json";
 import useSagesStore from "../../../../stores/useSagesStore";
 import { SageQuote } from "./SageQuote";
-import { SagesKnowledge } from "./SagesKnowledge";
-import { HandoffCreator } from "./HandoffCreator";
+// import { SagesKnowledge } from "./SagesKnowledge"; // Legacy - file doesn't exist
+import HandoffCreator from "./HandoffCreator";
 
 const SagesGrid = styled.div`
   display: grid;
@@ -343,10 +343,10 @@ export const SagesPortal = () => {
                     sageId={selectedSage.id}
                     color={selectedSage.color}
                   />
-                  <SagesKnowledge
+                  {/* <SagesKnowledge
                     sageId={selectedSage.id}
                     color={selectedSage.color}
-                  />
+                  /> */}
                 </ModalSection>
 
                 {/* Colonne droite: Handoff */}

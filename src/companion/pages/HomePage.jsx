@@ -1,11 +1,15 @@
 // src/companion/pages/HomePage.jsx
 
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import QuoteCarousel from "../../components/widgets/QuoteCarousel/QuoteCarousel";
 import Diary from "../../components/widgets/Diary/Diary";
 import Panel from "../../components/common/Panel/Panel";
 import { MomentsOuiWidget } from "../../components/room-modules/sanctuaire/MomentsOui";
+import HydrationReminder from "../../components/room-modules/cuisine/HydrationReminder";
+import PauseCorps from "../../components/room-modules/cuisine/PauseCorps";
+import TimeTimer from "../components/TimeTimer";
+import { ZoneRouge } from "../../components/rooms/Comptoir/widgets/ZoneRouge";
 
 const PageContainer = styled.div`
   display: flex;
@@ -27,14 +31,30 @@ const PageTitle = styled.h1`
 `;
 
 /**
- * Page d'accueil Companion - Mantras + Diary
+ * Page d'accueil Companion - Widgets bien-être quotidien
  * @renders PageContainer
  * @renders PageTitle
  * @renders Panel
- * @renders QuoteCarousel
- * @renders Diary
  */
 const HomePage = () => {
+  // Gestion des états collapsed pour chaque panel
+  const [collapsedStates, setCollapsedStates] = useState({
+    mantras: true,
+    journal: false,
+    hydration: true,
+    pauseCorps: true,
+    timeTimer: true,
+    momentsOui: true,
+    zoneRouge: true
+  });
+
+  const toggleCollapse = (panelId) => {
+    setCollapsedStates(prev => ({
+      ...prev,
+      [panelId]: !prev[panelId]
+    }));
+  };
+
   return (
     <PageContainer>
       <PageTitle>🏠 IMB Companion</PageTitle>
@@ -47,7 +67,8 @@ const HomePage = () => {
         accentColor="#B8860B"
         contentType="mantras"
         collapsible={true}
-        defaultCollapsed={true}
+        collapsed={collapsedStates.mantras}
+        onToggleCollapse={() => toggleCollapse('mantras')}
       >
         <QuoteCarousel showCategory={false} infinite={true} random={true} />
       </Panel>
@@ -60,21 +81,75 @@ const HomePage = () => {
         accentColor="#4A5568"
         contentType="markdown"
         collapsible={true}
-        defaultCollapsed={false}
+        collapsed={collapsedStates.journal}
+        onToggleCollapse={() => toggleCollapse('journal')}
       >
         <Diary />
+      </Panel>
+
+      {/* Hydratation */}
+      <Panel
+        title="Hydratation"
+        icon="💧"
+        texture="wood"
+        accentColor="#3B82F6"
+        collapsible={true}
+        collapsed={collapsedStates.hydration}
+        onToggleCollapse={() => toggleCollapse('hydration')}
+      >
+        <HydrationReminder />
+      </Panel>
+
+      {/* Pause Corps */}
+      <Panel
+        title="Pause Corps"
+        icon="🧘"
+        texture="wood"
+        accentColor="#10B981"
+        collapsible={true}
+        collapsed={collapsedStates.pauseCorps}
+        onToggleCollapse={() => toggleCollapse('pauseCorps')}
+      >
+        <PauseCorps />
+      </Panel>
+
+      {/* TimeTimer */}
+      <Panel
+        title="TimeTimer"
+        icon="⏱️"
+        texture="metal"
+        accentColor="#F59E0B"
+        collapsible={true}
+        collapsed={collapsedStates.timeTimer}
+        onToggleCollapse={() => toggleCollapse('timeTimer')}
+      >
+        <TimeTimer />
       </Panel>
 
       {/* Moments OUI */}
       <Panel
         title="Moments OUI"
         icon="✨"
-        texture="metal"
-        contentType="moments"
+        texture="parchment"
+        accentColor="#8B5CF6"
         collapsible={true}
-        defaultCollapsed={true}
+        collapsed={collapsedStates.momentsOui}
+        onToggleCollapse={() => toggleCollapse('momentsOui')}
       >
         <MomentsOuiWidget />
+      </Panel>
+
+      {/* Zone Rouge - En bas */}
+      <Panel
+        title="Zone Rouge"
+        icon="🔴"
+        texture="stone"
+        accentColor="#EF4444"
+        collapsible={true}
+        collapsed={collapsedStates.zoneRouge}
+        onToggleCollapse={() => toggleCollapse('zoneRouge')}
+      >
+        <ZoneRouge />
       </Panel>
     </PageContainer>
   );

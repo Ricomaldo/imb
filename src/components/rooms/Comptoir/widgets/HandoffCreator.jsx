@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { createHandoff } from '../../../../services/mcpClient';
+import mcpVaultClient from '../../../../services/mcpVaultClient';
 import sagesData from '../../../../data/sagesConfig.json';
 
 const HandoffContainer = styled.div`
@@ -139,9 +139,53 @@ export const HandoffCreator = ({ emetteurId, emetteurName, color }) => {
     setMessage('');
 
     try {
-      const result = await createHandoff(emetteurId, recepteur, question, contexte);
+      // Initialize MCP connection if needed
+      await mcpVaultClient.initialize();
+
+      // Build handoff content
+      const timestamp = new Date().toISOString();
+      const date = timestamp.split('T')[0];
+      const filename = `${emetteurId}-vers-${recepteur}-${date}.md`;
+      const filepath = `_inboxes/handoffs/${filename}`;
+
+      const content = `---
+type: handoff
+de: ${emetteurId}
+vers: ${recepteur}
+date: ${timestamp}
+statut: pending
+priorite: normale
+source: IMB-Comptoir
+---
+
+# Handoff ${emetteurId} → ${recepteur}
+
+## Pourquoi ce relais ?
+
+[À compléter par émetteur]
+
+## Travail accompli (${emetteurId})
+
+[Résumé explorations, insights, protocoles]
+
+## Demande spécifique (${recepteur})
+
+${question}
+
+## Contexte
+
+${contexte || '[À compléter par émetteur]'}
+
+## Notes Complémentaires
+
+[Observations, nuances, sensibilités particulières]
+`;
+
+      // Create note in vault via MCP
+      await mcpVaultClient.createNote('8sages', filepath, content);
+
       setStatus('success');
-      setMessage(`✅ Handoff créé: ${result.filename}`);
+      setMessage(`✅ Handoff créé: ${filename}`);
 
       // Reset form après 2 secondes
       setTimeout(() => {
@@ -154,6 +198,7 @@ export const HandoffCreator = ({ emetteurId, emetteurName, color }) => {
     } catch (error) {
       setStatus('error');
       setMessage(`❌ ${error.message}`);
+      console.error('[Handoff] Creation error:', error);
     }
   };
 

@@ -146,12 +146,12 @@ const ComptoirPage = () => {
 
   return (
     <PageContainer>
-      <PageTitle>🎭 Comptoir</PageTitle>
+      <PageTitle>🧙 Comptoir</PageTitle>
 
       {/* Sage Selector */}
       <Panel
         title="Choisir un Sage"
-        icon="🎭"
+        icon="🧙"
         texture="metal"
         accentColor={theme.colors.accents.warm}
         collapsible={true}

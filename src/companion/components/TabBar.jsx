@@ -70,11 +70,11 @@ const TabLabel = styled.span`
 `;
 
 const tabs = [
-  { path: '/companion/home', label: 'Home', icon: '🏠' },
-  { path: '/companion/atelier', label: 'Atelier', icon: '⚒️' },
-  { path: '/companion/comptoir', label: 'Comptoir', icon: '🎭' },
-  { path: '/companion/dev', label: 'Dev', icon: '💡' },
-  { path: '/companion/settings', label: 'Config', icon: '⚙️' }
+  { path: '/home', label: 'Home', icon: '🏠' },
+  { path: '/atelier', label: 'Atelier', icon: '⚒️' },
+  { path: '/comptoir', label: 'Comptoir', icon: '🧙' },
+  { path: '/dev', label: 'Dev', icon: '💡' },
+  { path: '/settings', label: 'Config', icon: '⚙️' }
 ];
 
 /**
@@ -93,10 +93,10 @@ const TabBar = () => {
       {tabs.map(tab => (
         <TabButton
           key={tab.path}
-          $active={location.pathname === tab.path || (location.pathname === '/companion' && tab.path === '/companion/home')}
+          $active={location.pathname === tab.path || (location.pathname === '/' && tab.path === '/home')}
           onClick={() => navigate(tab.path)}
         >
-          <TabIcon $active={location.pathname === tab.path || (location.pathname === '/companion' && tab.path === '/companion/home')}>
+          <TabIcon $active={location.pathname === tab.path || (location.pathname === '/' && tab.path === '/home')}>
             {tab.icon}
           </TabIcon>
           <TabLabel>{tab.label}</TabLabel>

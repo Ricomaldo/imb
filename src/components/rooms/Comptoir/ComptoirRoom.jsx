@@ -44,6 +44,14 @@ const ComptoirRoom = () => {
       try {
         const indexPath = `1-knowledge-base/index-sages/${activeSageId}-questions.md`;
         const content = await readNote(indexPath);
+
+        // Debug: show raw content for problematic sages
+        if (activeSageId === "eleo") {
+          console.log(`[ComptoirRoom] Raw content for ${activeSageId} (first 500 chars):`);
+          console.log(content.substring(0, 500));
+          console.log(`[ComptoirRoom] Content length: ${content.length}`);
+        }
+
         const questions = parseQuestionsFromMarkdown(content);
         setQuestionsIndex(questions);
         setSelectedQuestionIds([]); // Reset selection on sage change
@@ -62,22 +70,25 @@ const ComptoirRoom = () => {
   const parseQuestionsFromMarkdown = (content) => {
     const questions = [];
 
-    // Split by heading to process each question block
-    const sections = content.split(/###\s+\[([A-Z0-9]+)\]\s+(.+?)(?=###|\Z)/gs);
+    // Use matchAll to capture each question block with its full content
+    // Pattern: ### [ID] Title - Description
+    // Then capture everything until the next ### or end of file
+    const questionRegex = /###\s+\[([A-Z0-9]+)\]\s+([^\n]+)\n([\s\S]*?)(?=###\s+\[|$)/g;
 
-    // sections will be: [content before first heading, id1, title1, section1_content, id2, title2, section2_content, ...]
-    for (let i = 1; i < sections.length; i += 3) {
-      const questionId = sections[i];
-      const titleAndDescription = sections[i + 1];
-      const sectionContent = sections[i + 2] || "";
+    let match;
+    while ((match = questionRegex.exec(content)) !== null) {
+      const questionId = match[1];
+      const titleAndDescription = match[2];
+      const sectionContent = match[3] || "";
 
       // Extract title (remove description after dash)
       const titleMatch = titleAndDescription.match(/^([^-]+)(?:\s*-\s*(.+))?$/);
       const title = titleMatch ? titleMatch[1].trim() : titleAndDescription;
 
       // Extract filepath from "- **Fichier** : `path/to/file.md`"
+      // Pattern: "- **Fichier** : `path`" or "- **Fichier :** `path`"
       const filepathMatch = sectionContent.match(
-        /\-\s*\*\*Fichier\*\*\s*:\s*`([^`]+)`/
+        /\-\s*\*\*Fichier\s*\*\*\s*:\s*`([^`]+)`/
       );
       const relativeFilepath = filepathMatch ? filepathMatch[1].trim() : null;
 
@@ -108,8 +119,12 @@ const ComptoirRoom = () => {
       // Debug log
       if (!filepath) {
         console.warn(
-          `[ComptoirRoom] No filepath extracted for ${questionId}. Section content: `,
-          sectionContent.substring(0, 200)
+          `[ComptoirRoom] No filepath extracted for ${questionId}. Section preview: `,
+          sectionContent.substring(0, 300)
+        );
+      } else {
+        console.log(
+          `[ComptoirRoom] ✅ ${questionId} → ${filepath}`
         );
       }
 

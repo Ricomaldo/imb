@@ -50,7 +50,21 @@ const ComptoirPage = () => {
   const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Collapsed states for panels
+  const [collapsedStates, setCollapsedStates] = useState({
+    sageSelector: false,
+    questionSelector: false,
+    questionsPanel: false
+  });
+
   const activeSage = sagesConfig.sages.find((s) => s.id === activeSageId);
+
+  const toggleCollapse = (panelId) => {
+    setCollapsedStates(prev => ({
+      ...prev,
+      [panelId]: !prev[panelId]
+    }));
+  };
 
   const handleSaveQuestion = async () => {
     if (!selectedQuestionIds[0] || !questionsPanelRef.current) return;
@@ -155,7 +169,8 @@ const ComptoirPage = () => {
         texture="metal"
         accentColor={theme.colors.accents.warm}
         collapsible={true}
-        collapsed={false}
+        collapsed={collapsedStates.sageSelector}
+        onToggleCollapse={() => toggleCollapse('sageSelector')}
       >
         <SageSelector
           activeSageId={activeSageId}
@@ -170,7 +185,8 @@ const ComptoirPage = () => {
         texture="metal"
         accentColor={theme.colors.secondary}
         collapsible={true}
-        collapsed={false}
+        collapsed={collapsedStates.questionSelector}
+        onToggleCollapse={() => toggleCollapse('questionSelector')}
       >
         <QuestionSelector
           sageId={activeSageId}
@@ -188,7 +204,8 @@ const ComptoirPage = () => {
         texture="wood"
         accentColor={activeSage?.color}
         collapsible={true}
-        collapsed={false}
+        collapsed={collapsedStates.questionsPanel}
+        onToggleCollapse={() => toggleCollapse('questionsPanel')}
         contentType="markdown"
         onSave={handleSaveQuestion}
         isSaving={isSaving}

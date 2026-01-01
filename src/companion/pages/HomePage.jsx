@@ -8,7 +8,6 @@ import Panel from "../../components/common/Panel/Panel";
 import { MomentsOuiWidget } from "../../components/room-modules/sanctuaire/MomentsOui";
 import HydrationReminder from "../../components/room-modules/cuisine/HydrationReminder";
 import PauseCorps from "../../components/room-modules/cuisine/PauseCorps";
-import TimeTimer from "../components/TimeTimer";
 import { ZoneRouge } from "../../components/rooms/Comptoir/widgets/ZoneRouge";
 
 const PageContainer = styled.div`
@@ -43,7 +42,6 @@ const HomePage = () => {
     journal: false,
     hydration: true,
     pauseCorps: true,
-    timeTimer: true,
     momentsOui: true,
     zoneRouge: true
   });
@@ -111,19 +109,6 @@ const HomePage = () => {
         onToggleCollapse={() => toggleCollapse('pauseCorps')}
       >
         <PauseCorps />
-      </Panel>
-
-      {/* TimeTimer */}
-      <Panel
-        title="TimeTimer"
-        icon="⏱️"
-        texture="metal"
-        accentColor="#F59E0B"
-        collapsible={true}
-        collapsed={collapsedStates.timeTimer}
-        onToggleCollapse={() => toggleCollapse('timeTimer')}
-      >
-        <TimeTimer />
       </Panel>
 
       {/* Moments OUI */}

@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Save questions vers vault via `replaceNote()` API
 - Panel toolbar integration (onSave, isSaving, showSaveButton props)
 - MarkdownToolbar save button support
+- **Companion**: ComptoirPage mobile avec 3 panels (SageSelector, QuestionSelector, QuestionsPanel)
+- **Companion**: TabBar navigation avec onglet Comptoir (🧙)
+- **Companion**: HomePage étendue avec widgets bien-être (Hydratation 💧, Pause Corps 🧘, Moments OUI ✨, Zone Rouge 🔴)
 
 ### Changed
 - ComptoirRoom migré de `ComptoirGrid` custom vers `PanelGrid` pattern (compatibilité `Panel`)
@@ -27,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Panel passe save props à MarkdownToolbar (lignes 165-180, 228-240)
 - QuestionsPanel utilise `forwardRef` + `useImperativeHandle` pour exposer save method
 - Sage ID "eleonore" → "eleo" dans sagesConfig.json (alignement convention vault)
+- **Companion**: TabBar paths migrés `/companion/*` → `/*` (fix routes)
+- **Companion**: manifest.json scope `/companion` → `/` (fix PWA mode)
+- **Companion**: Panels utilisent collapse controlé (useState) au lieu de defaultCollapsed
 
 ### Fixed
 - Modal Sage utilise `createPortal` pour éviter `overflow:hidden` du parent Panel
@@ -34,6 +40,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mode focus MarkdownEditor affichage vide (ajout key={questionId})
 - Background sage color (transparentContent={true} sur Panels)
 - Question titles colorées avec sage color (pas backgrounds)
+- **Companion**: SagesPortal.jsx imports legacy (SagesKnowledge, HandoffCreator)
+- **Companion**: PWA Safari navigation buttons (manifest scope mismatch)
+- **Companion**: Collapse buttons Comptoir panels (ajout state management)
+- **Companion**: Moments OUI widget non-fonctionnel (migration controlled collapse)
 
 ## [0.1.0] - 2024-XX-XX
 

@@ -1,7 +1,7 @@
 ---
 type: mission
 date: 2026-01-01
-status: completed
+status: done
 priority: high
 milestone: M1
 parent_operation: ~/dev/__cockpit__/workflow/active/2025-12-31-fusion-8sages-imb.md

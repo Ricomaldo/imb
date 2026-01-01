@@ -1,12 +1,12 @@
 // src/components/rooms/Comptoir/ComptoirRoom.jsx
 
-import React from 'react';
-import { useTheme } from 'styled-components';
-import BaseRoom from '../../layout/BaseRoom';
-import PanelGrid from '../../layout/PanelGrid';
-import Panel from '../../common/Panel';
-import { SagesPortal } from './widgets/SagesPortal';
-import { ZoneRouge } from './widgets/ZoneRouge';
+import React from "react";
+import { useTheme } from "styled-components";
+import BaseRoom from "../../layout/BaseRoom";
+import PanelGrid from "../../layout/PanelGrid";
+import Panel from "../../common/Panel";
+import { SagesPortal } from "./widgets/SagesPortal";
+import { ZoneRouge } from "./widgets/ZoneRouge";
 
 /**
  * Comptoir room component for reception and counter services
@@ -23,7 +23,7 @@ const ComptoirRoom = () => {
         {/* Zone Rouge - Protocole Urgence (left, medium size) */}
         <Panel
           gridColumn="1 / 4"
-          gridRow="1 / 6"
+          gridRow="1 / 4"
           title="Zone Rouge"
           icon="🔴"
           texture="stone"
@@ -34,7 +34,7 @@ const ComptoirRoom = () => {
         {/* Portail des 8 Sages - main area */}
         <Panel
           gridColumn="4 / 13"
-          gridRow="1 / 9"
+          gridRow="1 / 7"
           title="Les 8 Sages"
           icon="🎭"
           texture="parchment"

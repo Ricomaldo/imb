@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import styled from 'styled-components';
-import sagesData from '../../../../data/sagesConfig.json';
-import useSagesStore from '../../../../stores/useSagesStore';
-import { SageQuote } from './SageQuote';
-import { SagesKnowledge } from './SagesKnowledge';
-import { HandoffCreator } from './HandoffCreator';
+import React, { useState } from "react";
+import { createPortal } from "react-dom";
+import styled from "styled-components";
+import sagesData from "../../../../data/sagesConfig.json";
+import useSagesStore from "../../../../stores/useSagesStore";
+import { SageQuote } from "./SageQuote";
+import { SagesKnowledge } from "./SagesKnowledge";
+import { HandoffCreator } from "./HandoffCreator";
 
 const SagesGrid = styled.div`
   display: grid;
@@ -24,7 +24,7 @@ const GovernailContainer = styled.div`
 
 const Card = styled.div`
   background: rgba(0, 0, 0, 0.3);
-  border: 3px solid ${props => props.color};
+  border: 3px solid ${(props) => props.color};
   border-radius: 12px;
   padding: 12px;
   cursor: pointer;
@@ -43,7 +43,7 @@ const Card = styled.div`
 
   /* Overlay sombre */
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -58,7 +58,7 @@ const Card = styled.div`
   &:hover {
     opacity: 1;
     transform: scale(1.08);
-    box-shadow: 0 0 16px ${props => props.color};
+    box-shadow: 0 0 16px ${(props) => props.color};
     z-index: 1;
 
     &::before {
@@ -97,8 +97,12 @@ const Card = styled.div`
 `;
 
 const MetaButton = styled.button`
-  background: linear-gradient(135deg, ${props => props.color}33, ${props => props.color}66);
-  border: 2px solid ${props => props.color};
+  background: linear-gradient(
+    135deg,
+    ${(props) => props.color}33,
+    ${(props) => props.color}66
+  );
+  border: 2px solid ${(props) => props.color};
   border-radius: 8px;
   cursor: pointer;
   font-size: 1.1em;
@@ -113,7 +117,11 @@ const MetaButton = styled.button`
   width: 100%;
 
   &:hover {
-    background: linear-gradient(135deg, ${props => props.color}66, ${props => props.color}99);
+    background: linear-gradient(
+      135deg,
+      ${(props) => props.color}66,
+      ${(props) => props.color}99
+    );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
@@ -155,7 +163,7 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: #2a2a2a;
-  border: 3px solid ${props => props.color};
+  border: 3px solid ${(props) => props.color};
   border-radius: 12px;
   max-height: 80vh;
   width: 90vw;
@@ -172,7 +180,7 @@ const ModalContent = styled.div`
   }
 
   button {
-    background: ${props => props.color};
+    background: ${(props) => props.color};
     border: none;
     color: #fff;
     padding: 10px 20px;
@@ -189,7 +197,7 @@ const ModalContent = styled.div`
 
 const ModalHeader = styled.div`
   padding: 20px 30px;
-  border-bottom: 1px solid ${props => props.color}44;
+  border-bottom: 1px solid ${(props) => props.color}44;
   text-align: center;
   flex-shrink: 0;
 
@@ -233,11 +241,11 @@ const ModalBody = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.color}66;
+    background: ${(props) => props.color}66;
     border-radius: 3px;
 
     &:hover {
-      background: ${props => props.color}99;
+      background: ${(props) => props.color}99;
     }
   }
 `;
@@ -250,7 +258,7 @@ const ModalSection = styled.div`
 
 const ModalFooter = styled.div`
   padding: 20px 30px;
-  border-top: 1px solid ${props => props.color}44;
+  border-top: 1px solid ${(props) => props.color}44;
   display: flex;
   gap: 10px;
   flex-shrink: 0;
@@ -270,8 +278,8 @@ export const SagesPortal = () => {
   const { selectSage, addHistory } = useSagesStore();
 
   // Séparer les 8 sages du cercle et Gouvernail (méta)
-  const circleSages = sagesData.sages.filter(s => !s.isMeta);
-  const gouvernail = sagesData.sages.find(s => s.isMeta);
+  const circleSages = sagesData.sages.filter((s) => !s.isMeta);
+  const gouvernail = sagesData.sages.find((s) => s.isMeta);
 
   const handleSageClick = (sage) => {
     setSelectedSage(sage);
@@ -281,10 +289,12 @@ export const SagesPortal = () => {
 
   return (
     <>
-      <h2 style={{ padding: '20px', textAlign: 'center' }}>Portail des 8 Sages</h2>
+      <h2 style={{ padding: "20px", textAlign: "center" }}>
+        Portail des 8 Sages
+      </h2>
 
       <SagesGrid>
-        {circleSages.map(sage => (
+        {circleSages.map((sage) => (
           <Card
             key={sage.id}
             color={sage.color}
@@ -292,7 +302,6 @@ export const SagesPortal = () => {
           >
             <div>{sage.emoji}</div>
             <h3>{sage.name}</h3>
-            <p>{sage.age} ans</p>
           </Card>
         ))}
       </SagesGrid>
@@ -313,44 +322,51 @@ export const SagesPortal = () => {
       )}
 
       {/* Modal avec Portal - Header + 2 colonnes (Questions + Handoff) */}
-      {selectedSage && createPortal(
-        <ModalOverlay onClick={() => setSelectedSage(null)}>
-          <ModalContent
-            color={selectedSage.color}
-            onClick={e => e.stopPropagation()}
-          >
-            {/* Header: Info sage compacte */}
-            <ModalHeader color={selectedSage.color}>
-              <ModalEmoji>{selectedSage.emoji}</ModalEmoji>
-              <ModalTitle>{selectedSage.name}</ModalTitle>
-            </ModalHeader>
+      {selectedSage &&
+        createPortal(
+          <ModalOverlay onClick={() => setSelectedSage(null)}>
+            <ModalContent
+              color={selectedSage.color}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header: Info sage compacte */}
+              <ModalHeader color={selectedSage.color}>
+                <ModalEmoji>{selectedSage.emoji}</ModalEmoji>
+                <ModalTitle>{selectedSage.name}</ModalTitle>
+              </ModalHeader>
 
-            {/* Body: 2 colonnes Questions + Handoff */}
-            <ModalBody color={selectedSage.color}>
-              {/* Colonne gauche: Quote + Questions */}
-              <ModalSection>
-                <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
-                <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
-              </ModalSection>
+              {/* Body: 2 colonnes Questions + Handoff */}
+              <ModalBody color={selectedSage.color}>
+                {/* Colonne gauche: Quote + Questions */}
+                <ModalSection>
+                  <SageQuote
+                    sageId={selectedSage.id}
+                    color={selectedSage.color}
+                  />
+                  <SagesKnowledge
+                    sageId={selectedSage.id}
+                    color={selectedSage.color}
+                  />
+                </ModalSection>
 
-              {/* Colonne droite: Handoff */}
-              <ModalSection>
-                <HandoffCreator
-                  emetteurId={selectedSage.id}
-                  emetteurName={selectedSage.name}
-                  color={selectedSage.color}
-                />
-              </ModalSection>
-            </ModalBody>
+                {/* Colonne droite: Handoff */}
+                <ModalSection>
+                  <HandoffCreator
+                    emetteurId={selectedSage.id}
+                    emetteurName={selectedSage.name}
+                    color={selectedSage.color}
+                  />
+                </ModalSection>
+              </ModalBody>
 
-            {/* Footer: Close button */}
-            <ModalFooter color={selectedSage.color}>
-              <button onClick={() => setSelectedSage(null)}>Fermer</button>
-            </ModalFooter>
-          </ModalContent>
-        </ModalOverlay>,
-        document.body
-      )}
+              {/* Footer: Close button */}
+              <ModalFooter color={selectedSage.color}>
+                <button onClick={() => setSelectedSage(null)}>Fermer</button>
+              </ModalFooter>
+            </ModalContent>
+          </ModalOverlay>,
+          document.body
+        )}
     </>
   );
 };

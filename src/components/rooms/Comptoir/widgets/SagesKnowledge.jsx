@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import vaultDataLoader from '../../../../services/vaultDataLoader';
+import sageMappingLoader from '../../../../services/sageMappingLoader';
 
 const KnowledgeContainer = styled.div`
   margin: 15px 0;
@@ -67,7 +67,7 @@ export const SagesKnowledge = ({ sageId, color }) => {
       try {
         setLoading(true);
         setError(null);
-        const sageQuestions = await vaultDataLoader.loadSageQuestions(sageId);
+        const sageQuestions = await sageMappingLoader.loadSageQuestions(sageId);
         setQuestions(sageQuestions || []);
       } catch (err) {
         console.error(`[SagesKnowledge] Error loading questions for ${sageId}:`, err);

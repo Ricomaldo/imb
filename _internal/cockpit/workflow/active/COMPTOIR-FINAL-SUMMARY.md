@@ -4,7 +4,7 @@ mission: M3-Final-Comptoir-Redesign
 status: ready-for-testing
 created: 2025-01-01
 updated: 2025-01-01
-commit: 9dbfb30
+commit: e96f297
 ---
 
 # Comptoir Redesign - COMPLETE ✅
@@ -39,12 +39,14 @@ rows 1/4)         | Question Selector (cols 4/13, rows 2/3)
 - ID + title display
 - Toggles question inclusion in panel view
 
-#### **QuestionsPanel.jsx**
-- Array of collapsable panels (one per selected question)
-- MarkdownEditor with read/edit toggle
-- Save button → `replaceNote()` to vault
-- Lazy loading of question content
-- Panel state persistence via usePreferencesStore
+#### **QuestionsPanel.jsx** ✅ REFACTORED
+- **Clean toolbar pattern**: Simplified component with MarkdownEditor + toolbar buttons
+- **Single question display**: Shows first selected question (users select via QuestionSelector)
+- **No nested panels**: Removed QuestionSection/QuestionHeader, just EditorContainer
+- **Proper toolbar**: Edit/Save buttons in clean ToolbarContainer at bottom
+- **Full functionality**: MarkdownEditor with read/edit toggle, vault API integration
+- **Lazy loading**: Questions content loaded on demand
+- **Key prop fix**: Forces React remount on edit mode toggle for proper readOnly behavior
 
 ### 3. Room Updates ✅
 
@@ -73,8 +75,23 @@ Integration of Zone Rouge:
 
 ---
 
-## Git Commit
+## Git Commits
 
+### Latest: QuestionsPanel Refactoring
+```
+commit e96f297
+refactor(M3): Simplify QuestionsPanel - toolbar pattern, single question display
+
+- Remove nested QuestionSection/QuestionHeader components
+- Remove overcomplicated styled components (ActionButtons)
+- Implement clean toolbar pattern at bottom (Edit/Save buttons)
+- Display only first selected question (no title repetition)
+- Add ToolbarContainer and ToolbarButton with theme styling
+- Keep proper edit/save state management and vault API integration
+- Update useEffect dependencies to include sageIndex
+```
+
+### Initial: Grid Migration
 ```
 commit 9dbfb30
 feat(M3-Final): Comptoir redesign - dynamic sage questions with grid layout
@@ -191,19 +208,20 @@ ComptoirRoom (Controller)
 │
 └── Panels:
     ├── Panel (Handoff) → Placeholder
-    ├── Panel (SageSelector)
+    ├── Panel (SageSelector) [cols 1/13, rows 1/2]
     │   └── SageSelector
-    │       └── Sage buttons (localStorage persist)
+    │       └── Grid of sage buttons (localStorage persist)
     │
-    ├── Panel (QuestionSelector)
+    ├── Panel (QuestionSelector) [cols 4/13, rows 3/5]
     │   └── QuestionSelector
-    │       └── Checkboxes (multi-select)
+    │       └── Checkboxes list (multi-select)
     │
-    └── Panel (QuestionsPanel)
+    └── Panel (QuestionsPanel) [cols 4/13, rows 5/9]
         └── QuestionsPanel
-            └── Array of Panels
-                ├── MarkdownEditor (readOnly or edit)
-                └── Action buttons (Edit/Save)
+            ├── MarkdownEditor (readOnly or edit)
+            └── ToolbarContainer
+                ├── Edit button
+                └── Save button (if editing)
 ```
 
 ---

@@ -52,8 +52,11 @@ const MarkdownToolbar = ({
   onToggleEdit,
   isExpanded,
   onToggleExpand,
+  onSave,
+  isSaving = false,
   showEditButton = true,
-  showExpandButton = true
+  showExpandButton = true,
+  showSaveButton = false
 }) => {
   return (
     <ToolbarContainer>
@@ -82,6 +85,17 @@ const MarkdownToolbar = ({
           title={isEditing ? 'Mode lecture' : 'Mode édition'}
         >
           {isEditing ? '👁️' : '✏️'}
+        </ToolbarButton>
+      )}
+
+      {/* Bouton save (visible en édition) */}
+      {showSaveButton && isEditing && (
+        <ToolbarButton
+          onClick={onSave}
+          disabled={isSaving}
+          title={isSaving ? 'Sauvegarde en cours...' : 'Sauvegarder'}
+        >
+          {isSaving ? '⏳' : '💾'}
         </ToolbarButton>
       )}
 

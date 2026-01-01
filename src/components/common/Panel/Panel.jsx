@@ -61,7 +61,12 @@ const PanelInner = ({
 
   // ACTIONS CUSTOM
   customActions,
-  hideHeaderTitleWhenCollapsed = false
+  hideHeaderTitleWhenCollapsed = false,
+
+  // MARKDOWN SAVE
+  onSave,
+  isSaving = false,
+  showSaveButton = false
 }) => {
   const panelContext = usePanelContext();
   const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
@@ -166,8 +171,11 @@ const PanelInner = ({
                   onToggleEdit={panelContext.handleToggleEdit}
                   isExpanded={panelContext.isExpanded}
                   onToggleExpand={panelContext.handleToggleExpand}
+                  onSave={onSave}
+                  isSaving={isSaving}
                   showEditButton={true}
                   showExpandButton={true}
+                  showSaveButton={showSaveButton}
                 />
               )}
 
@@ -225,8 +233,11 @@ const PanelInner = ({
                     onToggleEdit={panelContext.handleToggleEdit}
                     isExpanded={true}
                     onToggleExpand={panelContext.handleToggleExpand}
+                    onSave={onSave}
+                    isSaving={isSaving}
                     showEditButton={true}
                     showExpandButton={true}
+                    showSaveButton={showSaveButton}
                   />
                 )}
                 <FocusCloseButton

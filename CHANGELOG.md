@@ -2,6 +2,51 @@
 
 ## [Unreleased]
 
+### Added - 2026-01-01 (M1-M5: Fusion 8 Sages × IMB) 🎭
+
+**Milestone M1 : Portail des 8 Sages**
+- **Portail Interactive** : Grid 4×2 avec 8 cartes cliquables (Chrysalis, Éléonore, Onyx, Meridian, Atlas, Luna, Bodhi, Gouvernail)
+  - Chaque sage : emoji + nom + âge, hover effect (scale 1.08 + glow), click → modal
+  - Animations NavigationGrid pattern : overlay pseudo-element, 0.2s ease transitions
+  - Responsive design : desktop 2-col modal, mobile 1-col, max-width 1000px
+
+- **Modal 2-Column Layout** : Header (emoji+name) + Body (scrollable) + Footer
+  - Col gauche : Quote rotative (M2 prep) + Questions liées (M2 prep)
+  - Col droite : Handoff Creator form (M4 prep)
+  - Portal rendering (createPortal → document.body) pour éviter overflow clipping
+
+- **Zustand Store Sages** : `useSagesStore` avec localStorage persistence (`irim-sages-store`)
+  - State : `currentSage`, `sageHistory` (10 derniers)
+  - Actions : `selectSage()`, `addHistory()`, `importData()`, `exportData()`
+  - Debug : `window.__ZUSTAND_STORES__.sages()`
+
+- **Configuration** : `src/data/sagesConfig.json` avec 8 sages (id, name, emoji, age, specialty, color, room)
+
+**Milestone M2 Prep** : Composants intégrés (attendant données M2)
+- `SageQuote.jsx` : Quote component (rotative, prêt pour quotes.json)
+- `SagesKnowledge.jsx` : Questions list (expandable, prêt pour index.json)
+
+**Milestone M4 Prep** : Handoff form intégré
+- `HandoffCreator.jsx` : Form sage sélectionneur → question → contexte
+- API endpoint stub : `/api/vault/handoff` (implémentation M3)
+
+**Milestone M5 : Zone Rouge - Protocole Urgence**
+- **RespirationTimer** : Guidage respiration contrôlée
+  - Phases : Inspire (vert) → Retiens (jaune) → Expire (rouge)
+  - Customisable cycles & timing
+  - Progress bar + phase labels
+  - Start/Pause/Reset controls
+
+- **ZoneRouge UI** : Emergency protocol dispatcher
+  - 4 actions principales (Respiration, Focus, Énergie, SOS)
+  - Color-coded buttons (rouge/orange)
+  - Intégration dans Comptoir (left panel 3-cols wide)
+
+**Integration**
+- `ComptoirRoom.jsx` : PanelGrid 12×8 avec Zone Rouge (1-4/1-6) + Portail Sages (4-13/1-9)
+- Themes & colors : Chaque sage possède couleur unique pour cohérence visuelle
+- Build production : ✓ Success, 601 modules transpilés
+
 ### Changed - 2026-01-01 (SideTower Refactoring & Responsive)
 
 - **🏗️ SideTower Architecture 3 Étages** : Refonte complète pour clarté et scalabilité

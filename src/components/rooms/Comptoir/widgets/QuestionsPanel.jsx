@@ -65,12 +65,22 @@ const getQuestionPath = (questionId, sageIndex) => {
   // Find filepath from sageIndex (populated from vault index)
   const question = sageIndex.find(q => q.id === questionId);
   if (question && question.filepath) {
+    console.log(`[QuestionsPanel] Using filepath from index for ${questionId}:`, question.filepath);
     return question.filepath;
   }
 
   // Fallback: construct path if not found in index
   const domain = questionId.substring(0, questionId.search(/\d/)) || 'unknown';
-  return `1-knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
+  const fallbackPath = `1-knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
+  console.warn(
+    `[QuestionsPanel] FALLBACK for ${questionId} (no filepath in index). Using: `,
+    fallbackPath
+  );
+  console.log(`[QuestionsPanel] Available in sageIndex:`, sageIndex.length, 'questions');
+  if (question) {
+    console.log(`[QuestionsPanel] Question found but filepath is:`, question.filepath);
+  }
+  return fallbackPath;
 };
 
 export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] }) => {

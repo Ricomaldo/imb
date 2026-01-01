@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import sagesConfig from '../../../../data/sagesConfig.json';
+import React from "react";
+import styled from "styled-components";
+import sagesConfig from "../../../../data/sagesConfig.json";
 
 const SageSelectorContainer = styled.div`
   display: grid;
@@ -18,7 +18,7 @@ const SageButton = styled.button`
   gap: ${({ theme }) => theme.spacing.xs};
   padding: ${({ theme }) => theme.spacing.sm};
   background: ${({ theme, $active }) =>
-    $active ? `${theme.colors.background}CC` : 'rgba(0, 0, 0, 0.2)'};
+    $active ? `${theme.colors.background}CC` : "rgba(0, 0, 0, 0.2)"};
   border: 2px solid ${({ $color }) => $color};
   border-radius: ${({ theme }) => theme.radii.md};
   color: #fff;
@@ -48,12 +48,12 @@ const SageButton = styled.button`
 `;
 
 export const SageSelector = ({ activeSageId, onSelect }) => {
-  const nonMetaSages = sagesConfig.sages.filter(s => !s.isMeta);
-  const gouvernail = sagesConfig.sages.find(s => s.isMeta);
+  const nonMetaSages = sagesConfig.sages.filter((s) => !s.isMeta);
+  const gouvernail = sagesConfig.sages.find((s) => s.isMeta);
 
   return (
     <SageSelectorContainer>
-      {nonMetaSages.map(sage => (
+      {nonMetaSages.map((sage) => (
         <SageButton
           key={sage.id}
           $color={sage.color}
@@ -73,7 +73,6 @@ export const SageSelector = ({ activeSageId, onSelect }) => {
           $active={activeSageId === gouvernail.id}
           onClick={() => onSelect(gouvernail.id)}
           title={`${gouvernail.name} - ${gouvernail.specialty}`}
-          style={{ gridColumn: '1 / -1' }}
         >
           <span>{gouvernail.emoji}</span>
           <span>{gouvernail.name}</span>

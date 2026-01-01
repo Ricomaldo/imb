@@ -48,6 +48,7 @@ export default function TimeTimer({
   const isMountedRef = useRef(true);
   const containerRef = useRef(null);
   const audioRef = useRef(null);
+  const updateTimerRef = useRef(null);
 
   // Initialisation de l'audio au montage
   useEffect(() => {
@@ -115,7 +116,7 @@ export default function TimeTimer({
     setRemaining(newRemaining);
 
     if (newRemaining > 0 && running) {
-      intervalRef.current = requestAnimationFrame(updateTimer);
+      intervalRef.current = requestAnimationFrame(updateTimerRef.current);
     } else {
       setRunning(false);
       setStartTime(null);
@@ -124,6 +125,9 @@ export default function TimeTimer({
       }
     }
   }, [startTime, duration, running]);
+
+  // Mettre à jour la ref à chaque render
+  updateTimerRef.current = updateTimer;
 
   useEffect(() => {
     if (running) {
@@ -136,8 +140,11 @@ export default function TimeTimer({
   }, [running, startTime, duration, remaining]);
 
   useEffect(() => {
-    if (running && startTime && remaining > 0) {
-      intervalRef.current = requestAnimationFrame(updateTimer);
+    if (running && startTime) {
+      intervalRef.current = requestAnimationFrame(updateTimerRef.current);
+    } else if (!running && intervalRef.current) {
+      cancelAnimationFrame(intervalRef.current);
+      intervalRef.current = null;
     }
 
     return () => {
@@ -146,7 +153,7 @@ export default function TimeTimer({
         intervalRef.current = null;
       }
     };
-  }, [running, startTime, remaining, updateTimer]);
+  }, [running, startTime]);
 
   // Cleanup
   useEffect(() => {

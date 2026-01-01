@@ -69,25 +69,28 @@ const ComptoirRoom = () => {
     for (let i = 1; i < sections.length; i += 3) {
       const questionId = sections[i];
       const titleAndDescription = sections[i + 1];
-      const sectionContent = sections[i + 2] || '';
+      const sectionContent = sections[i + 2] || "";
 
       // Extract title (remove description after dash)
       const titleMatch = titleAndDescription.match(/^([^-]+)(?:\s*-\s*(.+))?$/);
       const title = titleMatch ? titleMatch[1].trim() : titleAndDescription;
 
       // Extract filepath from "- **Fichier** : `path/to/file.md`"
-      const filepathMatch = sectionContent.match(/\-\s*\*\*Fichier\*\*\s*:\s*`([^`]+)`/);
+      const filepathMatch = sectionContent.match(
+        /\-\s*\*\*Fichier\*\*\s*:\s*`([^`]+)`/
+      );
       const relativeFilepath = filepathMatch ? filepathMatch[1].trim() : null;
 
       // Prepend 1-knowledge-base/ if filepath is relative
       const filepath = relativeFilepath
-        ? relativeFilepath.startsWith('1-knowledge-base/')
+        ? relativeFilepath.startsWith("1-knowledge-base/")
           ? relativeFilepath
           : `1-knowledge-base/${relativeFilepath}`
         : null;
 
       // Extract domaine from filepath (e.g., "accompagnement-ia" from "...domaines-v4/accompagnement-ia/...")
-      let domaine = questionId.substring(0, questionId.search(/\d/)) || "unknown";
+      let domaine =
+        questionId.substring(0, questionId.search(/\d/)) || "unknown";
       if (filepath) {
         const domainMatch = filepath.match(/domaines-v4\/([^/]+)\//);
         if (domainMatch) {
@@ -95,13 +98,34 @@ const ComptoirRoom = () => {
         }
       }
 
-      questions.push({
+      const question = {
         id: questionId,
         title: title.trim(),
         domaine: domaine,
-        filepath: filepath
-      });
+        filepath: filepath,
+      };
+
+      // Debug log
+      if (!filepath) {
+        console.warn(
+          `[ComptoirRoom] No filepath extracted for ${questionId}. Section content: `,
+          sectionContent.substring(0, 200)
+        );
+      }
+
+      questions.push(question);
     }
+
+    console.log(`[ComptoirRoom] Parsed ${questions.length} questions from index`);
+    console.table(
+      questions.map((q) => ({
+        id: q.id,
+        title: q.title.substring(0, 30),
+        domaine: q.domaine,
+        hasFilepath: !!q.filepath,
+        filepath: q.filepath?.substring(0, 60),
+      }))
+    );
 
     return questions;
   };
@@ -136,7 +160,6 @@ const ComptoirRoom = () => {
           icon="🎭"
           texture="parchment"
           accentColor={metalBg}
-          texture="parchment"
           collapsible={true}
           collapsed={
             getPanelState("comptoir", "sage-selector")?.collapsed ?? false

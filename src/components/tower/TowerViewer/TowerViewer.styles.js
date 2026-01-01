@@ -1,9 +1,9 @@
-// src/components/tower/SideTowerNotes/SideTowerNotes.styles.js
+// src/components/tower/TowerViewer/TowerViewer.styles.js
 
 import styled from 'styled-components';
 import { woodBg } from '../../../styles/mixins';
 
-export const NoteContainer = styled.div`
+export const ViewerContainer = styled.div`
   width: 100%;
   height: 100%;
   max-height: 100%; /* Force la contrainte de hauteur */

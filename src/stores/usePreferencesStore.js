@@ -23,6 +23,9 @@ const usePreferencesStore = create(
       // Source de notes active dans SideTowerNotes ('sidetower' | 'companion')
       sideTowerNotesSource: 'sidetower',
 
+      // Contenu actif du TowerViewer ('notes' | 'timer' | 'calendar' | ...)
+      towerViewerContent: 'notes',
+
       // === ÉTATS UI DES ROOMS (ancien useRoomsUIStore) ===
 
       // État UI par room et par panel
@@ -96,6 +99,11 @@ const usePreferencesStore = create(
       // Setter pour sideTowerNotesSource
       setSideTowerNotesSource: (source) => {
         set({ sideTowerNotesSource: source });
+      },
+
+      // Setter pour towerViewerContent
+      setTowerViewerContent: (contentType) => {
+        set({ towerViewerContent: contentType });
       },
 
       // === ACTIONS POUR ÉTATS UI DES ROOMS ===

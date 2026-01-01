@@ -3,10 +3,11 @@
 import styled from 'styled-components';
 import { squareButton, tertiaryLevel } from '../../../styles/mixins';
 import { alpha } from '../../../styles/color';
+import { MEDIA_QUERIES } from '../../../utils/responsiveConfig';
 
 export const ButtonContainer = styled.button.withConfig({
   shouldForwardProp: (prop) =>
-    !['active', '$active', 'variant', 'size'].includes(prop)
+    !['active', '$active', '$disabled', 'variant', 'size'].includes(prop)
 })`
   ${props => squareButton(props.size)}
   background: ${props => {
@@ -16,10 +17,72 @@ export const ButtonContainer = styled.button.withConfig({
     if (props.variant === 'secondary') {
       return props.theme.colors.stone;
     }
+    if (props.variant === 'ghost') {
+      return 'rgba(255,255,255,0.2)';
+    }
     return props.theme.colors.secondary;
   }};
 
+  /* Disabled state */
+  ${({ $disabled }) => $disabled && `
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  `}
+
+  /* Responsive sizing - Tablet (768-1023px) */
+  @media ${MEDIA_QUERIES.tablet} {
+    width: ${({ size, theme }) => {
+      if (size === 'large') return theme.button.medium;
+      if (size === 'medium') return theme.button.small;
+      return '40px';
+    }};
+    height: ${({ size, theme }) => {
+      if (size === 'large') return theme.button.medium;
+      if (size === 'medium') return theme.button.small;
+      return '40px';
+    }};
+    font-size: ${({ size }) => {
+      if (size === 'large') return '16px';
+      if (size === 'medium') return '14px';
+      return '12px';
+    }};
+  }
+
+  /* Responsive sizing - iPad Horizontal / TabletWide (1024-1439px) */
+  @media ${MEDIA_QUERIES.tabletWideOnly} {
+    width: ${({ size, theme }) => {
+      if (size === 'large') return '56px';
+      if (size === 'medium') return '44px';
+      return '36px';
+    }};
+    height: ${({ size, theme }) => {
+      if (size === 'large') return '56px';
+      if (size === 'medium') return '44px';
+      return '36px';
+    }};
+    font-size: ${({ size }) => {
+      if (size === 'large') return '18px';
+      if (size === 'medium') return '16px';
+      return '13px';
+    }};
+  }
+
   ${props => {
+    if (props.variant === 'ghost') {
+      return `
+        border: none;
+        color: white;
+        transition: background 0.2s;
+        &:hover:not(:disabled) {
+          background: rgba(255,255,255,0.3);
+          transform: none;
+        }
+        &:active:not(:disabled) {
+          transform: scale(0.95);
+        }
+      `;
+    }
     if (props.variant === 'tab') {
       return `
         transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};
@@ -36,13 +99,13 @@ export const ButtonContainer = styled.button.withConfig({
             inset 0 0 0 4px #b1845a,
             0 0 10px rgba(240, 222, 186, 0.3);
         ` : ''}
-        &:hover {
+        &:hover:not(:disabled) {
           transform: none;
           box-shadow: none;
           background: ${props.theme.colors.accent};
           color: ${props.theme.colors.secondary};
         }
-        &:active {
+        &:active:not(:disabled) {
           transform: translateY(1px);
           box-shadow: inset 0 2px 4px ${alpha(props.theme.colors.black, 0.2)};
         }
@@ -53,11 +116,11 @@ export const ButtonContainer = styled.button.withConfig({
         ${tertiaryLevel}
         border-color: ${props.theme.colors.text.secondary};
         transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};
-        &:hover {
+        &:hover:not(:disabled) {
           background: ${props.theme.colors.text.secondary};
           color: ${props.theme.colors.background};
         }
-        &:active {
+        &:active:not(:disabled) {
           transform: scale(0.96);
           box-shadow: inset 0 2px 4px ${alpha(props.theme.colors.black, 0.2)};
         }
@@ -65,10 +128,10 @@ export const ButtonContainer = styled.button.withConfig({
     }
     return `
       transition: all ${props.theme.motion.durations.fast} ${props.theme.motion.easings.standard};
-      &:hover {
+      &:hover:not(:disabled) {
         background: ${props.theme.colors.accent};
       }
-      &:active {
+      &:active:not(:disabled) {
         transform: scale(0.95);
         box-shadow: inset 0 2px 4px ${alpha(props.theme.colors.black, 0.3)};
       }

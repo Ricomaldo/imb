@@ -1,11 +1,9 @@
-// src/components/tower/WorkbenchDrawer/WorkbenchDrawer.styles.js
+// src/components/tower/TowerToolbar/TowerToolbar.styles.js
 
 import styled from 'styled-components';
 import { tabBase, tabInactive, tabActive, tabContentPanel } from '../../../styles/mixins';
 
-// src/components/tower/WorkbenchDrawer/WorkbenchDrawer.styles.js
-
-export const DrawerContainer = styled.div`
+export const ToolbarContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -15,16 +13,20 @@ export const DrawerContainer = styled.div`
 
 export const TabsHeader = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xs};
+  gap: 4px;
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.xs} 0`};
   position: relative;
   z-index: 2;
-  margin-bottom: 0; // Pas d'espace !
+  margin-bottom: 0;
 `;
 
 export const TabButton = styled.button`
   ${tabBase}
   ${props => (props.$active ? tabActive : tabInactive)}
+  flex: 1;
+  min-width: 0;
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  font-size: ${({ theme }) => theme.typography.sizes.sm};
 `;
 
 export const TabContent = styled.div`

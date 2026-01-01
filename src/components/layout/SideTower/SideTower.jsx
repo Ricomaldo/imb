@@ -7,36 +7,37 @@ import {
   MiddleTowerFloor,
   BottomTowerFloor
 } from './SideTower.styles';
-import { ControlTower, WorkbenchDrawer, SideTowerNotes } from '../../tower';
+import { TowerHeader, TowerToolbar, TowerViewer } from '../../tower';
 import usePreferencesStore from '../../../stores/usePreferencesStore';
 
 /**
  * Tour latérale contenant les contrôles et outils
+ * @param {string} responsiveLevel - 'mobile' | 'tablet' | 'desktop'
  * @renders TowerWrapper
  * @renders TowerContainer
  * @renders TopTowerFloor
- * @renders ControlTower
+ * @renders TowerHeader
  * @renders MiddleTowerFloor
- * @renders WorkbenchDrawer
+ * @renders TowerToolbar
  * @renders BottomTowerFloor
- * @renders SideTowerNotes
+ * @renders TowerViewer
  */
-const SideTower = () => {
+const SideTower = ({ responsiveLevel = 'desktop' }) => {
   const sideTowerCollapsed = usePreferencesStore((state) => state.sideTowerCollapsed);
 
   return (
-    <TowerWrapper collapsed={sideTowerCollapsed}>
-      <TowerContainer>
-        <TopTowerFloor id="control-tower-floor">
-          <ControlTower />
+    <TowerWrapper collapsed={sideTowerCollapsed} responsiveLevel={responsiveLevel}>
+      <TowerContainer responsiveLevel={responsiveLevel}>
+        <TopTowerFloor id="header-floor">
+          <TowerHeader />
         </TopTowerFloor>
 
-        <MiddleTowerFloor id="workbench-floor">
-          <WorkbenchDrawer />
+        <MiddleTowerFloor id="toolbar-floor">
+          <TowerToolbar />
         </MiddleTowerFloor>
 
-        <BottomTowerFloor id="notes-floor">
-          <SideTowerNotes />
+        <BottomTowerFloor id="viewer-floor">
+          <TowerViewer />
         </BottomTowerFloor>
       </TowerContainer>
     </TowerWrapper>

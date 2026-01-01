@@ -17,63 +17,42 @@ export const openModal = (modalId) => {
   }
 };
 
-// ---- ControlTower: ligne du haut (calendrier + horloge + timer) + ligne du bas (actions rapides) ----
-export const controlButtons = [
-  { id: 'calendar', type: 'action', icon: '📅', label: 'Calendrier', action: () => {} },
-  { id: 'timer', type: 'action', icon: '⏱️', label: 'Timer', action: () => openModal('time-timer') },
-];
-
-export const quickActions = [
-  { id: 'projects', icon: '📊', label: 'Projets', onClick: () => openModal('projects') },
-  { id: 'inventory', icon: '🎒', label: 'Inventaire', onClick: () => {} },
-  { id: 'book', icon: '📖', label: 'Grimoire', onClick: () => {} },
-  { id: 'help', icon: '❓', label: 'Aide', onClick: () => {} },
-  { id: 'map', icon: '🗺️', label: 'Carte', onClick: () => {} },
-  { id: 'camera', icon: '📷', label: 'Capture d\'état', onClick: () => openModal('capture-confirm') },
+// ---- TowerHeader: Actions globales (Sync + Settings) ----
+export const globalActions = [
   { id: 'sync', icon: '🔄', label: 'Synchronisation', onClick: () => openModal('sync') },
   { id: 'config', icon: '⚙️', label: 'Paramètres', onClick: () => openModal('settings') },
+  { id: 'header-wip-1', icon: '🚧', label: 'WIP', onClick: () => {}, placeholder: true },
+  { id: 'header-wip-2', icon: '🚧', label: 'WIP', onClick: () => {}, placeholder: true },
 ];
 
-// Deprecated - keeping for compatibility
-export const workbenchButtons = [
-  { id: 'github', icon: '🐙', label: 'GitHub', action: () => window.open('https://github.com') },
-  { id: 'vscode', icon: '💻', label: 'VS Code', action: () => {} },
-  { id: 'arc', icon: '🌐', label: 'Arc', action: () => {} },
-  { id: 'cursor', icon: '🎯', label: 'Cursor', action: () => {} }
+// ---- TowerToolbar: onglets thématiques ----
+export const toolbarTabs = [
+  { id: 'viewer', icon: '👁️', label: 'Viewer' },
+  { id: 'projects', icon: '📊', label: 'Projets' },
+  { id: 'test-ui', icon: '🧪', label: 'Test UI' },
+  { id: 'wip', icon: '🚧', label: 'WIP' },
 ];
 
-// ---- WorkbenchDrawer: onglets, items, footer ----
-export const drawerTabs = [
-  { id: 'ingredients', icon: '🌿', label: 'Ingrédients' },
-  { id: 'potions', icon: '🧪', label: 'Potions' },
-  { id: 'recipes', icon: '📜', label: 'Recettes' },
-  { id: 'tools', icon: '🔧', label: 'Outils' },
-];
-
-export const drawerItemsByTab = {
-  ingredients: [
-    { id: 'ing-1', icon: '🍃', label: 'Feuille' },
-    { id: 'ing-2', icon: '🍄', label: 'Champignon' },
-    { id: 'ing-3', icon: '🌰', label: 'Gland' },
-    { id: 'ing-4', icon: '🌾', label: 'Herbe' },
+export const toolbarItemsByTab = {
+  viewer: [
+    { id: 'notes', icon: '📝', label: 'Notes', viewerType: 'notes' },
+    { id: 'timer', icon: '⏱️', label: 'Timer', viewerType: 'timer' },
+    { id: 'calendar', icon: '🚧', label: 'Calendrier', action: () => {}, placeholder: true },
+    { id: 'viewer-wip-1', icon: '🚧', label: 'WIP', action: () => {}, placeholder: true },
   ],
-  potions: [
-    { id: 'potion-heal', icon: '💚', label: 'Soin', action: () => openModal('potion-heal') },
-    { id: 'potion-sleep', icon: '💤', label: 'Sommeil', action: () => openModal('potion-sleep') },
-    { id: 'potion-strength', icon: '💪', label: 'Force', action: () => openModal('potion-strength') },
+  projects: [
+    { id: 'projects', icon: '📊', label: 'Projets', action: () => openModal('projects') },
+    { id: 'capture', icon: '📷', label: 'Capture', action: () => openModal('capture-confirm') },
+    { id: 'project-wip-1', icon: '🚧', label: 'WIP', action: () => {}, placeholder: true },
   ],
-  recipes: [
-    { id: 'rec-1', icon: '📜', label: 'Élixir de vigueur' },
-    { id: 'rec-2', icon: '📜', label: 'Tonique de focus' },
+  'test-ui': [
+    { id: 'modal-small', icon: '💚', label: 'Modal S', action: () => openModal('potion-heal') },
+    { id: 'modal-medium', icon: '💤', label: 'Modal M', action: () => openModal('potion-sleep') },
+    { id: 'modal-large', icon: '💪', label: 'Modal L', action: () => openModal('potion-strength') },
   ],
-  tools: [
-    { id: 'tool-1', icon: '🔧', label: 'Alambic' },
-    { id: 'tool-2', icon: '⚗️', label: 'Creuset' },
+  wip: [
+    { id: 'wip-1', icon: '🚧', label: 'WIP', action: () => {}, placeholder: true },
+    { id: 'wip-2', icon: '🚧', label: 'WIP', action: () => {}, placeholder: true },
+    { id: 'wip-3', icon: '🚧', label: 'WIP', action: () => {}, placeholder: true },
   ],
 };
-
-export const drawerFooterActions = [
-  { id: 'upgrade', label: 'Acheter une amélioration basique de machine alchimique' },
-  { id: 'buy-salt', label: 'Acheter la recette du sel du néant' },
-  { id: 'craft-salt', label: 'Créer : Sel du néant' },
-];

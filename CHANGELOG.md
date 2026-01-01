@@ -2,6 +2,72 @@
 
 ## [Unreleased]
 
+### Changed - 2026-01-01 (SideTower Refactoring & Responsive)
+
+- **🏗️ SideTower Architecture 3 Étages** : Refonte complète pour clarté et scalabilité
+  - **TopTowerFloor → TowerHeader** : DateTime pleine largeur + Actions globales (Sync, Settings, 2×WIP)
+  - **MiddleTowerFloor → TowerToolbar** : 4 tabs thématiques (Viewer, Projets, Test UI, WIP)
+  - **BottomTowerFloor → TowerViewer** : Contenu dynamique switchable (Notes, Timer, Calendrier...)
+  - Renommage : `ControlTower` → `TowerHeader`, `WorkbenchDrawer` → `TowerToolbar`, `SideTowerNotes` → `TowerViewer`
+  - Grid layout : `auto 3fr 320px` (desktop) / `auto 2fr 280px` (tablet)
+  - Pattern `viewerType` : Click sur bouton toolbar → change contenu viewer dynamiquement
+
+- **📱 Auto-Collapse Bidirectionnel** : SideTower s'adapte à la largeur écran
+  - Auto-collapse si < 1024px, auto-expand si ≥ 1024px
+  - Détection au resize (traverse seuil), pas de conflit avec toggle manuel
+  - Check initial au mount pour état de départ cohérent
+  - `MainLayout.jsx` : `useEffect` avec tracking `previousWidth`
+
+- **📐 Responsive Design Complet** : Nouveau breakpoint iPad horizontal
+  - **`tabletWideOnly`** (1024-1439px) : Cible iPad horizontal et small desktop
+  - **IconButton responsive** : 48px desktop → 44px tabletWide → 40px tablet
+  - **MarkdownToolbar responsive** : Converti en styled-components, 32px × 24px desktop → 28px × 22px tabletWide
+  - Media queries cohérentes sur tous composants tower
+  - Bouton collapse tactile adapté iPad : 32px × 140px (zone confortable)
+
+- **🎨 Notes Dev Desktop ↔ Companion** : Clarification toggle sources
+  - Toggle emoji 🖥️/📱 pour basculer entre Desktop et Companion
+  - Labels explicites : "Notes Dev (Desktop)" / "Notes Dev (Companion)"
+  - Tooltip informatif sur le bouton toggle
+  - Même MarkdownEditor, données séparées dans `useNotesStore`
+
+### Improved - 2026-01-01
+
+- **🔘 IconButton Standardisé** : Composant unifié avec toutes fonctionnalités
+  - `disabled` prop : opacity 0.4, cursor not-allowed, pointer-events none
+  - `ghost` variant : background transparent pour boutons subtils
+  - `title` prop : tooltips informatifs
+  - Responsive media queries : tabletWideOnly + tablet
+  - Suppression wrappers div avec inline styles
+
+- **🎯 Bouton Collapse Visible** : Toujours accessible, tactile adapté
+  - Z-index : 15 (au-dessus SideTower 10, sous modal 30)
+  - Couleur : `theme.colors.primary` (cohérent avec design)
+  - Taille desktop : 24px × 120px, hover 32px
+  - Taille tablet : 32px × 140px (tactile confortable), hover 40px
+  - Position : `right: 20%` (desktop) / `15%` (tablet) / `0` (collapsed)
+
+- **📚 Documentation Layout** : `src/components/layout/CLAUDE.md` complètement réécrit
+  - Hiérarchie MainLayout → LayoutWrapper → MainContent + SideTower
+  - Architecture 3 étages détaillée (Top/Middle/Bottom Floors)
+  - Auto-collapse logic expliquée avec code
+  - Responsive design : breakpoints, IconButton, MarkdownToolbar
+  - Pattern viewerType documenté
+  - Store integration (usePreferencesStore)
+  - Conventions établies (Tower prefix, Floor suffix)
+
+### Fixed - 2026-01-01
+
+- **🐛 Z-Index Hierarchy** : Bouton collapse ne passe plus au-dessus des modales
+  - SideTower : 100 → 10 (navigation level)
+  - SideTowerToggleButton : 9999 → 15 (entre navigation et modal)
+  - Modal reste à 30 (au-dessus de tout UI)
+
+- **📁 Documentation Cleanup** : Structure `_internal/docs/` réorganisée
+  - `responsive-fixes-summary.md` → `_internal/docs/reports/` (rapport session complet)
+  - Suppression fichiers obsolètes : `responsive-strategy.md`, `responsive-testing-guide.md`
+  - Fichiers loose dans `_internal/cockpit/` déplacés vers structure propre
+
 ### Added - 2025-12-13 (Archive Management & Polish)
 
 - **✏️ DiaryArchive CRUD** : Édition et suppression des entrées archivées

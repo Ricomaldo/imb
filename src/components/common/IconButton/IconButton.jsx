@@ -10,9 +10,25 @@ import { ButtonContainer, IconWrapper, Label } from './IconButton.styles';
  * @renders IconWrapper
  * @renders Label
  */
-const IconButton = ({ icon, label, onClick, active = false, size = 'medium', variant = 'default' }) => {
+const IconButton = ({
+  icon,
+  label,
+  onClick,
+  active = false,
+  disabled = false,
+  size = 'medium',
+  variant = 'default',
+  title
+}) => {
   return (
-    <ButtonContainer onClick={onClick} $active={active} size={size} variant={variant} title={label}>
+    <ButtonContainer
+      onClick={disabled ? undefined : onClick}
+      $active={active}
+      $disabled={disabled}
+      size={size}
+      variant={variant}
+      title={title || label}
+    >
       <IconWrapper>{icon}</IconWrapper>
       {label && <Label>{label}</Label>}
     </ButtonContainer>
@@ -24,12 +40,15 @@ IconButton.propTypes = {
   label: PropTypes.string,
   onClick: PropTypes.func,
   active: PropTypes.bool,
+  disabled: PropTypes.bool,
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  variant: PropTypes.oneOf(['default', 'primary', 'secondary', 'danger'])
+  variant: PropTypes.oneOf(['default', 'primary', 'secondary', 'danger', 'ghost']),
+  title: PropTypes.string
 };
 
 IconButton.defaultProps = {
   active: false,
+  disabled: false,
   size: 'medium',
   variant: 'default'
 };

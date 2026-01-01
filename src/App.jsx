@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
-import StudioHall from './components/layout/StudioHall/StudioHall';
+import MainLayout from './components/layout/MainLayout/MainLayout';
 import ModalManager from './components/modals/ModalManager';
 import LoginPage from './components/auth/LoginPage';
 import exposeStoresToWindow from './utils/exposeStores';
@@ -11,6 +11,7 @@ import { initializeStores, cleanupObsoleteStorage } from './stores/migrateProjec
 import CompanionApp from './companion/CompanionApp';
 import { openModal } from './utils/buttonMapping';
 import { SyncProvider } from './contexts/SyncContext';
+import { useResponsiveLayout } from './hooks/useResponsiveLayout';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
@@ -105,31 +106,38 @@ function App() {
   );
 }
 
-// Composant interne pour accéder au routing
+// Composant interne pour accéder au routing + responsive layout
 function AppContent() {
-  useEffect(() => {
-    // Vérifier si on doit afficher la modale de choix
-    const hasPreference = localStorage.getItem('interface-preference');
-    const isMobile = window.innerWidth < 768;
-    const isRootPath = window.location.pathname === '/';
+  const layout = useResponsiveLayout();
 
-    // Afficher la modale uniquement si :
-    // 1. Pas de préférence sauvegardée
-    // 2. Détecté comme mobile
-    // 3. Sur la route racine
-    if (!hasPreference && isMobile && isRootPath) {
-      // Attendre que le ModalManager soit monté
-      setTimeout(() => {
-        openModal('device-choice');
-      }, 500);
-    }
-  }, []);
+  /**
+   * Logique de sélection interface:
+   * 1. Si préférence utilisateur sauvegardée → la respecter (user override)
+   * 2. Sinon → utiliser auto-détection (répétable sur resize/orientation)
+   *
+   * Pas de modal: détection auto silencieuse, utilisateur peut change dans Settings
+   */
+  const savedPreference = localStorage.getItem('interface-preference');
+  const shouldShowCompanion = savedPreference
+    ? savedPreference === 'mobile'
+    : layout.interface === 'companion';
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<StudioHall />} />
-        <Route path="/companion/*" element={<CompanionApp />} />
+        {shouldShowCompanion ? (
+          <Route path="*" element={<CompanionApp layout={layout} />} />
+        ) : (
+          <Route
+            path="*"
+            element={
+              <MainLayout
+                responsiveLevel={layout.responsiveLevel}
+                layout={layout}
+              />
+            }
+          />
+        )}
       </Routes>
       <ModalManager />
     </>

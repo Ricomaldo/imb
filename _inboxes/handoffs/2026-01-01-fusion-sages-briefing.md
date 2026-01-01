@@ -185,8 +185,29 @@ cp ~/dev/_ref/templates/project-structure/complex/_inboxes_handoff-system-to-pro
 - [x] Handoff créé
 - [x] Handoff lu par agent IMB ✅ 2026-01-01
 - [x] Mission locale créée ✅ `_internal/cockpit/workflow/active/2026-01-01-fusion-sages-m1.md`
-- [ ] Exécution démarrée (prochaine session)
-- [ ] Status reporté (prochaine session)
+- [x] Exécution démarrée ✅ 2026-01-01
+- [x] Status reporté ✅ 2026-01-01
+
+## ✨ Exécution M1 Terminée
+
+**Effort total** : ~1h50min (sous les 2h estimées)
+
+**Fichiers créés** :
+- ✅ `src/data/sagesConfig.json` (8 sages complètement configurés)
+- ✅ `src/stores/useSagesStore.js` (localStorage: `irim-sages-store`)
+- ✅ `src/components/rooms/Comptoir/widgets/SagesPortal.jsx` (avec createPortal)
+- ✅ Modifié `src/components/rooms/Comptoir/ComptoirRoom.jsx` (PanelGrid + intégration)
+
+**FIXES P0 appliquées** :
+- ✅ Fix 1 : Migration ComptoirGrid → PanelGrid (15min)
+- ✅ Fix 2 : Modal avec createPortal (10min)
+
+**Tests validés** :
+- ✅ npm run build : succès sans erreurs
+- ✅ Vite dev server : sans erreurs
+- ✅ Commit : `6107fd3` vers `origin/feature/fusion-sages-m1`
+
+**Prochaine action** : M2 - Voix des Sages (quotes rotatives)
 
 **Mettre à jour ce fichier** quand checkboxes complétées.
 

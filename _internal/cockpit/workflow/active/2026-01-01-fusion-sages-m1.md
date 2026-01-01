@@ -237,12 +237,12 @@ git commit -m "M1: Portail Sages - 8 cartes cliquables + modal"
 
 ## 🎯 Status Tracking
 
-- [ ] Handoff lu + docs système consultés
-- [ ] FIXES P0 validées (ComptoirGrid + Modal)
-- [ ] Étape 1-5 complétées (config, store, composant, styles, intégration)
-- [ ] Tests validation réussis
-- [ ] Commit créé et pushé
-- [ ] Prêt pour M2 (Voix des Sages)
+- [x] Handoff lu + docs système consultés
+- [x] FIXES P0 validées (ComptoirGrid + Modal)
+- [x] Étape 1-5 complétées (config, store, composant, styles, intégration)
+- [x] Tests validation réussis
+- [x] Commit créé et pushé
+- [x] Prêt pour M2 (Voix des Sages)
 
 ---
 

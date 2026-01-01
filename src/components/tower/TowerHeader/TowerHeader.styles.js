@@ -29,21 +29,8 @@ export const TowerContainer = styled.div`
   padding: ${({ theme }) => theme.spacing.sm};
 `;
 
-export const TopRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: ${({ theme }) => theme.spacing.sm};
-  justify-items: center;
-`;
-
-export const BottomRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: ${({ theme }) => theme.spacing.xs};
-  justify-items: center;
-`;
-
-export const CenterRect = styled.div`
+// Section Date/Heure (pleine largeur, centrée)
+export const DateTimeSection = styled.div`
   ${craftBorderHeavy}
   display: flex;
   flex-direction: column;
@@ -52,10 +39,19 @@ export const CenterRect = styled.div`
   background: #111111;
   color: ${({ theme }) => theme.colors.text.light};
   width: 100%;
-  height: ${({ theme }) => theme.button.large};
-  padding: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.sm};
   text-align: center;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+// Row pour actions globales (Sync, Settings)
+export const GlobalActionsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: center;
+  align-items: center;
 `;
 
 export const TimeDisplay = styled.div`
@@ -68,7 +64,9 @@ export const TimeDisplay = styled.div`
   margin: 0;
   padding: 0;
   color: ${({ theme }) => theme.colors.text.light};
-  min-width: 160px;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
 `;
 
 export const DateDisplay = styled.div`
@@ -79,9 +77,10 @@ export const DateDisplay = styled.div`
   letter-spacing: 0.12em;
   line-height: 1.2;
   margin: 0;
-  margin-top: ${({ theme }) => theme.spacing.xs};
   padding: 0;
-  min-width: 160px;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
 
   .year {
     color: ${({ theme }) => theme.colors.text.muted};

@@ -195,6 +195,7 @@ const ComptoirRoom = () => {
             questionsIndex={questionsIndex}
             selectedQuestionIds={selectedQuestionIds}
             onSelect={setSelectedQuestionIds}
+            sageColor={activeSage?.color}
           />
         </Panel>
 

@@ -24,7 +24,6 @@ const QuestionItemLabel = styled.label`
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
-    border-left: 2px solid rgba(255, 255, 255, 0.3);
   }
 
   input[type="checkbox"] {
@@ -39,6 +38,7 @@ const QuestionItemLabel = styled.label`
 
   span.title {
     opacity: 0.9;
+    color: ${({ $sageColor }) => $sageColor || '#fff'};
   }
 `;
 
@@ -47,6 +47,7 @@ export const QuestionSelector = ({
   questionsIndex,
   selectedQuestionIds,
   onSelect,
+  sageColor,
 }) => {
   const toggleQuestion = (questionId) => {
     if (selectedQuestionIds.includes(questionId)) {
@@ -67,7 +68,7 @@ export const QuestionSelector = ({
   return (
     <QuestionSelectorContainer>
       {questionsIndex.map((question) => (
-        <QuestionItemLabel key={question.id}>
+        <QuestionItemLabel key={question.id} $sageColor={sageColor}>
           <input
             type="checkbox"
             checked={selectedQuestionIds.includes(question.id)}

@@ -111,6 +111,7 @@ export const QuestionsPanel = forwardRef(({ sageId, questionIds, sageColor, sage
           height="100%"
           compact={true}
           variant="embedded"
+          accentColor={sageColor}
         />
       )}
     </>

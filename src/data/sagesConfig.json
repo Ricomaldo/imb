@@ -1,0 +1,86 @@
+{
+  "sages": [
+    {
+      "id": "atlas",
+      "name": "Atlas",
+      "emoji": "🏔️",
+      "age": 49,
+      "specialty": "Patrimoine & Paternité",
+      "color": "#607D8B",
+      "room": "bibliotheque"
+    },
+    {
+      "id": "bodhi",
+      "name": "Bodhi",
+      "emoji": "🌳",
+      "age": 67,
+      "specialty": "Zen & Contemplation",
+      "color": "#4CAF50",
+      "room": "jardin"
+    },
+    {
+      "id": "chrysalis",
+      "name": "Chrysalis",
+      "emoji": "🦋",
+      "age": 35,
+      "specialty": "Architecture & Métamorphose",
+      "color": "#9C27B0",
+      "room": "forge"
+    },
+    {
+      "id": "eleonore",
+      "name": "Éléonore",
+      "emoji": "🌸",
+      "age": 42,
+      "specialty": "Mode BFF++ & Sas déversoir",
+      "color": "#E91E63",
+      "room": "comptoir"
+    },
+    {
+      "id": "gouvernail",
+      "name": "Gouvernail",
+      "emoji": "🧭",
+      "age": 38,
+      "specialty": "Coordination multi-perspectives",
+      "color": "#37474F",
+      "room": "comptoir",
+      "isMeta": true
+    },
+    {
+      "id": "luna",
+      "name": "Luna",
+      "emoji": "🌙",
+      "age": 28,
+      "specialty": "Art-thérapie & Catharsis créative",
+      "color": "#9C27B0",
+      "room": "sanctuaire"
+    },
+    {
+      "id": "meridian",
+      "name": "Meridian",
+      "emoji": "🧘",
+      "age": 45,
+      "specialty": "Régulation corporelle & Zone Rouge",
+      "color": "#8B4513",
+      "room": "chambre"
+    },
+    {
+      "id": "onyx",
+      "name": "Onyx",
+      "emoji": "💎",
+      "age": 58,
+      "specialty": "Psychanalyse jungienne",
+      "color": "#424242",
+      "room": "cave"
+    },
+    {
+      "id": "selah",
+      "name": "Selah",
+      "emoji": "📿",
+      "age": 52,
+      "specialty": "Ministère UEPAL & Fonction presbytérale",
+      "color": "#8B6F47",
+      "room": "presbytère"
+    }
+  ]
+}

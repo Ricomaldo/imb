@@ -113,7 +113,14 @@ const parseQuestionsFromMarkdown = (content) => {
   return questions;
 };
 
-const getQuestionPath = (sageId, questionId) => {
+const getQuestionPath = (questionId, sageIndex) => {
+  // Find filepath from sageIndex (populated from vault index)
+  const question = sageIndex.find(q => q.id === questionId);
+  if (question && question.filepath) {
+    return question.filepath;
+  }
+
+  // Fallback: construct path if not found in index
   const domain = questionId.substring(0, questionId.search(/\d/)) || 'unknown';
   return `1-knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
 };
@@ -131,7 +138,7 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
       if (!questionsContent[qId] && !loadingQuestions.has(qId)) {
         setLoadingQuestions(prev => new Set([...prev, qId]));
 
-        const path = getQuestionPath(sageId, qId);
+        const path = getQuestionPath(qId, sageIndex);
         readNote(path)
           .then(content => {
             setQuestionsContent(prev => ({
@@ -155,10 +162,10 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
           });
       }
     });
-  }, [questionIds, sageId]);
+  }, [questionIds]);
 
   const handleSaveQuestion = async (questionId) => {
-    const path = getQuestionPath(sageId, questionId);
+    const path = getQuestionPath(questionId, sageIndex);
     const content = questionsContent[questionId];
 
     setIsSaving(prev => ({ ...prev, [questionId]: true }));

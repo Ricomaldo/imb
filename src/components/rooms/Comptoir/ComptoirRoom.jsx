@@ -11,6 +11,7 @@ import { QuestionsPanel } from "./widgets/QuestionsPanel";
 import { readNote } from "../../../services/vaultApi";
 import sagesConfig from "../../../data/sagesConfig.json";
 import usePreferencesStore from "../../../stores/usePreferencesStore";
+import { metalBg } from "../../../styles/mixins";
 
 /**
  * Comptoir room component for sage portal and knowledge
@@ -30,7 +31,7 @@ const ComptoirRoom = () => {
   const [questionsIndex, setQuestionsIndex] = useState([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
 
-  const activeSage = sagesConfig.sages.find(s => s.id === activeSageId);
+  const activeSage = sagesConfig.sages.find((s) => s.id === activeSageId);
 
   // Persist sage selection
   useEffect(() => {
@@ -57,23 +58,48 @@ const ComptoirRoom = () => {
     }
   }, [activeSageId]);
 
-  // Parse markdown index to extract questions
+  // Parse markdown index to extract questions with filepath from vault
   const parseQuestionsFromMarkdown = (content) => {
     const questions = [];
-    const questionRegex = /###\s+\[([A-Z0-9]+)\]\s+(.+?)(?:\n|$)/g;
 
-    let match;
-    while ((match = questionRegex.exec(content)) !== null) {
-      const questionId = match[1];
-      const titleAndDescription = match[2];
+    // Split by heading to process each question block
+    const sections = content.split(/###\s+\[([A-Z0-9]+)\]\s+(.+?)(?=###|\Z)/gs);
 
+    // sections will be: [content before first heading, id1, title1, section1_content, id2, title2, section2_content, ...]
+    for (let i = 1; i < sections.length; i += 3) {
+      const questionId = sections[i];
+      const titleAndDescription = sections[i + 1];
+      const sectionContent = sections[i + 2] || '';
+
+      // Extract title (remove description after dash)
       const titleMatch = titleAndDescription.match(/^([^-]+)(?:\s*-\s*(.+))?$/);
       const title = titleMatch ? titleMatch[1].trim() : titleAndDescription;
+
+      // Extract filepath from "- **Fichier** : `path/to/file.md`"
+      const filepathMatch = sectionContent.match(/\-\s*\*\*Fichier\*\*\s*:\s*`([^`]+)`/);
+      const relativeFilepath = filepathMatch ? filepathMatch[1].trim() : null;
+
+      // Prepend 1-knowledge-base/ if filepath is relative
+      const filepath = relativeFilepath
+        ? relativeFilepath.startsWith('1-knowledge-base/')
+          ? relativeFilepath
+          : `1-knowledge-base/${relativeFilepath}`
+        : null;
+
+      // Extract domaine from filepath (e.g., "accompagnement-ia" from "...domaines-v4/accompagnement-ia/...")
+      let domaine = questionId.substring(0, questionId.search(/\d/)) || "unknown";
+      if (filepath) {
+        const domainMatch = filepath.match(/domaines-v4\/([^/]+)\//);
+        if (domainMatch) {
+          domaine = domainMatch[1];
+        }
+      }
 
       questions.push({
         id: questionId,
         title: title.trim(),
-        domaine: questionId.substring(0, questionId.search(/\d/)) || "unknown"
+        domaine: domaine,
+        filepath: filepath
       });
     }
 
@@ -86,14 +112,14 @@ const ComptoirRoom = () => {
         {/* Handoff Creator - placeholder for future M3 integration */}
         <Panel
           gridColumn="1 / 4"
-          gridRow="1 / 4"
+          gridRow="3 / 9"
           title="Handoff"
           icon="✉️"
           texture="parchment"
           accentColor={theme.colors.accents.warm}
           collapsible={true}
           collapsed={getPanelState("comptoir", "handoff")?.collapsed ?? false}
-          onToggleCollapse={collapsed =>
+          onToggleCollapse={(collapsed) =>
             updatePanelState("comptoir", "handoff", { collapsed })
           }
         >
@@ -104,32 +130,40 @@ const ComptoirRoom = () => {
 
         {/* Sage Selector */}
         <Panel
-          gridColumn="4 / 13"
-          gridRow="1 / 2"
+          gridColumn="1 / 13"
+          gridRow="1 / 3"
           title="Choisir un Sage"
           icon="🎭"
           texture="parchment"
-          accentColor={theme.colors.accents.warm}
+          accentColor={metalBg}
+          texture="parchment"
           collapsible={true}
-          collapsed={getPanelState("comptoir", "sage-selector")?.collapsed ?? false}
-          onToggleCollapse={collapsed =>
+          collapsed={
+            getPanelState("comptoir", "sage-selector")?.collapsed ?? false
+          }
+          onToggleCollapse={(collapsed) =>
             updatePanelState("comptoir", "sage-selector", { collapsed })
           }
         >
-          <SageSelector activeSageId={activeSageId} onSelect={setActiveSageId} />
+          <SageSelector
+            activeSageId={activeSageId}
+            onSelect={setActiveSageId}
+          />
         </Panel>
 
         {/* Question Selector */}
         <Panel
           gridColumn="4 / 13"
-          gridRow="2 / 3"
+          gridRow="3 / 5"
           title="Questions"
           icon="❓"
           texture="parchment"
           accentColor={activeSage?.color}
           collapsible={true}
-          collapsed={getPanelState("comptoir", "question-selector")?.collapsed ?? false}
-          onToggleCollapse={collapsed =>
+          collapsed={
+            getPanelState("comptoir", "question-selector")?.collapsed ?? false
+          }
+          onToggleCollapse={(collapsed) =>
             updatePanelState("comptoir", "question-selector", { collapsed })
           }
         >
@@ -144,14 +178,16 @@ const ComptoirRoom = () => {
         {/* Questions Panel */}
         <Panel
           gridColumn="4 / 13"
-          gridRow="3 / 8"
+          gridRow="5 / 9"
           title={`Questions - ${activeSage?.name}`}
           icon="📖"
           texture="parchment"
           accentColor={activeSage?.color}
           collapsible={true}
-          collapsed={getPanelState("comptoir", "questions-panel")?.collapsed ?? false}
-          onToggleCollapse={collapsed =>
+          collapsed={
+            getPanelState("comptoir", "questions-panel")?.collapsed ?? false
+          }
+          onToggleCollapse={(collapsed) =>
             updatePanelState("comptoir", "questions-panel", { collapsed })
           }
         >

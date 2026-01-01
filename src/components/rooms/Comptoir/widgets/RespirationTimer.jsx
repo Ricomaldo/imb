@@ -3,11 +3,29 @@ import styled from 'styled-components';
 
 const TimerContainer = styled.div`
   margin: 20px 0;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid ${props => props.color};
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.15) 100%);
+  border: 1px solid ${props => props.color}66;
   border-radius: 12px;
   text-align: center;
+  backdrop-filter: blur(4px);
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.1em;
+    color: #f5f5f5;
+
+    @media (max-width: 640px) {
+      font-size: 1em;
+      margin-bottom: 12px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    padding: 16px;
+    margin: 16px 0;
+  }
 `;
 
 const Circle = styled.div`
@@ -25,10 +43,10 @@ const Circle = styled.div`
   border: 4px solid ${props => props.color};
   background: ${props => {
     switch (props.phase) {
-      case 'inhale': return 'rgba(76, 175, 80, 0.2)';  // Green
-      case 'hold': return 'rgba(255, 193, 7, 0.2)';     // Yellow
-      case 'exhale': return 'rgba(244, 67, 54, 0.2)';   // Red
-      default: return 'rgba(0, 0, 0, 0.2)';
+      case 'inhale': return 'rgba(76, 175, 80, 0.15)';  // Green
+      case 'hold': return 'rgba(255, 193, 7, 0.15)';     // Yellow
+      case 'exhale': return 'rgba(244, 67, 54, 0.15)';   // Red
+      default: return 'rgba(0, 0, 0, 0.1)';
     }
   }};
   transform: ${props => {
@@ -39,25 +57,51 @@ const Circle = styled.div`
       default: return 'scale(1)';
     }
   }};
+  box-shadow: 0 4px 16px ${props => props.color}30;
+
+  @media (max-width: 640px) {
+    width: 140px;
+    height: 140px;
+    font-size: 1.6em;
+    margin-bottom: 16px;
+  }
 `;
 
 const PhaseText = styled.div`
   font-size: 1em;
-  opacity: 0.8;
-  margin-bottom: 10px;
+  opacity: 0.85;
+  margin-bottom: 12px;
+  color: #f5f5f5;
+  font-weight: 500;
+
+  @media (max-width: 640px) {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+  }
 `;
 
 const Count = styled.div`
   font-size: 4em;
   font-weight: bold;
   font-variant-numeric: tabular-nums;
+  color: #fff;
+
+  @media (max-width: 640px) {
+    font-size: 3em;
+  }
 `;
 
 const Info = styled.div`
-  margin-top: 15px;
+  margin-top: 16px;
   font-size: 0.85em;
-  opacity: 0.8;
-  line-height: 1.5;
+  opacity: 0.85;
+  line-height: 1.6;
+  color: #f5f5f5;
+
+  @media (max-width: 640px) {
+    font-size: 0.8em;
+    margin-top: 12px;
+  }
 `;
 
 const ProgressBar = styled.div`
@@ -65,13 +109,19 @@ const ProgressBar = styled.div`
   height: 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
-  margin-top: 15px;
+  margin-top: 16px;
   overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 640px) {
+    height: 5px;
+    margin-top: 12px;
+  }
 `;
 
 const ProgressFill = styled.div`
   height: 100%;
-  background: ${props => props.color};
+  background: linear-gradient(90deg, ${props => props.color}99, ${props => props.color});
   width: ${props => props.percent}%;
   transition: width 0.1s linear;
 `;
@@ -79,27 +129,46 @@ const ProgressFill = styled.div`
 const Controls = styled.div`
   display: flex;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 16px;
   justify-content: center;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) {
+    gap: 8px;
+    margin-top: 12px;
+  }
 `;
 
 const Button = styled.button`
-  background: ${props => props.color};
-  border: none;
+  background: ${props => props.color}40;
+  border: 1px solid ${props => props.color}99;
   color: #fff;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 6px;
   font-size: 0.85em;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-family: inherit;
 
-  &:hover {
-    opacity: 0.8;
+  &:hover:not(:disabled) {
+    background: ${props => props.color}60;
+    border-color: ${props => props.color};
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media (max-width: 640px) {
+    padding: 8px 14px;
+    font-size: 0.8em;
   }
 `;
 

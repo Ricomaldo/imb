@@ -3,76 +3,12 @@ import styled from 'styled-components';
 import { readNote, replaceNote } from '../../../../services/vaultApi';
 import MarkdownEditor from '../../../common/MarkdownEditor';
 
-const QuestionsPanelContainer = styled.div`
+const EditorContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-  width: 100%;
   height: 100%;
-  overflow-y: auto;
-`;
-
-const QuestionSection = styled.div`
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   gap: ${({ theme }) => theme.spacing.md};
-  padding: ${({ theme }) => theme.spacing.md};
-  background: rgba(0, 0, 0, 0.1);
-  border-left: 3px solid ${({ $color }) => $color};
-  border-radius: ${({ theme }) => theme.radii.sm};
-`;
-
-const QuestionHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.md};
-
-  h4 {
-    margin: 0;
-    font-size: ${({ theme }) => theme.typography.sizes.base};
-    color: #fff;
-    flex: 1;
-  }
-
-  strong {
-    color: ${({ $color }) => $color};
-    font-weight: bold;
-  }
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-  margin-top: ${({ theme }) => theme.spacing.sm};
-`;
-
-const ActionButton = styled.button`
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  background: ${({ $variant, $color }) => {
-    if ($variant === 'save') return $color;
-    return 'rgba(0, 0, 0, 0.2)';
-  }};
-  border: 1px solid ${({ $color }) => $color}33;
-  color: #fff;
-  border-radius: ${({ theme }) => theme.radii.sm};
-  font-size: ${({ theme }) => theme.typography.sizes.sm};
-  cursor: pointer;
-  transition: ${({ theme }) =>
-    `all ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
-
-  &:hover {
-    background: ${({ $variant, $color }) => {
-      if ($variant === 'save') return $color;
-      return 'rgba(0, 0, 0, 0.3)';
-    }};
-    border-color: ${({ $color }) => $color}66;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 `;
 
 const LoadingState = styled.div`
@@ -85,33 +21,45 @@ const EmptyState = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 200px;
+  height: 100px;
   opacity: 0.6;
   font-size: ${({ theme }) => theme.typography.sizes.base};
   text-align: center;
 `;
 
-const parseQuestionsFromMarkdown = (content) => {
-  const questions = [];
-  const questionRegex = /###\s+\[([A-Z0-9]+)\]\s+(.+?)(?:\n|$)/g;
+const ToolbarContainer = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+  justify-content: flex-end;
+  padding-top: ${({ theme }) => theme.spacing.md};
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`;
 
-  let match;
-  while ((match = questionRegex.exec(content)) !== null) {
-    const questionId = match[1];
-    const titleAndDescription = match[2];
+const ToolbarButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+  background: ${({ $variant, theme }) =>
+    $variant === 'save' ? theme.colors.accents.warm : 'rgba(255, 255, 255, 0.05)'};
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: ${({ theme }) => theme.radii.sm};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.typography.sizes.base};
+  transition: ${({ theme }) =>
+    `all ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
 
-    const titleMatch = titleAndDescription.match(/^([^-]+)(?:\s*-\s*(.+))?$/);
-    const title = titleMatch ? titleMatch[1].trim() : titleAndDescription;
-
-    questions.push({
-      id: questionId,
-      title: title.trim(),
-      domain: questionId.substring(0, questionId.search(/\d/)) || 'unknown'
-    });
+  &:hover:not(:disabled) {
+    background: ${({ $variant, theme }) =>
+      $variant === 'save'
+        ? theme.colors.accents.warm
+        : 'rgba(255, 255, 255, 0.1)'};
+    border-color: rgba(255, 255, 255, 0.4);
   }
 
-  return questions;
-};
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
 
 const getQuestionPath = (questionId, sageIndex) => {
   // Find filepath from sageIndex (populated from vault index)
@@ -162,7 +110,7 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
           });
       }
     });
-  }, [questionIds]);
+  }, [questionIds, sageIndex]);
 
   const handleSaveQuestion = async (questionId) => {
     const path = getQuestionPath(questionId, sageIndex);
@@ -189,83 +137,65 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
     );
   }
 
+  // Display only the first selected question
+  const activeQuestionId = questionIds[0];
+  const isEditing = editingMode[activeQuestionId] || false;
+  const isSavingNow = isSaving[activeQuestionId] || false;
+  const isModified = contentModified[activeQuestionId] || false;
+  const content = questionsContent[activeQuestionId] || '';
+  const isLoading = loadingQuestions.has(activeQuestionId);
+
   return (
-    <QuestionsPanelContainer>
-      {questionIds.map(questionId => {
-        const isEditing = editingMode[questionId] || false;
-        const isSavingNow = isSaving[questionId] || false;
-        const isModified = contentModified[questionId] || false;
-        const content = questionsContent[questionId] || '';
-        const isLoading = loadingQuestions.has(questionId);
+    <EditorContainer>
+      {isLoading ? (
+        <LoadingState>⏳ Chargement...</LoadingState>
+      ) : (
+        <>
+          <MarkdownEditor
+            key={`editor-${activeQuestionId}-${isEditing}`}
+            value={content}
+            onChange={newContent => {
+              setQuestionsContent(prev => ({
+                ...prev,
+                [activeQuestionId]: newContent
+              }));
+              setContentModified(prev => ({
+                ...prev,
+                [activeQuestionId]: true
+              }));
+            }}
+            readOnly={!isEditing}
+            height="300px"
+            compact={true}
+            variant="embedded"
+            accentColor={sageColor}
+          />
 
-        // Find question from index for title
-        const questionData = sageIndex.find(q => q.id === questionId) || {
-          id: questionId,
-          title: questionId
-        };
+          <ToolbarContainer>
+            <ToolbarButton
+              onClick={() =>
+                setEditingMode(prev => ({
+                  ...prev,
+                  [activeQuestionId]: !prev[activeQuestionId]
+                }))
+              }
+              disabled={isSavingNow || isLoading}
+            >
+              {isEditing ? '👁️ Lire' : '✏️ Éditer'}
+            </ToolbarButton>
 
-        return (
-          <QuestionSection key={questionId} $color={sageColor}>
-            <QuestionHeader $color={sageColor}>
-              <h4>
-                <strong>{questionData.id}</strong> {questionData.title}
-              </h4>
-            </QuestionHeader>
-
-            {isLoading ? (
-              <LoadingState>⏳ Chargement...</LoadingState>
-            ) : (
-              <>
-                <MarkdownEditor
-                  key={`editor-${questionId}-${isEditing}`}
-                  value={content}
-                  onChange={newContent => {
-                    setQuestionsContent(prev => ({
-                      ...prev,
-                      [questionId]: newContent
-                    }));
-                    setContentModified(prev => ({
-                      ...prev,
-                      [questionId]: true
-                    }));
-                  }}
-                  readOnly={!isEditing}
-                  height="250px"
-                  compact={true}
-                  variant="embedded"
-                  accentColor={sageColor}
-                />
-
-                <ActionButtons>
-                  <ActionButton
-                    $color={sageColor}
-                    onClick={() =>
-                      setEditingMode(prev => ({
-                        ...prev,
-                        [questionId]: !prev[questionId]
-                      }))
-                    }
-                    disabled={isSavingNow || isLoading}
-                  >
-                    {isEditing ? '👁️ Lire' : '✏️ Éditer'}
-                  </ActionButton>
-
-                  {isEditing && (
-                    <ActionButton
-                      $variant="save"
-                      $color={sageColor}
-                      onClick={() => handleSaveQuestion(questionId)}
-                      disabled={isSavingNow || !isModified || isLoading}
-                    >
-                      {isSavingNow ? '⏳ Sauvegarde...' : '💾 Sauvegarder'}
-                    </ActionButton>
-                  )}
-                </ActionButtons>
-              </>
+            {isEditing && (
+              <ToolbarButton
+                $variant="save"
+                onClick={() => handleSaveQuestion(activeQuestionId)}
+                disabled={isSavingNow || !isModified || isLoading}
+              >
+                {isSavingNow ? '⏳ Sauvegarde...' : '💾 Sauvegarder'}
+              </ToolbarButton>
             )}
-          </QuestionSection>
-        );
-      })}
-    </QuestionsPanelContainer>
+          </ToolbarContainer>
+        </>
+      )}
+    </EditorContainer>
   );
 };

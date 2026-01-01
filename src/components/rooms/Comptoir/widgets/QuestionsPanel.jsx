@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import styled from 'styled-components';
 import { readNote, replaceNote } from '../../../../services/vaultApi';
 import MarkdownEditor from '../../../common/MarkdownEditor';
@@ -31,9 +31,26 @@ const getQuestionPath = (questionId, sageIndex) => {
   return `1-knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
 };
 
-export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] }) => {
+export const QuestionsPanel = forwardRef(({ sageId, questionIds, sageColor, sageIndex = [] }, ref) => {
   const [questionsContent, setQuestionsContent] = useState({});
   const [loadingQuestions, setLoadingQuestions] = useState(new Set());
+
+  // Expose save method to parent via ref
+  useImperativeHandle(ref, () => ({
+    saveCurrentQuestion: async (questionId) => {
+      const path = getQuestionPath(questionId, sageIndex);
+      const content = questionsContent[questionId];
+      try {
+        await replaceNote(path, content);
+        console.log(`[QuestionsPanel] Saved ${questionId}`);
+        return true;
+      } catch (err) {
+        console.error(`[QuestionsPanel] Save error for ${questionId}:`, err);
+        alert(`❌ Erreur sauvegarde: ${err.message}`);
+        return false;
+      }
+    }
+  }));
 
   // Load content for selected questions
   useEffect(() => {
@@ -67,19 +84,6 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
     });
   }, [questionIds, sageIndex]);
 
-  const handleSaveQuestion = async (questionId) => {
-    const path = getQuestionPath(questionId, sageIndex);
-    const content = questionsContent[questionId];
-
-    try {
-      await replaceNote(path, content);
-      console.log(`[QuestionsPanel] Saved ${questionId}`);
-    } catch (err) {
-      console.error(`[QuestionsPanel] Save error for ${questionId}:`, err);
-      alert(`❌ Erreur sauvegarde: ${err.message}`);
-    }
-  };
-
   if (questionIds.length === 0) {
     return (
       <EmptyState>📖 Sélectionnez une question</EmptyState>
@@ -104,7 +108,6 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
               [activeQuestionId]: newContent
             }));
           }}
-          onSave={() => handleSaveQuestion(activeQuestionId)}
           height="100%"
           compact={true}
           variant="embedded"
@@ -112,4 +115,6 @@ export const QuestionsPanel = ({ sageId, questionIds, sageColor, sageIndex = [] 
       )}
     </>
   );
-};
+});
+
+QuestionsPanel.displayName = 'QuestionsPanel';

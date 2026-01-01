@@ -1,7 +1,8 @@
 // src/components/rooms/Comptoir/ComptoirRoom.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "styled-components";
+import styled from "styled-components";
 import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
 import Panel from "../../common/Panel";
@@ -13,6 +14,27 @@ import sagesConfig from "../../../data/sagesConfig.json";
 import usePreferencesStore from "../../../stores/usePreferencesStore";
 import { metalBg } from "../../../styles/mixins";
 
+const SaveButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+  background: ${({ theme }) => theme.colors.accents.warm};
+  color: #fff;
+  border: none;
+  border-radius: ${({ theme }) => theme.radii.sm};
+  cursor: pointer;
+  font-size: ${({ theme }) => theme.typography.sizes.sm};
+  transition: ${({ theme }) =>
+    `all ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 /**
  * Comptoir room component for sage portal and knowledge
  * @renders BaseRoom
@@ -22,16 +44,28 @@ import { metalBg } from "../../../styles/mixins";
 const ComptoirRoom = () => {
   const theme = useTheme();
   const { getPanelState, updatePanelState } = usePreferencesStore();
+  const questionsPanelRef = useRef(null);
 
   // State management
   const [activeSageId, setActiveSageId] = useState(() => {
-    return localStorage.getItem("comptoir-active-sage") || "eleonore";
+    return localStorage.getItem("comptoir-active-sage") || "eleo";
   });
 
   const [questionsIndex, setQuestionsIndex] = useState([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const activeSage = sagesConfig.sages.find((s) => s.id === activeSageId);
+
+  const handleSaveQuestion = async () => {
+    if (!selectedQuestionIds[0] || !questionsPanelRef.current) return;
+    setIsSaving(true);
+    try {
+      await questionsPanelRef.current.saveCurrentQuestion(selectedQuestionIds[0]);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Persist sage selection
   useEffect(() => {
@@ -199,8 +233,16 @@ const ComptoirRoom = () => {
           onToggleCollapse={(collapsed) =>
             updatePanelState("comptoir", "questions-panel", { collapsed })
           }
+          customActions={
+            selectedQuestionIds.length > 0 && (
+              <SaveButton onClick={handleSaveQuestion} disabled={isSaving}>
+                {isSaving ? "💾 Sauvegarde..." : "💾 Sauvegarder"}
+              </SaveButton>
+            )
+          }
         >
           <QuestionsPanel
+            ref={questionsPanelRef}
             sageId={activeSageId}
             questionIds={selectedQuestionIds}
             sageColor={activeSage?.color}

@@ -106,6 +106,57 @@ Idées émergentes capturées pour **M3+**, **v2**, ou futures itérations.
 
 ---
 
+## Idée #7 : Vault Data Loaders Architecture [PRIORITY: HAUTE - FONDATION]
+
+**Date** : 2026-01-01 (M3)
+**Origine** : M3 implémentation - sageMappingLoader déjà créé
+**Status** : **PARTIELLEMENT IMPLÉMENTÉ** (v1.0: sage-questions only)
+**Description** :
+
+Architecture modulaire pour lire vault dinamiquement. Concept:
+
+```
+mcpVaultClient.js          ← Low-level MCP SSE (foundational)
+  ↓
+services/loaders/
+├── sageMappingLoader.js    ← v1.0 DONE: sage → questions relationships
+├── sessionsLoader.js       ← TODO: read sessions from vault (future)
+├── projectsLoader.js       ← TODO: load projects metadata (future)
+└── vaultIndex.js          ← TODO: full vault visualization (future)
+```
+
+**Phase 1 (M3 - DONE)**:
+- ✅ `mcpVaultClient.js` - SSE protocol + tool calls
+- ✅ `sageMappingLoader.js` - Parse sage-questions index files
+- ✅ SagesKnowledge loads dynamic questions (no more static JSON)
+
+**Phase 2 (M4-M5)**:
+- [ ] sessionsLoader: Read session files from vault
+  - Use case: Display related sessions in Handoff details
+  - Effort: 1-2h
+
+- [ ] projectsLoader: Read projects metadata
+  - Use case: Link IMB projects to vault documentation
+  - Effort: 1-2h
+
+- [ ] vaultIndex: Full read-only vault navigation
+  - Use case: Browse vault from IMB (markdown visualization)
+  - Effort: 3-4h (substantial)
+
+**Capital Point** :
+This architecture means IMB becomes **dynamic gateway to vault data**, not hardcoded.
+Questions change in vault → instantly visible in IMB.
+Sessions added → automatically discoverable.
+Projects documented → accessible from IMB.
+
+**Effort estimé (total)** : 5-8h (phases 2-3)
+**Dépendance** : Phase 1 (M3) = foundation for all
+**Parked pour** : M4-M5 + v1.1 for deeper integration
+
+**Note** : This was implicit in M1-M3 parking as "dynamic MCP loading", now explicit architecture.
+
+---
+
 ## Décisions Reportées
 
 ### MCP vs JSON pour Quotes
@@ -131,6 +182,8 @@ Quand idée émerge pendant dev :
 
 ---
 
-**Total idées parked** : 6
-**Total effort futur** : ~6-7h (v1.1 + post-M5)
-**Momentum actuel** : M3-M5 sans distraction ✅
+**Total idées parked** : 7 (1 partiellement implémentée)
+**Total effort futur** : ~11-15h (v1.1 + post-M5 + phases 2-3)
+**Momentum actuel** : M3 foundation IN PROGRESS, M4-M5 sans distraction ✅
+
+**Idée#7 Status** : Phase 1 (sageMappingLoader) DONE, Phases 2-3 parked for M4-M5+

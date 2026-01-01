@@ -31,6 +31,13 @@ export const readNote = async (path) => {
       throw new Error(data.error || 'Failed to read note');
     }
 
+    // Extract text from MCP response structure
+    // MCP returns: { content: { content: [{ type: "text", text: "..." }] } }
+    if (data.content?.content?.[0]?.text) {
+      return data.content.content[0].text;
+    }
+
+    // Fallback for plain text responses
     return data.content;
   } catch (error) {
     console.error('[VaultAPI] Error reading note:', error);

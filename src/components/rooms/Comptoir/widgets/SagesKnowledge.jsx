@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import sagesIndexData from '../../../../data/sagesIndex.json';
+import vaultDataLoader from '../../../../services/vaultDataLoader';
 
 const KnowledgeContainer = styled.div`
   margin: 15px 0;
@@ -57,9 +57,50 @@ const QuestionDetail = styled.div`
 
 export const SagesKnowledge = ({ sageId, color }) => {
   const [expandedQuestionId, setExpandedQuestionId] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const sageData = sagesIndexData[sageId];
-  const questions = sageData?.questions || [];
+  // Load questions from vault dynamically
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const sageQuestions = await vaultDataLoader.loadSageQuestions(sageId);
+        setQuestions(sageQuestions || []);
+      } catch (err) {
+        console.error(`[SagesKnowledge] Error loading questions for ${sageId}:`, err);
+        setError(err.message);
+        setQuestions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (sageId) {
+      loadQuestions();
+    }
+  }, [sageId]);
+
+  if (loading) {
+    return (
+      <KnowledgeContainer color={color}>
+        <KnowledgeTitle>📚 Questions liées...</KnowledgeTitle>
+      </KnowledgeContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <KnowledgeContainer color={color}>
+        <KnowledgeTitle>📚 Questions liées</KnowledgeTitle>
+        <div style={{ fontSize: '0.85em', color: '#ff9999', opacity: 0.8 }}>
+          ⚠️ Erreur chargement: {error}
+        </div>
+      </KnowledgeContainer>
+    );
+  }
 
   if (questions.length === 0) {
     return null;
@@ -73,7 +114,7 @@ export const SagesKnowledge = ({ sageId, color }) => {
 
   return (
     <KnowledgeContainer color={color}>
-      <KnowledgeTitle>📚 Questions liées</KnowledgeTitle>
+      <KnowledgeTitle>📚 Questions liées ({questions.length})</KnowledgeTitle>
       <QuestionsList>
         {questions.map(question => (
           <div key={question.id}>
@@ -86,7 +127,12 @@ export const SagesKnowledge = ({ sageId, color }) => {
             </QuestionItem>
             {expandedQuestionId === question.id && (
               <QuestionDetail color={color}>
-                Domaine: <strong>{question.domain}</strong>
+                <div>
+                  <strong>Domaine:</strong> {question.domain}
+                </div>
+                <div style={{ fontSize: '0.75em', marginTop: '4px', opacity: 0.8 }}>
+                  <strong>Status:</strong> {question.status}
+                </div>
               </QuestionDetail>
             )}
           </div>

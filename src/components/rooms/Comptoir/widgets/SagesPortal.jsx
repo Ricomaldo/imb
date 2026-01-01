@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import sagesData from '../../../../data/sagesConfig.json';
 import useSagesStore from '../../../../stores/useSagesStore';
 import { SageQuote } from './SageQuote';
+import { SagesKnowledge } from './SagesKnowledge';
 
 const SagesGrid = styled.div`
   display: grid;
@@ -216,6 +217,7 @@ export const SagesPortal = () => {
               </p>
             )}
             <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
+            <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
             <button onClick={() => setSelectedSage(null)}>Fermer</button>
           </ModalContent>
         </ModalOverlay>,

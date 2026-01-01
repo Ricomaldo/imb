@@ -6,6 +6,7 @@ import BaseRoom from '../../layout/BaseRoom';
 import PanelGrid from '../../layout/PanelGrid';
 import Panel from '../../common/Panel';
 import { SagesPortal } from './widgets/SagesPortal';
+import { ZoneRouge } from './widgets/ZoneRouge';
 
 /**
  * Comptoir room component for reception and counter services
@@ -19,6 +20,17 @@ const ComptoirRoom = () => {
   return (
     <BaseRoom roomType="comptoir" layoutType="grid">
       <PanelGrid columns={12} rows={8}>
+        {/* Zone Rouge - Protocole Urgence (top left, small, red) */}
+        <Panel
+          gridColumn="1 / 2"
+          gridRow="1 / 3"
+          title="Urgence"
+          icon="🔴"
+          texture="stone"
+        >
+          <ZoneRouge />
+        </Panel>
+
         {/* Portail des 8 Sages - centré, pas full-width */}
         <Panel
           gridColumn="2 / 12"

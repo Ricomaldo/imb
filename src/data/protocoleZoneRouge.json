@@ -1,0 +1,52 @@
+{
+  "name": "Zone Rouge - Protocole Urgence",
+  "description": "Accès rapide à protocole respiration + mantras Meridian",
+  "trigger": "Sensation d'urgence / crise / saturation",
+  "mantras": [
+    "Ton ventre se soulève. C'est bon signe.",
+    "L'air entre. L'air sort. Tu es vivant.",
+    "Cette vague passera. Tu l'as déjà traversée.",
+    "Respire par le ventre. Pas par la tête.",
+    "Tes émotions traversent. Elles ne définissent pas.",
+    "Tu as survécu à 100% de tes pires jours."
+  ],
+  "respirationPattern": {
+    "name": "Cycle 4-7-8 (Meridian)",
+    "description": "Respiration contrôlée: inspire 4 sec → retiens 7 sec → expire 8 sec",
+    "inhale": 4,
+    "hold": 7,
+    "exhale": 8,
+    "cycles": 4,
+    "totalDuration": "4 minutes (4 cycles complets)"
+  },
+  "steps": [
+    {
+      "num": 1,
+      "title": "Arrête-toi",
+      "description": "Pause ce que tu fais. Trouve un endroit calme si possible."
+    },
+    {
+      "num": 2,
+      "title": "Respire",
+      "description": "Active le timer respiration ci-dessous. Suis le cycle 4-7-8."
+    },
+    {
+      "num": 3,
+      "title": "Écoute mantras",
+      "description": "Chaque cycle, un mantra. Laisse-toi porter."
+    },
+    {
+      "num": 4,
+      "title": "Recentre-toi",
+      "description": "Après protocole: option handoff → Meridian pour débriefing."
+    }
+  ],
+  "postProtocole": {
+    "options": [
+      "Créer handoff → Meridian",
+      "Noter dans Diary",
+      "Retour à activité",
+      "Continuer timer (cycles supplémentaires)"
+    ]
+  }
+}

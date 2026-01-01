@@ -72,6 +72,7 @@ const TabLabel = styled.span`
 const tabs = [
   { path: '/companion/home', label: 'Home', icon: '🏠' },
   { path: '/companion/atelier', label: 'Atelier', icon: '⚒️' },
+  { path: '/companion/comptoir', label: 'Comptoir', icon: '🎭' },
   { path: '/companion/dev', label: 'Dev', icon: '💡' },
   { path: '/companion/settings', label: 'Config', icon: '⚙️' }
 ];

@@ -6,6 +6,7 @@ import styled, { css, keyframes } from 'styled-components';
 import TabBar from './components/TabBar';
 import HomePage from './pages/HomePage';
 import AtelierPage from './pages/AtelierPage';
+import ComptoirPage from './pages/ComptoirPage';
 import DevPage from './pages/DevPage';
 import SettingsPage from './pages/SettingsPage';
 import { useSyncStatus } from '../contexts/SyncContext';
@@ -141,6 +142,7 @@ const CompanionApp = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/atelier" element={<AtelierPage />} />
+          <Route path="/comptoir" element={<ComptoirPage />} />
           <Route path="/dev" element={<DevPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>

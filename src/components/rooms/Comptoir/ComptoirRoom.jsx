@@ -20,20 +20,20 @@ const ComptoirRoom = () => {
   return (
     <BaseRoom roomType="comptoir" layoutType="grid">
       <PanelGrid columns={12} rows={8}>
-        {/* Zone Rouge - Protocole Urgence (top left, small, red) */}
+        {/* Zone Rouge - Protocole Urgence (left, medium size) */}
         <Panel
-          gridColumn="1 / 2"
-          gridRow="1 / 3"
-          title="Urgence"
+          gridColumn="1 / 4"
+          gridRow="1 / 6"
+          title="Zone Rouge"
           icon="🔴"
           texture="stone"
         >
           <ZoneRouge />
         </Panel>
 
-        {/* Portail des 8 Sages - centré, pas full-width */}
+        {/* Portail des 8 Sages - main area */}
         <Panel
-          gridColumn="2 / 12"
+          gridColumn="4 / 13"
           gridRow="1 / 9"
           title="Les 8 Sages"
           icon="🎭"

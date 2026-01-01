@@ -122,11 +122,22 @@ const ModalContent = styled.div`
   background: #2a2a2a;
   border: 3px solid ${props => props.color};
   border-radius: 12px;
-  padding: 30px;
-  max-width: 400px;
-  text-align: center;
+  max-height: 80vh;
+  width: 90vw;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
   color: #fff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    max-width: 95vw;
+    max-height: 90vh;
+    gap: 0;
+  }
 
   h3 {
     font-size: 1.8em;
@@ -134,7 +145,7 @@ const ModalContent = styled.div`
   }
 
   p {
-    margin: 15px 0;
+    margin: 12px 0;
     opacity: 0.9;
     line-height: 1.6;
   }
@@ -151,6 +162,52 @@ const ModalContent = styled.div`
 
     &:hover {
       opacity: 0.8;
+    }
+  }
+`;
+
+const ModalSidebar = styled.div`
+  padding: 30px;
+  text-align: center;
+  border-right: 1px solid ${props => props.color}44;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+
+  @media (max-width: 768px) {
+    border-right: none;
+    border-bottom: 1px solid ${props => props.color}44;
+    padding: 20px;
+  }
+`;
+
+const ModalContent_ = styled.div`
+  padding: 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    max-height: calc(80vh - 200px);
+  }
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.color}66;
+    border-radius: 3px;
+
+    &:hover {
+      background: ${props => props.color}99;
     }
   }
 `;
@@ -202,29 +259,39 @@ export const SagesPortal = () => {
         </GovernailContainer>
       )}
 
-      {/* Modal avec Portal - évite clipping par overflow parent */}
+      {/* Modal avec Portal - 2 colonnes (info + contenu scrollable) */}
       {selectedSage && createPortal(
         <ModalOverlay onClick={() => setSelectedSage(null)}>
           <ModalContent
             color={selectedSage.color}
             onClick={e => e.stopPropagation()}
           >
-            <h3>{selectedSage.emoji} {selectedSage.name}</h3>
-            <p>{selectedSage.specialty}</p>
-            <p style={{ fontSize: '0.9em', opacity: '0.7' }}>{selectedSage.age} ans</p>
-            {selectedSage.isMeta && (
-              <p style={{ fontSize: '0.85em', opacity: '0.6', fontStyle: 'italic' }}>
-                Coordinateur système
-              </p>
-            )}
-            <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
-            <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
-            <HandoffCreator
-              emetteurId={selectedSage.id}
-              emetteurName={selectedSage.name}
-              color={selectedSage.color}
-            />
-            <button onClick={() => setSelectedSage(null)}>Fermer</button>
+            {/* Colonne gauche: Info sage */}
+            <ModalSidebar color={selectedSage.color}>
+              <div style={{ fontSize: '4em', marginBottom: '12px' }}>
+                {selectedSage.emoji}
+              </div>
+              <h3>{selectedSage.name}</h3>
+              <p>{selectedSage.specialty}</p>
+              <p style={{ fontSize: '0.9em', opacity: '0.7' }}>{selectedSage.age} ans</p>
+              {selectedSage.isMeta && (
+                <p style={{ fontSize: '0.85em', opacity: '0.6', fontStyle: 'italic' }}>
+                  Coordinateur système
+                </p>
+              )}
+            </ModalSidebar>
+
+            {/* Colonne droite: Contenu scrollable (quote + questions + handoff) */}
+            <ModalContent_ color={selectedSage.color}>
+              <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
+              <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
+              <HandoffCreator
+                emetteurId={selectedSage.id}
+                emetteurName={selectedSage.name}
+                color={selectedSage.color}
+              />
+              <button onClick={() => setSelectedSage(null)}>Fermer</button>
+            </ModalContent_>
           </ModalContent>
         </ModalOverlay>,
         document.body

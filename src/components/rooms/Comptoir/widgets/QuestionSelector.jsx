@@ -12,13 +12,11 @@ const QuestionSelectorContainer = styled.div`
   overflow-y: auto;
 `;
 
-const QuestionItemLabel = styled.label`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
+const QuestionItemLabel = styled.div`
   cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.xs};
+  padding: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.radii.sm};
+  border-left: 2px solid transparent;
   transition: ${({ theme }) =>
     `all ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
 
@@ -26,19 +24,17 @@ const QuestionItemLabel = styled.label`
     background: rgba(255, 255, 255, 0.05);
   }
 
-  input[type="checkbox"] {
-    cursor: pointer;
-  }
-
-  span {
-    font-size: ${({ theme }) => theme.typography.sizes.sm};
-    color: #fff;
-    flex: 1;
-  }
+  ${({ $isSelected, $sageColor }) =>
+    $isSelected &&
+    `
+    border-left-color: ${$sageColor || "#fff"};
+    background: rgba(255, 255, 255, 0.08);
+  `}
 
   span.title {
+    font-size: ${({ theme }) => theme.typography.sizes.sm};
+    color: ${({ $sageColor }) => "#222"};
     opacity: 0.9;
-    color: ${({ $sageColor }) => $sageColor || '#fff'};
   }
 `;
 
@@ -49,12 +45,8 @@ export const QuestionSelector = ({
   onSelect,
   sageColor,
 }) => {
-  const toggleQuestion = (questionId) => {
-    if (selectedQuestionIds.includes(questionId)) {
-      onSelect(selectedQuestionIds.filter((id) => id !== questionId));
-    } else {
-      onSelect([...selectedQuestionIds, questionId]);
-    }
+  const selectQuestion = (questionId) => {
+    onSelect([questionId]);
   };
 
   if (!questionsIndex || questionsIndex.length === 0) {
@@ -68,13 +60,12 @@ export const QuestionSelector = ({
   return (
     <QuestionSelectorContainer>
       {questionsIndex.map((question) => (
-        <QuestionItemLabel key={question.id} $sageColor={sageColor}>
-          <input
-            type="checkbox"
-            checked={selectedQuestionIds.includes(question.id)}
-            onChange={() => toggleQuestion(question.id)}
-          />
-          {/* <span className="id">{question.id}</span> */}
+        <QuestionItemLabel
+          key={question.id}
+          $sageColor={sageColor}
+          $isSelected={selectedQuestionIds.includes(question.id)}
+          onClick={() => selectQuestion(question.id)}
+        >
           <span className="title">{question.title}</span>
         </QuestionItemLabel>
       ))}

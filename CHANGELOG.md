@@ -13,12 +13,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration `sagesConfig.json` avec métadonnées complètes (emoji, âge, spécialité, couleur, room)
 - Modal Sage avec `createPortal` pour éviter clip z-index
 - Widget SagesPortal.jsx dans Comptoir/widgets/
+- Questions Panel dans Comptoir avec intégration vault 8sages via REST API VPS
+- QuestionSelector widget avec single-select et feedback visuel (border sage color)
+- QuestionsPanel widget avec MarkdownEditor intégré et save functionality
+- Extraction automatique questions + filepaths depuis markdown vault index
+- Save questions vers vault via `replaceNote()` API
+- Panel toolbar integration (onSave, isSaving, showSaveButton props)
+- MarkdownToolbar save button support
 
 ### Changed
 - ComptoirRoom migré de `ComptoirGrid` custom vers `PanelGrid` pattern (compatibilité `Panel`)
+- MarkdownToolbar accepte `onSave`, `isSaving`, `showSaveButton` props pour save functionality
+- Panel passe save props à MarkdownToolbar (lignes 165-180, 228-240)
+- QuestionsPanel utilise `forwardRef` + `useImperativeHandle` pour exposer save method
+- Sage ID "eleonore" → "eleo" dans sagesConfig.json (alignement convention vault)
 
 ### Fixed
 - Modal Sage utilise `createPortal` pour éviter `overflow:hidden` du parent Panel
+- Filepath extraction regex pattern (split → matchAll avec lookahead)
+- Mode focus MarkdownEditor affichage vide (ajout key={questionId})
+- Background sage color (transparentContent={true} sur Panels)
+- Question titles colorées avec sage color (pas backgrounds)
 
 ## [0.1.0] - 2024-XX-XX
 

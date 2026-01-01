@@ -1,7 +1,8 @@
 ---
 type: mission
 date: 2026-01-01
-status: active
+status: done
+completed: 2026-01-01
 priority: high
 milestone: M3
 parent_operation: ~/dev/__cockpit__/workflow/active/2025-12-31-fusion-8sages-imb.md
@@ -265,3 +266,117 @@ export default async function handler(req, res) {
 
 **Créée** : 1er janvier 2026
 **Status** : Prête pour exécution
+
+---
+
+## ✨ Résultats Réels M3 (Exécuté)
+
+**Note** : La mission initiale M3 décrivait l'implémentation d'endpoint API handoff. En réalité, M3 a été exécuté comme **Questions Panel Integration** avec vault 8sages.
+
+### Effort Total
+- **Temps estimé** : 2h (original spec)
+- **Temps réel** : ~4h (plusieurs sessions)
+- **Écart** : +2h (découverte pattern Panel + debug)
+
+### Livrables
+
+✅ **Composants créés**
+- `src/components/rooms/Comptoir/widgets/QuestionSelector.jsx` - Sélection questions par sage
+- `src/components/rooms/Comptoir/widgets/QuestionsPanel.jsx` - Affichage/édition question markdown
+
+✅ **Architecture**
+- Intégration vault 8sages via REST API VPS (`readNote`, `replaceNote`)
+- Extraction questions depuis markdown index vault (regex pattern)
+- Save functionality via Panel toolbar system (onSave props)
+- Single-select pattern avec visual feedback (sage color border)
+
+✅ **Modifications système**
+- `src/components/common/MarkdownToolbar/MarkdownToolbar.jsx` - Save button support
+- `src/components/common/Panel/Panel.jsx` - Save props forwarding to toolbar
+- `src/data/sagesConfig.json` - Fix sage ID "eleonore" → "eleo"
+
+✅ **Documentation**
+- `_internal/docs/guides/panel-markdown-system.md` - Guide complet Panel + MarkdownEditor + Toolbar
+- `_internal/cockpit/knowledge/findings/2026-01-01-m3-panel-toolbar-learnings.md` - Learnings session
+
+### Validations
+
+✅ **Fonctionnel**
+- [x] Sélection sage persiste (localStorage)
+- [x] Questions chargent depuis vault index
+- [x] Filepaths extraits correctement (regex matchAll)
+- [x] Édition markdown fonctionne
+- [x] Mode focus affiche contenu (fix: key prop)
+- [x] Save questions vers vault API
+- [x] Couleur sage appliquée titres seulement (transparentContent)
+
+✅ **Code**
+- [x] Design system respecté (theme tokens, textures)
+- [x] Pattern Panel réutilisé (pas custom toolbar)
+- [x] Architecture cohérente (forwardRef + useImperativeHandle)
+- [x] 10 commits propres sur branch `feature/fusion-sages-m1`
+
+✅ **Documentation**
+- [x] CHANGELOG.md mis à jour (Added/Changed/Fixed sections)
+- [x] Guide système créé (panel-markdown-system.md)
+- [x] Learnings extraits (findings/)
+
+### Commits Clés
+
+```
+fb01c1e feat(Comptoir): Apply sage color to question titles only
+9ca4ec6 feat(Comptoir): Integrate save functionality with Panel toolbar system
+83e9422 refactor(M3): Clean architecture - reuse MarkdownEditor, fix styling
+2676a48 fix(M3): Correct sage ID mismatch - eleonore → eleo
+a35edd0 fix(Comptoir): Extract correct filepath from vault index
+```
+
+### Patterns Découverts
+
+**Panel Toolbar Integration**
+```jsx
+<Panel
+  contentType="markdown"
+  onSave={handleSave}
+  isSaving={isSaving}
+  showSaveButton={condition}
+>
+  <MarkdownEditor />
+</Panel>
+```
+
+**ForwardRef Save Handler**
+```jsx
+export const Component = forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({
+    saveMethod: async () => { ... }
+  }));
+});
+```
+
+### Learnings
+
+**Ce qui a marché**
+- Pattern Panel + MarkdownEditor + Toolbar (une fois compris)
+- Vault REST API integration
+- Design system compliance (sage color, textures)
+
+**Ce qui a coincé**
+- 90min perdu à réinventer toolbar (manque documentation)
+- 30min debug regex filepath extraction (split vs matchAll)
+- 20min mode focus vide (solution: key prop)
+
+**Impact Documentation**
+- Guide panel-markdown-system.md créé (30min)
+- ROI estimé: 60min économisé par future intégration
+- Break-even: 2ème utilisation du pattern
+
+### Prochaine Action
+
+**M4** : Portail navigation sages (transition modal → questions)
+
+---
+
+**Complété** : 1er janvier 2026  
+**Learnings** : `_internal/cockpit/knowledge/findings/2026-01-01-m3-panel-toolbar-learnings.md`  
+**Guide** : `_internal/docs/guides/panel-markdown-system.md`

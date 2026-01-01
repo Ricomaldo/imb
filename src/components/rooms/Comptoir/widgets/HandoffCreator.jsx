@@ -3,12 +3,38 @@ import styled from 'styled-components';
 import { createNote } from '../../../../services/vaultApi';
 import sagesData from '../../../../data/sagesConfig.json';
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+`;
+
+const ModalContainer = styled.div`
+  background: linear-gradient(135deg, #2a1810 0%, #1a0f08 100%);
+  border: 2px solid ${props => props.color || '#B8860B'};
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+`;
+
 const HandoffContainer = styled.div`
-  margin: 15px 0;
-  padding: 15px;
   border-left: 3px solid ${props => props.color};
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
+  padding: 15px;
 `;
 
 const HandoffTitle = styled.p`
@@ -110,13 +136,17 @@ const StatusMessage = styled.p`
   }};
 `;
 
-export const HandoffCreator = ({ emetteurId, emetteurName, color }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const HandoffCreator = ({ activeSageId, onClose }) => {
   const [recepteur, setRecepteur] = useState('');
   const [question, setQuestion] = useState('');
   const [contexte, setContexte] = useState('');
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [message, setMessage] = useState('');
+
+  const activeSage = sagesData.sages.find(s => s.id === activeSageId);
+  const emetteurId = activeSageId;
+  const emetteurName = activeSage?.name || 'Sage';
+  const color = activeSage?.color || '#B8860B';
 
   const recepteurs = sagesData.sages.filter(s => s.id !== emetteurId);
 
@@ -184,13 +214,13 @@ ${contexte || '[À compléter par émetteur]'}
       setStatus('success');
       setMessage(`✅ Handoff créé: ${filename}`);
 
-      // Reset form après 2 secondes
+      // Reset form et fermer modal après 2 secondes
       setTimeout(() => {
         setRecepteur('');
         setQuestion('');
         setContexte('');
-        setIsOpen(false);
         setStatus('idle');
+        onClose();
       }, 2000);
     } catch (error) {
       setStatus('error');
@@ -199,22 +229,10 @@ ${contexte || '[À compléter par émetteur]'}
     }
   };
 
-  if (!isOpen) {
-    return (
-      <HandoffContainer color={color}>
-        <Button
-          color={color}
-          onClick={() => setIsOpen(true)}
-          style={{ width: '100%' }}
-        >
-          ✉️ Créer Handoff
-        </Button>
-      </HandoffContainer>
-    );
-  }
-
   return (
-    <HandoffContainer color={color}>
+    <ModalOverlay onClick={onClose}>
+      <ModalContainer color={color} onClick={(e) => e.stopPropagation()}>
+        <HandoffContainer color={color}>
       <HandoffTitle>✉️ Créer Handoff depuis {emetteurName}</HandoffTitle>
 
       <form onSubmit={handleSubmit}>
@@ -271,7 +289,7 @@ ${contexte || '[À compléter par émetteur]'}
             color={color}
             variant="cancel"
             onClick={() => {
-              setIsOpen(false);
+              onClose();
               setRecepteur('');
               setQuestion('');
               setContexte('');
@@ -290,6 +308,10 @@ ${contexte || '[À compléter par émetteur]'}
           </StatusMessage>
         )}
       </form>
-    </HandoffContainer>
+        </HandoffContainer>
+      </ModalContainer>
+    </ModalOverlay>
   );
 };
+
+export default HandoffCreator;

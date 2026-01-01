@@ -6,7 +6,7 @@
       "emoji": "🏔️",
       "age": 49,
       "specialty": "Patrimoine & Paternité",
-      "color": "#607D8B",
+      "color": "#9E2407",
       "room": "bibliotheque"
     },
     {
@@ -15,7 +15,7 @@
       "emoji": "🌳",
       "age": 67,
       "specialty": "Zen & Contemplation",
-      "color": "#4CAF50",
+      "color": "#67892B",
       "room": "jardin"
     },
     {
@@ -24,7 +24,7 @@
       "emoji": "🦋",
       "age": 35,
       "specialty": "Architecture & Métamorphose",
-      "color": "#9C27B0",
+      "color": "#2491FA",
       "room": "forge"
     },
     {
@@ -33,7 +33,7 @@
       "emoji": "🌸",
       "age": 42,
       "specialty": "Mode BFF++ & Sas déversoir",
-      "color": "#E91E63",
+      "color": "#E1567E",
       "room": "comptoir"
     },
     {
@@ -42,7 +42,7 @@
       "emoji": "🧭",
       "age": 38,
       "specialty": "Coordination multi-perspectives",
-      "color": "#37474F",
+      "color": "#111111",
       "room": "comptoir",
       "isMeta": true
     },
@@ -52,7 +52,7 @@
       "emoji": "🌙",
       "age": 28,
       "specialty": "Art-thérapie & Catharsis créative",
-      "color": "#9C27B0",
+      "color": "#FCCB32",
       "room": "sanctuaire"
     },
     {
@@ -61,7 +61,7 @@
       "emoji": "🧘",
       "age": 45,
       "specialty": "Régulation corporelle & Zone Rouge",
-      "color": "#8B4513",
+      "color": "#E48337",
       "room": "chambre"
     },
     {
@@ -70,7 +70,7 @@
       "emoji": "💎",
       "age": 58,
       "specialty": "Psychanalyse jungienne",
-      "color": "#424242",
+      "color": "#6837E4",
       "room": "cave"
     },
     {
@@ -79,7 +79,7 @@
       "emoji": "🔔",
       "age": 52,
       "specialty": "Ministère UEPAL & Fonction presbytérale",
-      "color": "#8B6F47",
+      "color": "#BA9927",
       "room": "presbytère"
     }
   ]

@@ -95,26 +95,25 @@ export const QuestionsPanel = forwardRef(({ sageId, questionIds, sageColor, sage
   const content = questionsContent[activeQuestionId] || '';
   const isLoading = loadingQuestions.has(activeQuestionId);
 
+  if (isLoading) {
+    return <LoadingState>⏳ Chargement...</LoadingState>;
+  }
+
   return (
-    <>
-      {isLoading ? (
-        <LoadingState>⏳ Chargement...</LoadingState>
-      ) : (
-        <MarkdownEditor
-          value={content}
-          onChange={newContent => {
-            setQuestionsContent(prev => ({
-              ...prev,
-              [activeQuestionId]: newContent
-            }));
-          }}
-          height="100%"
-          compact={true}
-          variant="embedded"
-          accentColor={sageColor}
-        />
-      )}
-    </>
+    <MarkdownEditor
+      key={activeQuestionId}
+      value={content}
+      onChange={newContent => {
+        setQuestionsContent(prev => ({
+          ...prev,
+          [activeQuestionId]: newContent
+        }));
+      }}
+      height="100%"
+      compact={true}
+      variant="embedded"
+      accentColor={sageColor}
+    />
   );
 });
 

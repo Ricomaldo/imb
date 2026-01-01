@@ -1,6 +1,7 @@
 // src/components/rooms/Comptoir/ComptoirRoom.jsx
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useTheme } from "styled-components";
 import BaseRoom from "../../layout/BaseRoom";
 import PanelGrid from "../../layout/PanelGrid";
@@ -8,10 +9,11 @@ import Panel from "../../common/Panel";
 import { SageSelector } from "./widgets/SageSelector";
 import { QuestionSelector } from "./widgets/QuestionSelector";
 import { QuestionsPanel } from "./widgets/QuestionsPanel";
+import HandoffCreator from "./widgets/HandoffCreator";
 import { readNote } from "../../../services/vaultApi";
 import sagesConfig from "../../../data/sagesConfig.json";
 import usePreferencesStore from "../../../stores/usePreferencesStore";
-import { metalBg } from "../../../styles/mixins";
+import { woodBg, metalBg } from "../../../styles/mixins";
 
 /**
  * Comptoir room component for sage portal and knowledge
@@ -32,6 +34,7 @@ const ComptoirRoom = () => {
   const [questionsIndex, setQuestionsIndex] = useState([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [showHandoffModal, setShowHandoffModal] = useState(false);
 
   const activeSage = sagesConfig.sages.find((s) => s.id === activeSageId);
 
@@ -135,8 +138,8 @@ const ComptoirRoom = () => {
       <PanelGrid columns={12} rows={8}>
         {/* Handoff Creator - placeholder for future M3 integration */}
         {/* <Panel
-          gridColumn="1 / 4"
-          gridRow="3 / 9"
+          gridColumn="1 / 5"
+          gridRow="8 / 9"
           title="Handoff"
           icon="✉️"
           texture="parchment"
@@ -158,8 +161,8 @@ const ComptoirRoom = () => {
           gridRow="1 / 3"
           title="Choisir un Sage"
           icon="🎭"
-          texture="wood"
-          accentColor={metalBg}
+          texture="metal"
+          accentColor={woodBg}
           collapsible={true}
           collapsed={
             getPanelState("comptoir", "sage-selector")?.collapsed ?? false
@@ -177,11 +180,11 @@ const ComptoirRoom = () => {
         {/* Question Selector */}
         <Panel
           gridColumn="1 / 5"
-          gridRow="3 / 9"
+          gridRow="3 / 8"
           title="Questions"
           icon="❓"
-          texture="wood"
-          accentColor={activeSage?.color}
+          texture="metal"
+          accentColor={theme.colors.secondary}
           collapsible={true}
           collapsed={
             getPanelState("comptoir", "question-selector")?.collapsed ?? false
@@ -227,7 +230,40 @@ const ComptoirRoom = () => {
             sageIndex={questionsIndex}
           />
         </Panel>
+
+        {/* Handoff Button */}
+        <Panel
+          gridColumn="1 / 5"
+          gridRow="8 / 9"
+          texture="parchment"
+          accentColor={theme.colors.accents.warm}
+          onClick={() => setShowHandoffModal(true)}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              cursor: "pointer",
+              padding: "8px",
+              fontWeight: "bold",
+            }}
+          >
+            ✉️ Créer Handoff
+          </div>
+        </Panel>
       </PanelGrid>
+
+      {/* Handoff Modal */}
+      {showHandoffModal &&
+        createPortal(
+          <HandoffCreator
+            activeSageId={activeSageId}
+            onClose={() => setShowHandoffModal(false)}
+          />,
+          document.body
+        )}
     </BaseRoom>
   );
 };

@@ -45,13 +45,6 @@ const ComptoirRoom = () => {
         const indexPath = `1-knowledge-base/index-sages/${activeSageId}-questions.md`;
         const content = await readNote(indexPath);
 
-        // Debug: show raw content for problematic sages
-        if (activeSageId === "eleo") {
-          console.log(`[ComptoirRoom] Raw content for ${activeSageId} (first 500 chars):`);
-          console.log(content.substring(0, 500));
-          console.log(`[ComptoirRoom] Content length: ${content.length}`);
-        }
-
         const questions = parseQuestionsFromMarkdown(content);
         setQuestionsIndex(questions);
         setSelectedQuestionIds([]); // Reset selection on sage change
@@ -73,7 +66,8 @@ const ComptoirRoom = () => {
     // Use matchAll to capture each question block with its full content
     // Pattern: ### [ID] Title - Description
     // Then capture everything until the next ### or end of file
-    const questionRegex = /###\s+\[([A-Z0-9]+)\]\s+([^\n]+)\n([\s\S]*?)(?=###\s+\[|$)/g;
+    const questionRegex =
+      /###\s+\[([A-Z0-9]+)\]\s+([^\n]+)\n([\s\S]*?)(?=###\s+\[|$)/g;
 
     let match;
     while ((match = questionRegex.exec(content)) !== null) {
@@ -116,31 +110,8 @@ const ComptoirRoom = () => {
         filepath: filepath,
       };
 
-      // Debug log
-      if (!filepath) {
-        console.warn(
-          `[ComptoirRoom] No filepath extracted for ${questionId}. Section preview: `,
-          sectionContent.substring(0, 300)
-        );
-      } else {
-        console.log(
-          `[ComptoirRoom] ✅ ${questionId} → ${filepath}`
-        );
-      }
-
       questions.push(question);
     }
-
-    console.log(`[ComptoirRoom] Parsed ${questions.length} questions from index`);
-    console.table(
-      questions.map((q) => ({
-        id: q.id,
-        title: q.title.substring(0, 30),
-        domaine: q.domaine,
-        hasFilepath: !!q.filepath,
-        filepath: q.filepath?.substring(0, 60),
-      }))
-    );
 
     return questions;
   };
@@ -149,7 +120,7 @@ const ComptoirRoom = () => {
     <BaseRoom roomType="comptoir" layoutType="grid">
       <PanelGrid columns={12} rows={8}>
         {/* Handoff Creator - placeholder for future M3 integration */}
-        <Panel
+        {/* <Panel
           gridColumn="1 / 4"
           gridRow="3 / 9"
           title="Handoff"
@@ -165,7 +136,7 @@ const ComptoirRoom = () => {
           <div style={{ padding: "12px", opacity: 0.7 }}>
             Créer un handoff vers les sages
           </div>
-        </Panel>
+        </Panel> */}
 
         {/* Sage Selector */}
         <Panel
@@ -191,11 +162,11 @@ const ComptoirRoom = () => {
 
         {/* Question Selector */}
         <Panel
-          gridColumn="4 / 13"
-          gridRow="3 / 5"
+          gridColumn="1 / 5"
+          gridRow="3 / 9"
           title="Questions"
           icon="❓"
-          texture="parchment"
+          texture="wood"
           accentColor={activeSage?.color}
           collapsible={true}
           collapsed={
@@ -215,11 +186,11 @@ const ComptoirRoom = () => {
 
         {/* Questions Panel */}
         <Panel
-          gridColumn="4 / 13"
-          gridRow="5 / 9"
+          gridColumn="5 / 13"
+          gridRow="3 / 9"
           title={`Questions - ${activeSage?.name}`}
           icon="📖"
-          texture="parchment"
+          texture="wood"
           accentColor={activeSage?.color}
           collapsible={true}
           collapsed={

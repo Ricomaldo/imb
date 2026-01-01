@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const QuestionSelectorContainer = styled.div`
   display: flex;
@@ -8,7 +8,7 @@ const QuestionSelectorContainer = styled.div`
   width: 100%;
   padding: ${({ theme }) => theme.spacing.md};
   box-sizing: border-box;
-  max-height: 200px;
+  min-height: 200px;
   overflow-y: auto;
 `;
 
@@ -20,30 +20,24 @@ const QuestionItemLabel = styled.label`
   padding: ${({ theme }) => theme.spacing.xs};
   border-radius: ${({ theme }) => theme.radii.sm};
   transition: ${({ theme }) =>
-    `background ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
+    `all ${theme.motion.durations.fast} ${theme.motion.easings.standard}`};
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
   }
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     cursor: pointer;
   }
 
   span {
-    font-size: ${({ theme }) => theme.typography.sizes.base};
+    font-size: ${({ theme }) => theme.typography.sizes.sm};
     color: #fff;
     flex: 1;
   }
 
-  span.id {
-    flex: 0 0 60px;
-    font-weight: bold;
-  }
-
   span.title {
-    flex: 2;
-    font-size: ${({ theme }) => theme.typography.sizes.sm};
     opacity: 0.9;
   }
 `;
@@ -52,11 +46,11 @@ export const QuestionSelector = ({
   sageId,
   questionsIndex,
   selectedQuestionIds,
-  onSelect
+  onSelect,
 }) => {
   const toggleQuestion = (questionId) => {
     if (selectedQuestionIds.includes(questionId)) {
-      onSelect(selectedQuestionIds.filter(id => id !== questionId));
+      onSelect(selectedQuestionIds.filter((id) => id !== questionId));
     } else {
       onSelect([...selectedQuestionIds, questionId]);
     }
@@ -72,14 +66,14 @@ export const QuestionSelector = ({
 
   return (
     <QuestionSelectorContainer>
-      {questionsIndex.map(question => (
+      {questionsIndex.map((question) => (
         <QuestionItemLabel key={question.id}>
           <input
             type="checkbox"
             checked={selectedQuestionIds.includes(question.id)}
             onChange={() => toggleQuestion(question.id)}
           />
-          <span className="id">{question.id}</span>
+          {/* <span className="id">{question.id}</span> */}
           <span className="title">{question.title}</span>
         </QuestionItemLabel>
       ))}

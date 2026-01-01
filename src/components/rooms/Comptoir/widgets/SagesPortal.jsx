@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import sagesData from '../../../../data/sagesConfig.json';
 import useSagesStore from '../../../../stores/useSagesStore';
+import { SageQuote } from './SageQuote';
 
 const SagesGrid = styled.div`
   display: grid;
@@ -214,6 +215,7 @@ export const SagesPortal = () => {
                 Coordinateur système
               </p>
             )}
+            <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
             <button onClick={() => setSelectedSage(null)}>Fermer</button>
           </ModalContent>
         </ModalOverlay>,

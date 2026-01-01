@@ -5,6 +5,7 @@ import sagesData from '../../../../data/sagesConfig.json';
 import useSagesStore from '../../../../stores/useSagesStore';
 import { SageQuote } from './SageQuote';
 import { SagesKnowledge } from './SagesKnowledge';
+import { HandoffCreator } from './HandoffCreator';
 
 const SagesGrid = styled.div`
   display: grid;
@@ -218,6 +219,11 @@ export const SagesPortal = () => {
             )}
             <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
             <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
+            <HandoffCreator
+              emetteurId={selectedSage.id}
+              emetteurName={selectedSage.name}
+              color={selectedSage.color}
+            />
             <button onClick={() => setSelectedSage(null)}>Fermer</button>
           </ModalContent>
         </ModalOverlay>,

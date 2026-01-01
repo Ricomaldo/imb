@@ -12,6 +12,7 @@ import ComponentCatalog from "../../dev/ComponentCatalog/ComponentCatalog";
 import SystemOverview from "../../dev/SystemOverview/SystemOverview";
 import CaptureUrgente from "../../room-modules/forge/CaptureUrgente";
 import DeploymentNotes from "../../room-modules/forge/DeploymentNotes";
+import CapturesList from "../../room-modules/forge/CapturesList";
 import { ForgeToolbar, ForgeTitle } from "./ForgeRoom.styles";
 
 /**
@@ -31,6 +32,7 @@ const ForgeRoom = () => {
   useNotesStore();
   const [showCatalog, setShowCatalog] = useState(false);
   const [showTree, setShowTree] = useState(false);
+  const [showCaptures, setShowCaptures] = useState(false);
   const [collapsedPanels, setCollapsedPanels] = useState({
     bugs: false,
     saveStates: false,
@@ -47,6 +49,7 @@ const ForgeRoom = () => {
           onClick={() => {
             setShowCatalog(!showCatalog);
             setShowTree(false);
+            setShowCaptures(false);
           }}
         >
           🔨 PROPS
@@ -57,12 +60,21 @@ const ForgeRoom = () => {
           onClick={() => {
             setShowTree(!showTree);
             setShowCatalog(false);
+            setShowCaptures(false);
           }}
         >
           🌳 TREE
         </Button>
-        <Button size="small" variant="secondary">
-          🔧 Action 3
+        <Button
+          size="small"
+          variant="secondary"
+          onClick={() => {
+            setShowCaptures(!showCaptures);
+            setShowCatalog(false);
+            setShowTree(false);
+          }}
+        >
+          📋 CAPTURES
         </Button>
         <Button size="small" variant="secondary">
           ⚡ Action 4
@@ -99,6 +111,21 @@ const ForgeRoom = () => {
             onToggleCollapse={() => setShowTree(false)}
           >
             <SystemOverview />
+          </Panel>
+        ) : showCaptures ? (
+          <Panel
+            gridColumn="1/6"
+            gridRow="1/6"
+            title="Captures - Bugs & Pauses Projet"
+            icon="📋"
+            texture="metal"
+            borderType="blue"
+            accentColor={theme.colors.accents.info}
+            collapsible={true}
+            collapsed={false}
+            onToggleCollapse={() => setShowCaptures(false)}
+          >
+            <CapturesList />
           </Panel>
         ) : (
           <>

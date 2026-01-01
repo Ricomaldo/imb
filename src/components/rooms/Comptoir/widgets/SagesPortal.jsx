@@ -124,30 +124,16 @@ const ModalContent = styled.div`
   border-radius: 12px;
   max-height: 80vh;
   width: 90vw;
-  max-width: 900px;
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 20px;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
   color: #fff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
     max-width: 95vw;
     max-height: 90vh;
-    gap: 0;
-  }
-
-  h3 {
-    font-size: 1.8em;
-    margin: 10px 0;
-  }
-
-  p {
-    margin: 12px 0;
-    opacity: 0.9;
-    line-height: 1.6;
   }
 
   button {
@@ -166,31 +152,40 @@ const ModalContent = styled.div`
   }
 `;
 
-const ModalSidebar = styled.div`
-  padding: 30px;
+const ModalHeader = styled.div`
+  padding: 20px 30px;
+  border-bottom: 1px solid ${props => props.color}44;
   text-align: center;
-  border-right: 1px solid ${props => props.color}44;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
-    border-right: none;
-    border-bottom: 1px solid ${props => props.color}44;
-    padding: 20px;
+    padding: 16px 20px;
   }
 `;
 
-const ModalContent_ = styled.div`
-  padding: 30px;
+const ModalEmoji = styled.div`
+  font-size: 2.5em;
+  margin-bottom: 8px;
+`;
+
+const ModalTitle = styled.h3`
+  font-size: 1.5em;
+  margin: 0;
+  margin-bottom: 4px;
+`;
+
+const ModalBody = styled.div`
+  padding: 20px 30px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 
   @media (max-width: 768px) {
+    grid-template-columns: 1fr;
     padding: 20px;
-    max-height: calc(80vh - 200px);
+    gap: 20px;
   }
 
   /* Scrollbar styling */
@@ -209,6 +204,29 @@ const ModalContent_ = styled.div`
     &:hover {
       background: ${props => props.color}99;
     }
+  }
+`;
+
+const ModalSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const ModalFooter = styled.div`
+  padding: 20px 30px;
+  border-top: 1px solid ${props => props.color}44;
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    padding: 16px 20px;
+  }
+
+  button {
+    margin-top: 0;
+    flex: 1;
   }
 `;
 
@@ -259,39 +277,41 @@ export const SagesPortal = () => {
         </GovernailContainer>
       )}
 
-      {/* Modal avec Portal - 2 colonnes (info + contenu scrollable) */}
+      {/* Modal avec Portal - Header + 2 colonnes (Questions + Handoff) */}
       {selectedSage && createPortal(
         <ModalOverlay onClick={() => setSelectedSage(null)}>
           <ModalContent
             color={selectedSage.color}
             onClick={e => e.stopPropagation()}
           >
-            {/* Colonne gauche: Info sage */}
-            <ModalSidebar color={selectedSage.color}>
-              <div style={{ fontSize: '4em', marginBottom: '12px' }}>
-                {selectedSage.emoji}
-              </div>
-              <h3>{selectedSage.name}</h3>
-              <p>{selectedSage.specialty}</p>
-              <p style={{ fontSize: '0.9em', opacity: '0.7' }}>{selectedSage.age} ans</p>
-              {selectedSage.isMeta && (
-                <p style={{ fontSize: '0.85em', opacity: '0.6', fontStyle: 'italic' }}>
-                  Coordinateur système
-                </p>
-              )}
-            </ModalSidebar>
+            {/* Header: Info sage compacte */}
+            <ModalHeader color={selectedSage.color}>
+              <ModalEmoji>{selectedSage.emoji}</ModalEmoji>
+              <ModalTitle>{selectedSage.name}</ModalTitle>
+            </ModalHeader>
 
-            {/* Colonne droite: Contenu scrollable (quote + questions + handoff) */}
-            <ModalContent_ color={selectedSage.color}>
-              <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
-              <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
-              <HandoffCreator
-                emetteurId={selectedSage.id}
-                emetteurName={selectedSage.name}
-                color={selectedSage.color}
-              />
+            {/* Body: 2 colonnes Questions + Handoff */}
+            <ModalBody color={selectedSage.color}>
+              {/* Colonne gauche: Quote + Questions */}
+              <ModalSection>
+                <SageQuote sageId={selectedSage.id} color={selectedSage.color} />
+                <SagesKnowledge sageId={selectedSage.id} color={selectedSage.color} />
+              </ModalSection>
+
+              {/* Colonne droite: Handoff */}
+              <ModalSection>
+                <HandoffCreator
+                  emetteurId={selectedSage.id}
+                  emetteurName={selectedSage.name}
+                  color={selectedSage.color}
+                />
+              </ModalSection>
+            </ModalBody>
+
+            {/* Footer: Close button */}
+            <ModalFooter color={selectedSage.color}>
               <button onClick={() => setSelectedSage(null)}>Fermer</button>
-            </ModalContent_>
+            </ModalFooter>
           </ModalContent>
         </ModalOverlay>,
         document.body

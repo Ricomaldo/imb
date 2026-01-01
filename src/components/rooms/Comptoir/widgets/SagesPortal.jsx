@@ -28,7 +28,7 @@ const Card = styled.div`
   border-radius: 12px;
   padding: 12px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -36,9 +36,38 @@ const Card = styled.div`
   justify-content: center;
   gap: 8px;
   min-width: 0;
+  opacity: 0.8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+
+  /* Overlay sombre */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: background 0.2s ease;
+    pointer-events: none;
+  }
 
   &:hover {
-    transform: translateY(-5px);
+    opacity: 1;
+    transform: scale(1.08);
+    box-shadow: 0 0 16px ${props => props.color};
+    z-index: 1;
+
+    &::before {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 
   h3 {
@@ -47,17 +76,23 @@ const Card = styled.div`
     font-weight: 600;
     min-width: 0;
     word-break: break-word;
+    position: relative;
+    z-index: 1;
   }
 
   p {
     margin: 0;
     font-size: 0.75em;
     opacity: 0.8;
+    position: relative;
+    z-index: 1;
   }
 
   div:first-child {
     font-size: 2.5em;
     line-height: 1;
+    position: relative;
+    z-index: 1;
   }
 `;
 

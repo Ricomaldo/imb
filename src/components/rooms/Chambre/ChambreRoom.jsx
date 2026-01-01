@@ -38,9 +38,9 @@ const ChambreRoom = () => {
           <ZoneRouge />
         </Panel>
 
-        {/* Journal Quotidien - toute la largeur en haut (right side) */}
+        {/* Journal Quotidien - right side (unchanged) */}
         <Panel
-          gridColumn="4 / 13"
+          gridColumn="7 / 13"
           gridRow="1 / 5"
           title="Journal Quotidien"
           icon="📖"
@@ -56,10 +56,10 @@ const ChambreRoom = () => {
           <Diary />
         </Panel>
 
-        {/* Navigation - pleine largeur en bas (rows 4-8) */}
+        {/* Navigation - right side, bottom (unchanged) */}
         <Panel
-          gridColumn="1 / 13"
-          gridRow="4 / 8"
+          gridColumn="7 / 13"
+          gridRow="5 / 9"
           title="Navigation"
           icon="🧭"
           texture="metal"

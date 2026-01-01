@@ -25,45 +25,44 @@ export const LayoutWrapper = styled.div`
 export const SideTowerToggleButton = styled.button`
   position: fixed;
   right: ${({ collapsed }) => collapsed ? '0' : '20%'};
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 120px;
+  top: 20px;
+  width: 20px;
+  height: 60px;
   background: ${({ theme }) => theme.colors.primary};
   border: none;
-  border-radius: 6px 0 0 6px;
+  border-radius: 4px 0 0 4px;
   color: white;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
   z-index: 15; /* Au-dessus SideTower (10), sous modal (30) */
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.7);
-  opacity: 0.9;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.5);
+  opacity: 0.7;
   pointer-events: auto;
 
   &:hover {
     opacity: 1;
-    width: 32px;
+    width: 28px;
     background: ${({ theme }) => theme.colors.accents.warm};
-    box-shadow: -4px 0 14px rgba(0, 0, 0, 0.9);
+    box-shadow: -3px 0 10px rgba(0, 0, 0, 0.7);
   }
 
   &:active {
-    transform: translateY(-50%) scale(0.95);
+    transform: scale(0.95);
   }
 
   /* Media queries pour responsive */
   @media ${MEDIA_QUERIES.tablet} {
     right: ${({ collapsed }) => collapsed ? '0' : '15%'};
-    width: 32px;
-    height: 140px;
-    font-size: 20px;
+    width: 28px;
+    height: 80px;
+    font-size: 16px;
 
     &:hover {
-      width: 40px;
+      width: 36px;
     }
   }
 

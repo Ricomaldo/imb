@@ -1,10 +1,12 @@
 ---
 created: '2025-12-07'
-updated: '2025-12-07'
+updated: '2026-01-01'
 status: active
 ---
 
 # CLAUDE.md - IRIMMetaBrain
+
+> Point d'entrée principal. Instructions complètes : `_internal/cockpit/CLAUDE.md`
 
 > Meta-cerveau spatial pour cerveaux créatifs neuro-atypiques
 
@@ -83,7 +85,7 @@ src/
 
 ### Standards Documentation
 - Front matter YAML obligatoire (`type`, `updated`)
-- ADR pour décisions architecturales (`_docs_/decisions/ADR-XXX-*.md`)
+- ADR pour décisions architecturales (`_internal/docs/decisions/ADR-XXX-*.md`)
 - Liens internes en chemins relatifs
 
 ---
@@ -91,24 +93,16 @@ src/
 ## Missions Actives
 
 ### Mission Prioritaire : IMB Sync — Auto-export Gist
-**Fichier** : `__cockpit__/active/imb-sync-mission.md`
-**Statut** : GO reçu
+**Fichier** : `_internal/cockpit/workflow/done/imb-sync-mission.md`
+**Statut** : DONE (déjà exécutée)
 
-**Objectif** : Éliminer la friction Export/Import manuel. L'IMB sauvegarde automatiquement vers le Gist.
-
-**Chantiers** :
-- **A. Auto-export (debounce 30s)** — Sauvegarde auto après modif, réutilise `SyncManager.js`
-- **B. Indicateur sync UI** — Feedback visuel ("Synced ✓" / "Syncing..." / "Offline")
-- C. Auto-import (phase 2, pas MVP)
-
-**Séquençage** : A → B
-
-**Stores concernés** : useNotesStore, useProjectMetaStore, useProjectDataStore, useDiaryStore, usePreferencesStore
+Voir historique dans `_internal/cockpit/workflow/done/` pour détails.
 
 ---
 
 ### Mission Secondaire : IMB Upgrade — MCP + Sages
-**Fichier** : `__cockpit__/backlog/imb-upgrade-mission.md`
+**Fichier** : `_internal/cockpit/workflow/backlog/imb-upgrade-mission.md`
+**Statut** : À commencer après sync stabilisée
 
 **Chantiers** :
 - A. MCP Endpoint IMB (API Vercel Serverless → lecture Gist)
@@ -117,18 +111,18 @@ src/
 - D. Protocole Zone Rouge
 - E. Diary Upgrade - Amorces Cathartiques
 
-**Dépendance** : A dépend de imb-sync-mission (Gist toujours frais)
+**Dépendance** : Requiert M1 (sync) complète
 
 ---
 
 ## Références
 
 ### Documentation Projet
-- [Architecture Stores](_docs_/architecture/stores-architecture.md)
-- [Architecture Companion](_docs_/COMPANION_ARCHITECTURE.md)
-- [Guide Sync](_docs_/guides/sync-system.md)
-- [Contributing](_docs_/CONTRIBUTING.md)
-- [ADR Index](_docs_/decisions/README.md)
+- [Architecture Stores](_internal/docs/architecture/stores-architecture.md)
+- [Architecture Companion](_internal/docs/COMPANION_ARCHITECTURE.md)
+- [Guide Sync](_internal/docs/guides/sync-system.md)
+- [Contributing](_internal/docs/CONTRIBUTING.md)
+- [ADR Index](_internal/docs/decisions/README.md)
 
 ### Références Système
 
@@ -176,16 +170,18 @@ status: draft | active | archived
 - **Audit methodology** (reference): `~/dev/_ref/guides/audit-cycles.md`
 
 ### Active Work
-- **Current mission**: `__cockpit__/active/imb-sync-mission.md` (Auto-export Gist, Phase A+B)
-- **Backlog mission**: `__cockpit__/backlog/imb-upgrade-mission.md` (MCP + Sages integration)
+- **Cockpit**: `_internal/cockpit/`
+  - **Done missions**: `_internal/cockpit/workflow/done/`
+  - **Active missions**: `_internal/cockpit/workflow/active/`
+  - **Backlog missions**: `_internal/cockpit/workflow/backlog/`
 - **Project state**: Stores + sync + 12 rooms spatial interface
 
 ### Project Documentation
-- **Stores architecture**: `_docs_/architecture/stores-architecture.md`
-- **Companion PWA**: `_docs_/COMPANION_ARCHITECTURE.md`
-- **Sync system**: `_docs_/guides/sync-system.md`
-- **ADRs**: `_docs_/decisions/` (architecture decisions)
-- **Contributing**: `_docs_/CONTRIBUTING.md`
+- **Stores architecture**: `_internal/docs/architecture/stores-architecture.md`
+- **Companion PWA**: `_internal/docs/COMPANION_ARCHITECTURE.md`
+- **Sync system**: `_internal/docs/guides/sync-system.md`
+- **ADRs**: `_internal/docs/decisions/` (architecture decisions)
+- **Contributing**: `_internal/docs/CONTRIBUTING.md`
 
 ### System Standards (System-Level)
 - **ADR-01** (Architecture): `~/dev/_ref/standards/ADR-01-architecture-v2.md`

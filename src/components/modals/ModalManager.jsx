@@ -9,6 +9,7 @@ import ProjectOverviewModal from './ProjectOverviewModal/ProjectOverviewModal';
 import CaptureConfirmModal from './CaptureConfirmModal/CaptureConfirmModal';
 import TimeTimerModal from './TimeTimerModal/TimeTimerModal';
 import DeviceChoiceModal from './DeviceChoiceModal/DeviceChoiceModal';
+import { logger } from '../../utils/logger';
 
 /**
  * Manager component that renders all modals in the application
@@ -62,7 +63,7 @@ const ModalManager = () => {
       registerModalHandler(modalId, () => openModal(modalId));
     });
     
-    console.log('✅ Handlers enregistrés pour:', Object.keys(modalStates));
+    logger.debug('✅ Handlers enregistrés pour:', Object.keys(modalStates));
   }, [Object.keys(modalStates).join(',')]); // Re-run si la liste des modales change
 
   return (

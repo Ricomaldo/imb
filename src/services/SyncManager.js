@@ -1,6 +1,7 @@
 // src/services/SyncManager.js - Service de synchronisation multi-device avec GitHub Gist
 
 import CryptoJS from 'crypto-js';
+import { logger } from '../utils/logger';
 
 /**
  * SyncManager - Service générique de synchronisation chiffrée
@@ -79,7 +80,7 @@ class SyncManager {
 
       return combined;
     } catch (error) {
-      console.error('Encryption error:', error);
+      logger.error('Encryption error:', error);
       throw new Error('Failed to encrypt data');
     }
   }
@@ -118,7 +119,7 @@ class SyncManager {
       const jsonString = decrypted.toString(CryptoJS.enc.Utf8);
       return JSON.parse(jsonString);
     } catch (error) {
-      console.error('Decryption error:', error);
+      logger.error('Decryption error:', error);
       throw new Error('Failed to decrypt data - wrong password?');
     }
   }
@@ -190,7 +191,7 @@ class SyncManager {
 
       return result.html_url;
     } catch (error) {
-      console.error('Upload error:', error);
+      logger.error('Upload error:', error);
       throw new Error(`Failed to upload to GitHub: ${error.message}`);
     }
   }
@@ -230,7 +231,7 @@ class SyncManager {
 
       // Debug: Lister tous les fichiers disponibles
       const availableFiles = Object.keys(gistData.files || {});
-      console.log('🔍 Debug: Fichiers trouvés dans le Gist:', availableFiles);
+      logger.debug('🔍 Debug: Fichiers trouvés dans le Gist:', availableFiles);
 
       // Essayer différents noms de fichiers possibles
       let content = gistData.files['irim-sync.json']?.content;
@@ -245,28 +246,28 @@ class SyncManager {
         throw new Error(`Sync file not found in Gist. Available files: ${availableFiles.join(', ')}`);
       }
 
-      console.log('✅ Fichier trouvé et contenu récupéré');
-      console.log('🔍 Debug: Taille du contenu:', content.length);
-      console.log('🔍 Debug: Débuts du contenu:', content.substring(0, 100));
+      logger.debug('✅ Fichier trouvé et contenu récupéré');
+      logger.debug('🔍 Debug: Taille du contenu:', content.length);
+      logger.debug('🔍 Debug: Débuts du contenu:', content.substring(0, 100));
 
       // Déchiffrer si nécessaire
       if (encrypted && this.password) {
         try {
-          console.log('🔑 Tentative de déchiffrement...');
+          logger.debug('🔑 Tentative de déchiffrement...');
           const result = this.decrypt(content);
-          console.log('✅ Déchiffrement réussi');
+          logger.debug('✅ Déchiffrement réussi');
           return result;
         } catch (error) {
-          console.error('❌ Erreur déchiffrement:', error);
+          logger.error('❌ Erreur déchiffrement:', error);
 
           // Essayer de parser directement en cas d'échec (peut-être pas chiffré)
           try {
-            console.log('🔄 Tentative de parsing direct (non chiffré)...');
+            logger.debug('🔄 Tentative de parsing direct (non chiffré)...');
             const directResult = JSON.parse(content);
-            console.log('✅ Parsing direct réussi - données non chiffrées');
+            logger.debug('✅ Parsing direct réussi - données non chiffrées');
             return directResult;
           } catch (parseError) {
-            console.error('❌ Parsing direct échoué aussi:', parseError);
+            logger.error('❌ Parsing direct échoué aussi:', parseError);
             throw error; // Relancer l'erreur originale de déchiffrement
           }
         }
@@ -274,7 +275,7 @@ class SyncManager {
         return JSON.parse(content);
       }
     } catch (error) {
-      console.error('Download error:', error);
+      logger.error('Download error:', error);
       throw new Error(`Failed to download from GitHub: ${error.message}`);
     }
   }
@@ -298,7 +299,7 @@ class SyncManager {
 
       return response.ok;
     } catch (error) {
-      console.error('Connection test failed:', error);
+      logger.error('Connection test failed:', error);
       return false;
     }
   }
@@ -331,7 +332,7 @@ class SyncManager {
         gist.files['irim-sync.json']
       );
     } catch (error) {
-      console.error('List gists error:', error);
+      logger.error('List gists error:', error);
       throw new Error(`Failed to list gists: ${error.message}`);
     }
   }

@@ -1,17 +1,18 @@
 // src/stores/migrateProjectStores.js - Gestion de la migration et initialisation des stores
 
 import { initializeWithDefaultData } from './defaultProjectsData';
+import { logger } from '../utils/logger';
 
 // Fonction de migration depuis l'ancien format (v1 vers v2)
 export const migrateProjectStores = () => {
   // Vérifier si la migration a déjà été effectuée
   const migrationFlag = localStorage.getItem('store-migrated-v2');
   if (migrationFlag === 'true') {
-    console.log('Migration already completed');
+    logger.debug('Migration already completed');
     return false;
   }
 
-  console.log('Starting migration to multi-store architecture...');
+  logger.debug('Starting migration to multi-store architecture...');
 
   try {
     // 1. Lire l'ancien store
@@ -19,7 +20,7 @@ export const migrateProjectStores = () => {
     const oldStoreData = localStorage.getItem(oldStoreKey);
 
     if (!oldStoreData) {
-      console.log('No old store data found, skipping migration');
+      logger.debug('No old store data found, skipping migration');
       localStorage.setItem('store-migrated-v2', 'true');
       return false;
     }
@@ -29,7 +30,7 @@ export const migrateProjectStores = () => {
 
     // 2. Backup de l'ancien store
     localStorage.setItem('projects-backup-v1', oldStoreData);
-    console.log('Backup created: projects-backup-v1');
+    logger.debug('Backup created: projects-backup-v1');
 
     // 3. Extraire et migrer les métadonnées vers ProjectMetaStore
     const metaData = {
@@ -102,7 +103,7 @@ export const migrateProjectStores = () => {
           `project-data-${projectId}`,
           JSON.stringify(projectDataStore)
         );
-        console.log(`Migrated data for project: ${projectId}`);
+        logger.debug(`Migrated data for project: ${projectId}`);
       });
     }
 
@@ -112,7 +113,7 @@ export const migrateProjectStores = () => {
       version: 2
     };
     localStorage.setItem('project-meta-store', JSON.stringify(metaStoreData));
-    console.log('Meta store created successfully');
+    logger.debug('Meta store created successfully');
 
     // 6. Marquer la migration comme complète
     localStorage.setItem('store-migrated-v2', 'true');
@@ -120,17 +121,17 @@ export const migrateProjectStores = () => {
     // 7. Optionnel : Supprimer l'ancien store (commenté pour sécurité)
     // localStorage.removeItem(oldStoreKey);
 
-    console.log('Migration completed successfully!');
+    logger.debug('Migration completed successfully!');
     return true;
 
   } catch (error) {
-    console.error('Migration failed:', error);
+    logger.error('Migration failed:', error);
 
     // En cas d'erreur, essayer de restaurer depuis le backup
     const backup = localStorage.getItem('projects-backup-v1');
     if (backup) {
       localStorage.setItem('irim-projects-store', backup);
-      console.log('Restored from backup due to migration error');
+      logger.debug('Restored from backup due to migration error');
     }
 
     return false;
@@ -139,7 +140,7 @@ export const migrateProjectStores = () => {
 
 // Fonction d'initialisation principale appelée au démarrage de l'application
 export const initializeStores = async () => {
-  console.log('🚀 Initializing stores...');
+  logger.debug('🚀 Initializing stores...');
 
   // Vérifier l'état actuel des stores
   const metaStoreExists = localStorage.getItem('project-meta-store');
@@ -148,24 +149,24 @@ export const initializeStores = async () => {
 
   // Migration depuis l'ancien format si nécessaire
   if (oldStoreExists && !migrationDone) {
-    console.log('📦 Old store detected, starting migration...');
+    logger.debug('📦 Old store detected, starting migration...');
     const migrationSuccess = migrateProjectStores();
     if (migrationSuccess) {
-      console.log('✅ Migration completed successfully');
+      logger.debug('✅ Migration completed successfully');
       return 'migrated';
     } else {
-      console.error('❌ Migration failed');
+      logger.error('❌ Migration failed');
       // Continuer avec initialisation par défaut
     }
   }
 
   // Première utilisation : initialiser avec les données par défaut
   if (!metaStoreExists && !oldStoreExists) {
-    console.log('🆕 First time usage detected, initializing with default data...');
+    logger.debug('🆕 First time usage detected, initializing with default data...');
     await initializeWithDefaultData();
     localStorage.setItem('store-migrated-v2', 'true');
     localStorage.setItem('stores-initialized', 'true');
-    console.log('✅ Default data initialized');
+    logger.debug('✅ Default data initialized');
     return 'initialized';
   }
 
@@ -178,23 +179,23 @@ export const initializeStores = async () => {
                          Object.keys(metaData.state.projects).length > 0;
 
       if (!hasProjects) {
-        console.log('🔄 Empty meta store detected, reinitializing...');
+        logger.debug('🔄 Empty meta store detected, reinitializing...');
         await initializeWithDefaultData();
         localStorage.setItem('stores-initialized', 'true');
-        console.log('✅ Reinitialized with default data');
+        logger.debug('✅ Reinitialized with default data');
         return 'reinitialized';
       }
     } catch (error) {
-      console.error('❌ Error parsing meta store:', error);
+      logger.error('❌ Error parsing meta store:', error);
       // Store corrompu, réinitialiser
-      console.log('🔧 Corrupted store detected, reinitializing...');
+      logger.debug('🔧 Corrupted store detected, reinitializing...');
       await initializeWithDefaultData();
       localStorage.setItem('stores-initialized', 'true');
       return 'recovered';
     }
   }
 
-  console.log('✅ Stores already initialized and valid');
+  logger.debug('✅ Stores already initialized and valid');
   return 'existing';
 };
 
@@ -216,12 +217,12 @@ export const needsInitialization = () => {
 
 // Nettoyer les clés obsolètes du localStorage
 export const cleanupObsoleteStorage = () => {
-  console.log('🧹 Cleaning up obsolete localStorage keys...');
+  logger.debug('🧹 Cleaning up obsolete localStorage keys...');
 
   // Supprimer l'ancien store monolithique
   if (localStorage.getItem('irim-projects-store')) {
     localStorage.removeItem('irim-projects-store');
-    console.log('✅ Removed obsolete key: irim-projects-store');
+    logger.debug('✅ Removed obsolete key: irim-projects-store');
   }
 
   // Supprimer le backup de migration qui n'est plus nécessaire
@@ -229,9 +230,9 @@ export const cleanupObsoleteStorage = () => {
   obsoleteKeys.forEach(key => {
     if (localStorage.getItem(key)) {
       localStorage.removeItem(key);
-      console.log(`✅ Removed obsolete key: ${key}`);
+      logger.debug(`✅ Removed obsolete key: ${key}`);
     }
   });
 
-  console.log('✅ LocalStorage cleanup completed');
+  logger.debug('✅ LocalStorage cleanup completed');
 };

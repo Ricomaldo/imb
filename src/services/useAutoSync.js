@@ -12,6 +12,7 @@ import useDiaryStore from '../stores/useDiaryStore';
 import usePreferencesStore from '../stores/usePreferencesStore';
 import { subscribeToProjectData } from '../stores/useProjectDataStore';
 import projectSyncAdapter from './ProjectSyncAdapter';
+import { logger } from '../utils/logger';
 
 /**
  * Hook pour l'auto-sync vers GitHub Gist
@@ -49,7 +50,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
    */
   const performSync = useCallback(async () => {
     if (!isConfigured) {
-      console.log('[AutoSync] Not configured, skipping sync');
+      logger.debug('[AutoSync] Not configured, skipping sync');
       return;
     }
 
@@ -77,7 +78,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       localStorage.setItem('last-sync', now.toISOString());
 
       setSyncStatus('success');
-      console.log('[AutoSync] ✅ Sync successful at', now.toLocaleTimeString());
+      logger.debug('[AutoSync] ✅ Sync successful at', now.toLocaleTimeString());
 
       // Revenir à idle après 3 secondes
       setTimeout(() => {
@@ -85,7 +86,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       }, 3000);
 
     } catch (err) {
-      console.error('[AutoSync] ❌ Sync failed:', err);
+      logger.error('[AutoSync] ❌ Sync failed:', err);
       setError(err.message);
       setSyncStatus('error');
 
@@ -107,7 +108,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    console.log('[AutoSync] ⏳ Pending - will sync in', debounceMs / 1000, 'seconds');
+    logger.debug('[AutoSync] ⏳ Pending - will sync in', debounceMs / 1000, 'seconds');
     setSyncStatus('pending');
 
     // Nouveau timer
@@ -132,12 +133,12 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
    */
   const checkAndImportFromGist = useCallback(async () => {
     if (!isConfigured || !gistId) {
-      console.log('[AutoSync] Auto-import skipped: not configured or no gistId');
+      logger.debug('[AutoSync] Auto-import skipped: not configured or no gistId');
       return;
     }
 
     try {
-      console.log('[AutoSync] 🔍 Checking Gist for newer data...');
+      logger.debug('[AutoSync] 🔍 Checking Gist for newer data...');
 
       // Configurer le syncAdapter
       configureSyncAdapter();
@@ -146,7 +147,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       const gistData = await projectSyncAdapter.syncManager.downloadGist(gistId, true);
 
       if (!gistData || !gistData.timestamp) {
-        console.log('[AutoSync] No valid data in Gist');
+        logger.debug('[AutoSync] No valid data in Gist');
         return;
       }
 
@@ -154,18 +155,18 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       const lastLocalSync = localStorage.getItem('last-sync');
       const localTimestamp = lastLocalSync ? new Date(lastLocalSync) : null;
 
-      console.log('[AutoSync] Gist timestamp:', gistTimestamp.toISOString());
-      console.log('[AutoSync] Local timestamp:', localTimestamp?.toISOString() || 'none');
+      logger.debug('[AutoSync] Gist timestamp:', gistTimestamp.toISOString());
+      logger.debug('[AutoSync] Local timestamp:', localTimestamp?.toISOString() || 'none');
 
       // Si le Gist est plus récent, importer
       if (!localTimestamp || gistTimestamp > localTimestamp) {
-        console.log('[AutoSync] 📥 Gist is newer, importing...');
+        logger.debug('[AutoSync] 📥 Gist is newer, importing...');
         setSyncStatus('syncing');
 
         const result = await projectSyncAdapter.importFromGist(gistId, true);
 
         if (result.success) {
-          console.log('[AutoSync] ✅ Auto-import successful!');
+          logger.debug('[AutoSync] ✅ Auto-import successful!');
           localStorage.setItem('last-sync', gistData.timestamp);
           setLastSyncTime(new Date(gistData.timestamp));
           setSyncStatus('success');
@@ -175,16 +176,16 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
             window.location.reload();
           }, 1000);
         } else {
-          console.error('[AutoSync] ❌ Auto-import failed:', result.error);
+          logger.error('[AutoSync] ❌ Auto-import failed:', result.error);
           setSyncStatus('error');
         }
       } else {
-        console.log('[AutoSync] ✅ Local data is up to date');
+        logger.debug('[AutoSync] ✅ Local data is up to date');
       }
     } catch (err) {
-      console.error('[AutoSync] Auto-import error:', err);
+      logger.error('[AutoSync] Auto-import error:', err);
       // Ne pas bloquer l'app si l'import échoue (ex: format incompatible)
-      console.log('[AutoSync] ⚠️ Will re-sync with correct format on next change');
+      logger.debug('[AutoSync] ⚠️ Will re-sync with correct format on next change');
     }
   }, [isConfigured, gistId, configureSyncAdapter]);
 
@@ -211,36 +212,36 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   useEffect(() => {
     if (!enabled) return;
 
-    console.log('[AutoSync] Setting up store subscriptions...');
+    logger.debug('[AutoSync] Setting up store subscriptions...');
 
     const unsubscribers = [];
 
     // S'abonner à chaque store - utiliser triggerRef pour éviter les problèmes de closure
     const notesUnsub = useNotesStore.subscribe(() => {
-      console.log('[AutoSync] 📝 Notes store changed');
+      logger.debug('[AutoSync] 📝 Notes store changed');
       triggerRef.current?.();
     });
     unsubscribers.push(notesUnsub);
 
     const metaUnsub = useProjectMetaStore.subscribe(() => {
-      console.log('[AutoSync] 📋 Project meta store changed');
+      logger.debug('[AutoSync] 📋 Project meta store changed');
       triggerRef.current?.();
     });
     unsubscribers.push(metaUnsub);
 
     const diaryUnsub = useDiaryStore.subscribe(() => {
-      console.log('[AutoSync] 📔 Diary store changed');
+      logger.debug('[AutoSync] 📔 Diary store changed');
       triggerRef.current?.();
     });
     unsubscribers.push(diaryUnsub);
 
     const prefsUnsub = usePreferencesStore.subscribe(() => {
-      console.log('[AutoSync] ⚙️ Preferences store changed');
+      logger.debug('[AutoSync] ⚙️ Preferences store changed');
       triggerRef.current?.();
     });
     unsubscribers.push(prefsUnsub);
 
-    console.log('[AutoSync] ✅ Initialized - subscribed to 4 Zustand stores');
+    logger.debug('[AutoSync] ✅ Initialized - subscribed to 4 Zustand stores');
 
     // Charger le dernier sync time
     const lastSync = localStorage.getItem('last-sync');
@@ -250,7 +251,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
 
     // Cleanup
     return () => {
-      console.log('[AutoSync] Cleaning up subscriptions...');
+      logger.debug('[AutoSync] Cleaning up subscriptions...');
       unsubscribers.forEach(unsub => unsub());
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
@@ -267,14 +268,14 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
     // Récupérer le projet sélectionné
     const selectedProject = useProjectMetaStore.getState().selectedProject;
     if (!selectedProject) {
-      console.log('[AutoSync] No project selected, skipping project data subscription');
+      logger.debug('[AutoSync] No project selected, skipping project data subscription');
       return;
     }
 
-    console.log('[AutoSync] 📁 Subscribing to project data:', selectedProject);
+    logger.debug('[AutoSync] 📁 Subscribing to project data:', selectedProject);
 
     const unsub = subscribeToProjectData(selectedProject, () => {
-      console.log('[AutoSync] 📁 Project data changed:', selectedProject);
+      logger.debug('[AutoSync] 📁 Project data changed:', selectedProject);
       triggerRef.current?.();
     });
 
@@ -296,7 +297,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
     // Écouter les changements de projet sélectionné
     const unsub = useProjectMetaStore.subscribe((state) => {
       if (state.selectedProject !== currentProject) {
-        console.log('[AutoSync] 🔄 Project changed to:', state.selectedProject);
+        logger.debug('[AutoSync] 🔄 Project changed to:', state.selectedProject);
         setCurrentProject(state.selectedProject);
       }
     });
@@ -308,10 +309,10 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   useEffect(() => {
     if (!enabled || !currentProject) return;
 
-    console.log('[AutoSync] 📁 Subscribing to new project:', currentProject);
+    logger.debug('[AutoSync] 📁 Subscribing to new project:', currentProject);
 
     const unsub = subscribeToProjectData(currentProject, () => {
-      console.log('[AutoSync] 📁 Project data changed:', currentProject);
+      logger.debug('[AutoSync] 📁 Project data changed:', currentProject);
       triggerRef.current?.();
     });
 

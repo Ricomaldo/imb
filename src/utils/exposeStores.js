@@ -7,6 +7,7 @@ import { getProjectData } from '../stores/useProjectDataStore';
 import useDiaryStore from '../stores/useDiaryStore';
 import usePreferencesStore from '../stores/usePreferencesStore';
 import ProjectSyncAdapter from '../services/ProjectSyncAdapter';
+import { logger } from './logger';
 
 // Fonction pour exposer les stores et helpers
 export const exposeStoresToWindow = (navigationHook = null) => {
@@ -47,12 +48,12 @@ export const exposeStoresToWindow = (navigationHook = null) => {
 
     // Helper pour debug
     window.__DEBUG_STORES__ = () => {
-      console.log('🔍 Stores disponibles:');
+      logger.debug('🔍 Stores disponibles:');
       Object.keys(window.__ZUSTAND_STORES__).forEach(key => {
-        console.log(`  - ${key}:`, window.__ZUSTAND_STORES__[key].getState());
+        logger.debug(`  - ${key}:`, window.__ZUSTAND_STORES__[key].getState());
       });
       if (window.__NAVIGATION__) {
-        console.log('  - Navigation:', window.__NAVIGATION__.currentRoom);
+        logger.debug('  - Navigation:', window.__NAVIGATION__.currentRoom);
       }
     };
 
@@ -86,10 +87,10 @@ export const exposeStoresToWindow = (navigationHook = null) => {
       collectAllStoreData: () => ProjectSyncAdapter.collectAllStoreData()
     };
 
-    console.log('✅ Stores exposés dans window.__ZUSTAND_STORES__');
-    console.log('💡 Utilise window.__DEBUG_STORES__() pour voir l\'état');
-    console.log('🚀 Accès rapide: window.stores.projectMeta() ou window.stores.projectData("irimmetabrain")');
-    console.log('🧹 Maintenance: window.__SYNC_TOOLS__.cleanupOrphanedProjects()');
+    logger.debug('✅ Stores exposés dans window.__ZUSTAND_STORES__');
+    logger.debug('💡 Utilise window.__DEBUG_STORES__() pour voir l\'état');
+    logger.debug('🚀 Accès rapide: window.stores.projectMeta() ou window.stores.projectData("irimmetabrain")');
+    logger.debug('🧹 Maintenance: window.__SYNC_TOOLS__.cleanupOrphanedProjects()');
   }
 };
 

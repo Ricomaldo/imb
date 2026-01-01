@@ -51,10 +51,7 @@ const MainLayout = ({ responsiveLevel = 'desktop', layout }) => {
   return (
     <>
       <LayoutWrapper>
-        <MainContent
-          sideTowerCollapsed={sideTowerCollapsed}
-          responsiveLevel={responsiveLevel}
-        >
+        <MainContent>
           <RoomCanvas
             roomNavHook={roomNavHook}
           />
@@ -63,7 +60,7 @@ const MainLayout = ({ responsiveLevel = 'desktop', layout }) => {
       </LayoutWrapper>
       <SideTowerToggleButton
         onClick={toggleSideTowerCollapse}
-        collapsed={sideTowerCollapsed}
+        $collapsed={sideTowerCollapsed}
         title={sideTowerCollapsed ? "Ouvrir SideTower" : "Fermer SideTower"}
       >
         {sideTowerCollapsed ? '◀' : '▶'}

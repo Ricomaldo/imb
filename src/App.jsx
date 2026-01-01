@@ -12,6 +12,7 @@ import CompanionApp from './companion/CompanionApp';
 import { openModal } from './utils/buttonMapping';
 import { SyncProvider } from './contexts/SyncContext';
 import { useResponsiveLayout } from './hooks/useResponsiveLayout';
+import { logger } from './utils/logger';
 
 function App() {
   const [initStatus, setInitStatus] = useState('loading');
@@ -26,13 +27,13 @@ function App() {
   // Initialisation robuste des stores au démarrage
   useEffect(() => {
     const init = async () => {
-      console.log('🚀 IRIM MetaBrain - Initializing...');
+      logger.info('🚀 IRIM MetaBrain - Initializing...');
 
       try {
         // 1. Initialiser les stores (migration + données par défaut si nécessaire)
         const status = await initializeStores();
 
-        console.log(`📊 Initialization status: ${status}`);
+        logger.debug(`📊 Initialization status: ${status}`);
         setInitStatus(status);
 
         // 1.5. Nettoyer les clés obsolètes du localStorage
@@ -46,13 +47,13 @@ function App() {
         // 3. Vérifier si une sync cloud est disponible
         const lastSync = localStorage.getItem('last-sync');
         if (!lastSync && status === 'initialized') {
-          console.log('💡 Tip: You can sync your data with GitHub Gist using the sync button in Control Tower');
+          logger.info('💡 Tip: You can sync your data with GitHub Gist using the sync button in Control Tower');
         }
 
         // Log success
-        console.log('✅ IRIM MetaBrain ready!');
+        logger.info('✅ IRIM MetaBrain ready!');
       } catch (error) {
-        console.error('❌ Initialization error:', error);
+        logger.error('❌ Initialization error:', error);
         setInitStatus('error');
       }
     };

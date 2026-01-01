@@ -26,8 +26,8 @@ const SideTower = ({ responsiveLevel = 'desktop' }) => {
   const sideTowerCollapsed = usePreferencesStore((state) => state.sideTowerCollapsed);
 
   return (
-    <TowerWrapper collapsed={sideTowerCollapsed} responsiveLevel={responsiveLevel}>
-      <TowerContainer responsiveLevel={responsiveLevel}>
+    <TowerWrapper $collapsed={sideTowerCollapsed} $responsiveLevel={responsiveLevel}>
+      <TowerContainer $responsiveLevel={responsiveLevel}>
         <TopTowerFloor id="header-floor">
           <TowerHeader />
         </TopTowerFloor>

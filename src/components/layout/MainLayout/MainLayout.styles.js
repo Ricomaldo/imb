@@ -24,7 +24,7 @@ export const LayoutWrapper = styled.div`
  */
 export const SideTowerToggleButton = styled.button`
   position: fixed;
-  right: ${({ collapsed }) => collapsed ? '0' : '20%'};
+  right: ${({ $collapsed }) => $collapsed ? '0' : '20%'};
   top: 20px;
   width: 20px;
   height: 60px;
@@ -56,7 +56,7 @@ export const SideTowerToggleButton = styled.button`
 
   /* Media queries pour responsive */
   @media ${MEDIA_QUERIES.tablet} {
-    right: ${({ collapsed }) => collapsed ? '0' : '15%'};
+    right: ${({ $collapsed }) => $collapsed ? '0' : '15%'};
     width: 28px;
     height: 80px;
     font-size: 16px;
@@ -67,7 +67,7 @@ export const SideTowerToggleButton = styled.button`
   }
 
   @media ${MEDIA_QUERIES.tabletWide} {
-    right: ${({ collapsed }) => collapsed ? '0' : '20%'};
+    right: ${({ $collapsed }) => $collapsed ? '0' : '20%'};
   }
 `;
 

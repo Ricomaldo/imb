@@ -57,9 +57,30 @@ const TowerViewer = () => {
 
   const { emoji, label } = getContentLabel();
 
-  // === RENDER FUNCTIONS ===
+  /**
+   * === RENDER FUNCTIONS ===
+   *
+   * LAYOUT PATTERNS (pour futurs contenus):
+   *
+   * 1. PATTERN "CENTERED" (widget visuel, taille fixe)
+   *    → Exemple: timer, horloge, graphique
+   *    → Layout: flex + alignItems/justifyContent center
+   *    → Le composant a une taille max définie (ex: maxSize={250})
+   *    → Résultat: widget centré avec espace vide autour
+   *
+   * 2. PATTERN "FULL SPACE" (contenu texte/liste)
+   *    → Exemple: notes, calendrier, liste
+   *    → Layout: conteneur enfant avec flex: 1
+   *    → Le composant utilise height="100%" pour remplir
+   *    → Résultat: contenu remplit tout l'espace disponible
+   */
   const renderContent = () => {
     switch (towerViewerContent) {
+      /**
+       * PATTERN "CENTERED"
+       * Timer centré avec taille fixe (maxSize: 250px)
+       * Le wrapper utilise flex center pour centrer le widget
+       */
       case 'timer':
         return (
           <div style={{
@@ -74,6 +95,12 @@ const TowerViewer = () => {
           </div>
         );
 
+      /**
+       * PATTERN "FULL SPACE"
+       * Notes utilisent tout l'espace disponible
+       * Le conteneur enfant (ligne 119) a flex: 1 pour remplir la hauteur
+       * MarkdownEditor a height="100%" pour s'adapter
+       */
       case 'notes':
         return (
           <>
@@ -115,7 +142,7 @@ const TowerViewer = () => {
               />
             </div>
 
-            {/* MarkdownEditor */}
+            {/* MarkdownEditor - flex: 1 pour remplir l'espace */}
             <div style={{
               flex: 1,
               overflow: 'hidden',

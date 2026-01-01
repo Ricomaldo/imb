@@ -14,22 +14,22 @@ export const TowerWrapper = styled.div`
   position: relative;
   flex: 0 0 auto;
   height: 100%;
-  width: ${({ collapsed }) => collapsed ? '0' : '20%'};
+  width: ${({ $collapsed }) => $collapsed ? '0' : '20%'};
   z-index: 10; /* theme.zIndex.navigation */
   background: black;
   overflow: hidden;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-  opacity: ${({ collapsed }) => collapsed ? '0' : '1'};
-  visibility: ${({ collapsed }) => collapsed ? 'hidden' : 'visible'};
-  pointer-events: ${({ collapsed }) => collapsed ? 'none' : 'auto'};
+  opacity: ${({ $collapsed }) => $collapsed ? '0' : '1'};
+  visibility: ${({ $collapsed }) => $collapsed ? 'hidden' : 'visible'};
+  pointer-events: ${({ $collapsed }) => $collapsed ? 'none' : 'auto'};
 
   /* Media queries pour responsive */
   @media ${MEDIA_QUERIES.tablet} {
-    width: ${({ collapsed }) => collapsed ? '0' : '15%'};
+    width: ${({ $collapsed }) => $collapsed ? '0' : '15%'};
   }
 
   @media ${MEDIA_QUERIES.tabletWide} {
-    width: ${({ collapsed }) => collapsed ? '0' : '20%'};
+    width: ${({ $collapsed }) => $collapsed ? '0' : '20%'};
   }
 `;
 
@@ -37,10 +37,10 @@ export const TowerContainer = styled.div`
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: ${({ responsiveLevel }) => {
+  grid-template-rows: ${({ $responsiveLevel }) => {
     // Desktop (default): auto 3fr 320px
     // Tablet: auto 2fr 280px
-    return responsiveLevel === 'tablet' ? 'auto 2fr 280px' : 'auto 3fr 320px';
+    return $responsiveLevel === 'tablet' ? 'auto 2fr 280px' : 'auto 3fr 320px';
   }};
   gap: ${({ theme }) => theme.spacing.sm};
   ${craftBorder}

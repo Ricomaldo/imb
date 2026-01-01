@@ -27,7 +27,6 @@ const TowerViewer = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(0);
-  const [isExpanded, setIsExpanded] = useState(true);
 
   // === NOTES CONTENT ===
   const isSideTowerSource = sideTowerNotesSource === 'sidetower';
@@ -155,29 +154,10 @@ const TowerViewer = () => {
     }
   };
 
-  // === COLLAPSED VIEW ===
-  if (!isExpanded) {
-    return (
-      <ViewerContainer style={{
-        padding: '12px',
-        cursor: 'pointer',
-        textAlign: 'center',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px'
-      }} onClick={() => setIsExpanded(true)}>
-        <span>{emoji} {label}</span>
-        <span style={{ fontSize: '10px', opacity: 0.7 }}>➡️</span>
-      </ViewerContainer>
-    );
-  }
-
-  // === EXPANDED VIEW ===
   return (
     <ViewerContainer>
-      {/* Header simple pour contenus non-notes */}
-      {towerViewerContent !== 'notes' && (
+      {/* Header pour contenus autres que Notes et Timer */}
+      {towerViewerContent !== 'notes' && towerViewerContent !== 'timer' && (
         <div style={{
           padding: '8px 12px',
           background: theme.colors.accents.neutral,
@@ -194,21 +174,6 @@ const TowerViewer = () => {
 
       {/* Contenu dynamique */}
       {renderContent()}
-
-      {/* Bouton fermer */}
-      <div style={{
-        padding: '4px',
-        textAlign: 'center',
-        borderTop: '1px solid #ccc'
-      }}>
-        <IconButton
-          icon="⬇️"
-          label="Fermer"
-          onClick={() => setIsExpanded(false)}
-          variant="ghost"
-          size="small"
-        />
-      </div>
     </ViewerContainer>
   );
 };

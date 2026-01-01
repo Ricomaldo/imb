@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import mcpVaultClient from '../../../../services/mcpVaultClient';
+import { createNote } from '../../../../services/vaultApi';
 import sagesData from '../../../../data/sagesConfig.json';
 
 const HandoffContainer = styled.div`
@@ -139,9 +139,6 @@ export const HandoffCreator = ({ emetteurId, emetteurName, color }) => {
     setMessage('');
 
     try {
-      // Initialize MCP connection if needed
-      await mcpVaultClient.initialize();
-
       // Build handoff content
       const timestamp = new Date().toISOString();
       const date = timestamp.split('T')[0];
@@ -181,8 +178,8 @@ ${contexte || '[À compléter par émetteur]'}
 [Observations, nuances, sensibilités particulières]
 `;
 
-      // Create note in vault via MCP
-      await mcpVaultClient.createNote('8sages', filepath, content);
+      // Create note in vault via API
+      await createNote(filepath, content);
 
       setStatus('success');
       setMessage(`✅ Handoff créé: ${filename}`);

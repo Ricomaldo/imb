@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import sageMappingLoader from '../../../../services/sageMappingLoader';
+import { readNote } from '../../../../services/vaultApi';
 
 const KnowledgeContainer = styled.div`
   margin: 15px 0;
@@ -67,8 +67,14 @@ export const SagesKnowledge = ({ sageId, color }) => {
       try {
         setLoading(true);
         setError(null);
-        const sageQuestions = await sageMappingLoader.loadSageQuestions(sageId);
-        setQuestions(sageQuestions || []);
+
+        // Read sage index file from vault
+        const indexPath = `1-knowledge-base/index-sages/${sageId}-questions.md`;
+        const content = await readNote(indexPath);
+
+        // Parse questions from markdown
+        const questions = parseQuestionsFromMarkdown(content);
+        setQuestions(questions || []);
       } catch (err) {
         console.error(`[SagesKnowledge] Error loading questions for ${sageId}:`, err);
         setError(err.message);
@@ -82,6 +88,33 @@ export const SagesKnowledge = ({ sageId, color }) => {
       loadQuestions();
     }
   }, [sageId]);
+
+  /**
+   * Parse markdown file and extract questions
+   * Format: ### [QID] Title - Description
+   */
+  const parseQuestionsFromMarkdown = (content) => {
+    const questions = [];
+    const questionRegex = /###\s+\[([A-Z0-9]+)\]\s+(.+?)(?:\n|$)/g;
+
+    let match;
+    while ((match = questionRegex.exec(content)) !== null) {
+      const questionId = match[1];
+      const titleAndDescription = match[2];
+
+      // Parse title (remove description if present)
+      const titleMatch = titleAndDescription.match(/^([^-]+)(?:\s*-\s*(.+))?$/);
+      const title = titleMatch ? titleMatch[1].trim() : titleAndDescription;
+
+      questions.push({
+        id: questionId,
+        title: title.trim(),
+        domain: questionId.substring(0, questionId.search(/\d/)) || 'unknown'
+      });
+    }
+
+    return questions;
+  };
 
   if (loading) {
     return (

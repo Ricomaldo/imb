@@ -17,6 +17,14 @@ import {
 
 /**
  * Modal for managing projects overview with Kanban board
+ * @renders Modal
+ * @renders OverviewContainer
+ * @renders ProjectForm - conditionally rendered when showNewProjectForm or editingProject
+ * @renders TabSelector - conditionally rendered when not showing form
+ * @renders FormationView - conditionally rendered when activeTab is 'formation'
+ * @renders KanbanView - conditionally rendered when activeTab is 'pro' or 'perso'
+ * @renders FloatingButtons
+ * @renders ActionButton
  */
 const ProjectOverviewModal = ({ isOpen, onClose }) => {
   const {

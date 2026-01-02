@@ -178,6 +178,22 @@ const ErrorMessage = styled.div`
   margin-top: ${({ theme }) => theme.spacing.xs};
 `;
 
+/**
+ * Project form for creating and editing projects
+ * @renders FormContainer
+ * @renders FormTitle
+ * @renders FormGrid
+ * @renders FormGroup
+ * @renders Label
+ * @renders Input
+ * @renders Select
+ * @renders ErrorMessage - conditionally rendered on validation errors
+ * @renders TechInput
+ * @renders TechTagsContainer
+ * @renders TechTag
+ * @renders ButtonGroup
+ * @renders Button
+ */
 const ProjectForm = ({ project, categories, onSave, onDelete, onCancel }) => {
   const [formData, setFormData] = useState({
     id: '',

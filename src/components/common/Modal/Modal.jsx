@@ -22,6 +22,15 @@ import {
  * - Design aligné sur Tower System
  * - Fermeture par Escape ou clic overlay
  * - Flexible avec header/footer optionnels
+ *
+ * @renders ModalOverlay
+ * @renders ModalContainer
+ * @renders ModalHeader - conditionally rendered when title or showCloseButton
+ * @renders ModalTitle - conditionally rendered when title
+ * @renders ModalCloseButton - conditionally rendered when showCloseButton
+ * @renders ModalContent
+ * @renders ModalFooter - conditionally rendered when footer or showFooterCloseButton
+ * @renders ModalActionButton - conditionally rendered when showFooterCloseButton
  */
 const Modal = ({
   isOpen,

@@ -110,7 +110,11 @@ const InfoText = styled.div`
  * @renders EditorContainer
  * @renders GridContainer
  * @renders RoomTile
+ * @renders RoomLabel - conditionally rendered when tile is not empty
+ * @renders EmptyLabel - conditionally rendered when tile is empty
+ * @renders InfoText
  * @renders Controls
+ * @renders Button
  */
 const RoomLayoutEditor = ({ onSave, initialLayout = null }) => {
   const [layout, setLayout] = useState([]);

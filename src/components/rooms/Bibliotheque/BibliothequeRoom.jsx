@@ -13,6 +13,8 @@ import { useTheme } from "styled-components";
  * @renders BaseRoom
  * @renders PanelGrid
  * @renders Panel
+ * @renders ProjectsDropdown
+ * @renders ProjectOverviewModal - conditionally rendered when showProjectModal
  */
 const BibliothequeRoom = () => {
   const theme = useTheme();

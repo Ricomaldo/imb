@@ -26,6 +26,7 @@ const componentModules = import.meta.glob('../../../components/**/*.jsx');
  * @renders h3
  * @renders button
  * @renders span
+ * @renders strong
  * @renders CategorySection
  * @renders ComponentItem
  * @renders MainArea
@@ -56,7 +57,9 @@ const PROP_OPTIONS_MAP = {
   texture: ['wood', 'metal', 'stone', 'fabric'],
   contentType: ['markdown', 'actions', 'screentv', 'mindlog'],
   color: ['primary', 'success', 'warning', 'info', 'danger', 'muted', 'tech', 'secondary'],
-  shape: ['default', 'rounded', 'pill']
+  shape: ['default', 'rounded', 'pill'],
+  layoutType: ['flex', 'grid'],
+  roomType: ['sanctuaire', 'chambre', 'scriptorium', 'comptoir', 'cuisine', 'atelier', 'forge', 'boutique', 'laboratoire', 'bibliotheque', 'jardin', 'cave']
 };
 
 // Fonction pour extraire les props d'un composant et leurs métadonnées
@@ -162,7 +165,13 @@ const ComponentCatalog = () => {
     widgets: true,
     tower: true,
     navigation: true,
-    dev: true
+    modals: true,
+    furniture: true,
+    games: true,
+    dev: true,
+    layout: true,
+    'room-modules': true,
+    auth: true
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -209,7 +218,13 @@ const ComponentCatalog = () => {
         widgets: [],
         tower: [],
         navigation: [],
-        dev: []
+        modals: [],
+        furniture: [],
+        games: [],
+        dev: [],
+        layout: [],
+        'room-modules': [],
+        auth: []
       };
 
       for (const [path, module] of Object.entries(componentModules)) {
@@ -226,15 +241,20 @@ const ComponentCatalog = () => {
         }
 
         // Déterminer la catégorie
-        let category = 'other';
+        let category = null;
         if (path.includes('/widgets/')) category = 'widgets';
         else if (path.includes('/common/')) category = 'common';
         else if (path.includes('/tower/')) category = 'tower';
         else if (path.includes('/navigation/')) category = 'navigation';
+        else if (path.includes('/modals/')) category = 'modals';
+        else if (path.includes('/furniture/')) category = 'furniture';
+        else if (path.includes('/games/')) category = 'games';
         else if (path.includes('/dev/')) category = 'dev';
-        else if (path.includes('/layout/') || path.includes('/rooms/') || path.includes('/room-modules/')) {
-          category = null; // Ignorer layout, rooms et room-modules
-        }
+        else if (path.includes('/layout/')) category = 'layout';
+        else if (path.includes('/room-modules/')) category = 'room-modules';
+        else if (path.includes('/auth/')) category = 'auth';
+        // Ignorer rooms (les pièces principales ne sont pas des composants réutilisables)
+        // else if (path.includes('/rooms/')) category = null;
 
         // Charger le module
         try {

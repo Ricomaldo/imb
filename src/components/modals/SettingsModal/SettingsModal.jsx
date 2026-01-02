@@ -24,15 +24,18 @@ import RoomLayoutEditor from './RoomLayoutEditor';
  * Settings modal for configuring application preferences
  * @renders Modal
  * @renders SettingsContainer
+ * @renders TabContainer
+ * @renders TabButton
+ * @renders TabContent
  * @renders SettingsSection
  * @renders SettingsTitle
  * @renders SettingsDescription
  * @renders InputGroup
  * @renders Label
  * @renders Select
- * @renders option
  * @renders SaveButton
- * @renders StatusMessage
+ * @renders StatusMessage - conditionally rendered when status.message exists
+ * @renders RoomLayoutEditor - conditionally rendered when activeTab is 'layout'
  */
 const SettingsModal = ({ isOpen, onClose }) => {
   const { defaultRoom, setDefaultRoom, customRoomLayout, setCustomRoomLayout } = usePreferencesStore();

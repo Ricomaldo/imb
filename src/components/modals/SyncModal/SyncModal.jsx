@@ -24,6 +24,15 @@ import {
  * - VITE_GITHUB_TOKEN
  * - VITE_ENCRYPTION_PASSWORD
  * - VITE_GIST_ID (optionnel)
+ *
+ * @renders Modal
+ * @renders SyncContainer
+ * @renders SyncSection
+ * @renders SyncTitle
+ * @renders SyncDescription
+ * @renders ButtonGroup
+ * @renders ActionButton
+ * @renders StatusMessage - conditionally rendered when message or config errors
  */
 const SyncModal = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);

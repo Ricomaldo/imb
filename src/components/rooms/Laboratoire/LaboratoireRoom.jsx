@@ -29,16 +29,9 @@ import ComponentToTest, { getPanelConfig } from "../../room-modules/laboratoire/
  * @renders LaboTitle
  * @renders Button
  * @renders PanelGrid
- * @renders Panel
- * @renders WelcomeContent
- * @renders WelcomeEmoji
- * @renders WelcomeTitle
- * @renders WelcomeDescription
- * @renders WelcomeHint
- * @renders NoPanelContent
- * @renders NoPanelCenter
- * @renders LargeEmoji
- * @renders NoPanelSubtitle
+ * @renders Panel - conditionally rendered when showPanel
+ * @renders ComponentToTest - conditionally rendered based on ComponentToTest availability
+ * @renders NoPanelContent - conditionally rendered when not showPanel
  */
 const LaboratoireRoom = () => {
   const theme = useTheme();

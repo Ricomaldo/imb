@@ -14,6 +14,10 @@ import usePreferencesStore from '../../../stores/usePreferencesStore';
  * TowerViewer: Viewer dynamique multi-contenus
  * Affiche: Notes Dev (Desktop/Companion), Timer, ou autre selon towerViewerContent
  * @renders ViewerContainer
+ * @renders TimeTimer - conditionally rendered when towerViewerContent is 'timer'
+ * @renders IconButton - conditionally rendered when towerViewerContent is 'notes'
+ * @renders MarkdownToolbar - conditionally rendered when towerViewerContent is 'notes'
+ * @renders MarkdownEditor - conditionally rendered when towerViewerContent is 'notes'
  */
 const TowerViewer = () => {
   const theme = useTheme();

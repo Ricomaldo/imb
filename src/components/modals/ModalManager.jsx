@@ -20,6 +20,8 @@ import { logger } from '../../utils/logger';
  * @renders SettingsModal
  * @renders ProjectOverviewModal
  * @renders CaptureConfirmModal
+ * @renders TimeTimerModal
+ * @renders DeviceChoiceModal
  */
 const ModalManager = () => {
   // État pour chaque modale

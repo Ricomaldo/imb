@@ -1,9 +1,15 @@
 {
-  "timestamp": "2025-09-18T16:16:55.597Z",
-  "totalComponents": 62,
+  "timestamp": "2026-01-02T00:12:40.544Z",
+  "totalComponents": 119,
   "rootComponents": [
+    "LoginPage",
+    "Badge",
     "index",
     "index",
+    "CategoryFilters",
+    "index",
+    "index",
+    "MindLogToolbar",
     "index",
     "PanelContext",
     "index",
@@ -12,24 +18,77 @@
     "index",
     "index",
     "index",
+    "MainLayout",
     "index",
-    "StudioHall",
     "ModalManager",
     "index",
+    "DraggableProjectCard",
+    "ProjectBadges",
+    "ProjectDetailsModal",
+    "ProjectOverviewModal.backup",
+    "ProjectOverviewModal.old",
+    "index",
+    "ProjectCarousel",
+    "NavigationGrid",
+    "CaptureUrgente",
+    "CapturesList",
+    "DeploymentNotes",
+    "MindLogSorter",
+    "index",
+    "CaptureModal",
+    "MomentCard",
+    "MomentsOuiWidget",
+    "MomentsTimeline",
+    "NeedsMiniHeatmap",
+    "NeedsSelector",
+    "WeeklyCounter",
     "index",
     "index",
     "index",
     "index",
     "index",
     "index",
+    "HandoffCreator",
+    "QuestionSelector",
+    "QuestionsPanel",
+    "RespirationTimer",
+    "SageQuote",
+    "SageSelector",
+    "SagesPortal",
+    "ZoneRouge",
     "index",
     "index",
     "index",
     "ActionList",
+    "Diary",
     "ImageCarousel",
-    "MindLog"
+    "ImageDisplay",
+    "MindLog",
+    "MindLogCompact",
+    "QuoteCarousel"
   ],
   "components": [
+    {
+      "name": "LoginPage",
+      "path": "auth/LoginPage",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "Badge",
+      "path": "common/Badge/Badge",
+      "renders": [
+        "BadgeContainer",
+        "BadgeIcon"
+      ],
+      "children": []
+    },
+    {
+      "name": "index",
+      "path": "common/Badge/index",
+      "renders": [],
+      "children": []
+    },
     {
       "name": "Button",
       "path": "common/Button/Button",
@@ -41,6 +100,12 @@
     {
       "name": "index",
       "path": "common/Button/index",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "CategoryFilters",
+      "path": "common/CategoryFilters/CategoryFilters",
       "renders": [],
       "children": []
     },
@@ -95,8 +160,8 @@
       "name": "MarkdownToolbar",
       "path": "common/MarkdownToolbar/MarkdownToolbar",
       "renders": [
-        "div",
-        "button"
+        "ToolbarContainer",
+        "ToolbarButton"
       ],
       "children": []
     },
@@ -107,9 +172,33 @@
       "children": []
     },
     {
+      "name": "MindLogToolbar",
+      "path": "common/MindLogToolbar/MindLogToolbar",
+      "renders": [
+        "div",
+        "button"
+      ],
+      "children": []
+    },
+    {
+      "name": "index",
+      "path": "common/MindLogToolbar/index",
+      "renders": [],
+      "children": []
+    },
+    {
       "name": "Modal",
       "path": "common/Modal/Modal",
-      "renders": [],
+      "renders": [
+        "ModalOverlay",
+        "ModalContainer",
+        "ModalHeader",
+        "ModalTitle",
+        "ModalCloseButton",
+        "ModalContent",
+        "ModalFooter",
+        "ModalActionButton"
+      ],
       "children": []
     },
     {
@@ -175,6 +264,7 @@
         "h3",
         "button",
         "span",
+        "strong",
         "CategorySection",
         "ComponentItem",
         "MainArea",
@@ -246,6 +336,37 @@
       "children": []
     },
     {
+      "name": "AnalogClock",
+      "path": "furniture/AnalogClock/AnalogClock",
+      "renders": [
+        "SVG"
+      ],
+      "children": []
+    },
+    {
+      "name": "Mastermind",
+      "path": "games/Mastermind/Mastermind",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "Medieval2048",
+      "path": "games/Medieval2048/Medieval2048",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "SlidingPuzzle",
+      "path": "games/SlidingPuzzle/SlidingPuzzle",
+      "renders": [
+        "PuzzleContainer",
+        "GameBoard",
+        "Tile",
+        "Controls"
+      ],
+      "children": []
+    },
+    {
       "name": "BaseRoom",
       "path": "layout/BaseRoom/BaseRoom",
       "renders": [
@@ -261,6 +382,21 @@
       "path": "layout/BaseRoom/index",
       "renders": [],
       "children": []
+    },
+    {
+      "name": "MainLayout",
+      "path": "layout/MainLayout/MainLayout",
+      "renders": [
+        "LayoutWrapper",
+        "MainContent",
+        "SideTower",
+        "SideTowerToggleButton",
+        "RoomCanvas"
+      ],
+      "children": [
+        "SideTower",
+        "RoomCanvas"
+      ]
     },
     {
       "name": "PanelGrid",
@@ -318,31 +454,49 @@
       "name": "SideTower",
       "path": "layout/SideTower/SideTower",
       "renders": [
+        "TowerWrapper",
         "TowerContainer",
         "TopTowerFloor",
-        "ControlTower",
+        "TowerHeader",
         "MiddleTowerFloor",
-        "WorkbenchDrawer",
+        "TowerToolbar",
         "BottomTowerFloor",
-        "SideTowerNotes"
+        "TowerViewer"
       ],
       "children": [
-        "ControlTower",
-        "WorkbenchDrawer",
-        "SideTowerNotes"
+        "TowerHeader",
+        "TowerToolbar",
+        "TowerViewer"
       ]
     },
     {
-      "name": "StudioHall",
-      "path": "layout/StudioHall/StudioHall",
+      "name": "CaptureConfirmModal",
+      "path": "modals/CaptureConfirmModal/CaptureConfirmModal",
       "renders": [
-        "StudioContainer",
-        "RoomCanvas",
-        "SideTower"
+        "Modal",
+        "CaptureContainer",
+        "CaptureSection",
+        "CaptureTitle",
+        "CaptureDescription",
+        "ActionInfo",
+        "ButtonGroup",
+        "ActionButton",
+        "StatusMessage"
       ],
       "children": [
-        "RoomCanvas",
-        "SideTower"
+        "Modal"
+      ]
+    },
+    {
+      "name": "DeviceChoiceModal",
+      "path": "modals/DeviceChoiceModal/DeviceChoiceModal",
+      "renders": [
+        "Modal",
+        "ChoiceContainer",
+        "ChoiceCard"
+      ],
+      "children": [
+        "Modal"
       ]
     },
     {
@@ -353,14 +507,22 @@
         "SleepPotionModal",
         "StrengthPotionModal",
         "SyncModal",
-        "SettingsModal"
+        "SettingsModal",
+        "ProjectOverviewModal",
+        "CaptureConfirmModal",
+        "TimeTimerModal",
+        "DeviceChoiceModal"
       ],
       "children": [
         "HealingPotionModal",
         "SleepPotionModal",
         "StrengthPotionModal",
         "SyncModal",
-        "SettingsModal"
+        "SettingsModal",
+        "ProjectOverviewModal",
+        "CaptureConfirmModal",
+        "TimeTimerModal",
+        "DeviceChoiceModal"
       ]
     },
     {
@@ -409,23 +571,151 @@
       "children": []
     },
     {
+      "name": "DraggableProjectCard",
+      "path": "modals/ProjectOverviewModal/DraggableProjectCard",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "FormationView",
+      "path": "modals/ProjectOverviewModal/FormationView",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "KanbanView",
+      "path": "modals/ProjectOverviewModal/KanbanView",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "ProjectBadges",
+      "path": "modals/ProjectOverviewModal/ProjectBadges",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "ProjectDetailsModal",
+      "path": "modals/ProjectOverviewModal/ProjectDetailsModal",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "ProjectForm",
+      "path": "modals/ProjectOverviewModal/ProjectForm",
+      "renders": [
+        "FormContainer",
+        "FormTitle",
+        "FormGrid",
+        "FormGroup",
+        "Label",
+        "Input",
+        "Select",
+        "ErrorMessage",
+        "TechInput",
+        "TechTagsContainer",
+        "TechTag",
+        "ButtonGroup",
+        "Button"
+      ],
+      "children": [
+        "Button"
+      ]
+    },
+    {
+      "name": "ProjectOverviewModal.backup",
+      "path": "modals/ProjectOverviewModal/ProjectOverviewModal.backup",
+      "renders": [
+        "Modal",
+        "OverviewContainer",
+        "CategorySection",
+        "ProjectGrid",
+        "ProjectCard"
+      ],
+      "children": [
+        "Modal"
+      ]
+    },
+    {
+      "name": "ProjectOverviewModal",
+      "path": "modals/ProjectOverviewModal/ProjectOverviewModal",
+      "renders": [
+        "Modal",
+        "OverviewContainer",
+        "ProjectForm",
+        "TabSelector",
+        "FormationView",
+        "KanbanView",
+        "FloatingButtons",
+        "ActionButton"
+      ],
+      "children": [
+        "Modal",
+        "ProjectForm",
+        "TabSelector",
+        "FormationView",
+        "KanbanView"
+      ]
+    },
+    {
+      "name": "ProjectOverviewModal.old",
+      "path": "modals/ProjectOverviewModal/ProjectOverviewModal.old",
+      "renders": [
+        "Modal",
+        "OverviewContainer",
+        "CategorySection",
+        "ProjectGrid",
+        "ProjectCard"
+      ],
+      "children": [
+        "Modal"
+      ]
+    },
+    {
+      "name": "TabSelector",
+      "path": "modals/ProjectOverviewModal/TabSelector",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "RoomLayoutEditor",
+      "path": "modals/SettingsModal/RoomLayoutEditor",
+      "renders": [
+        "EditorContainer",
+        "GridContainer",
+        "RoomTile",
+        "RoomLabel",
+        "EmptyLabel",
+        "InfoText",
+        "Controls",
+        "Button"
+      ],
+      "children": [
+        "Button"
+      ]
+    },
+    {
       "name": "SettingsModal",
       "path": "modals/SettingsModal/SettingsModal",
       "renders": [
         "Modal",
         "SettingsContainer",
+        "TabContainer",
+        "TabButton",
+        "TabContent",
         "SettingsSection",
         "SettingsTitle",
         "SettingsDescription",
         "InputGroup",
         "Label",
         "Select",
-        "option",
         "SaveButton",
-        "StatusMessage"
+        "StatusMessage",
+        "RoomLayoutEditor"
       ],
       "children": [
-        "Modal"
+        "Modal",
+        "RoomLayoutEditor"
       ]
     },
     {
@@ -437,18 +727,25 @@
         "SyncSection",
         "SyncTitle",
         "SyncDescription",
-        "InputGroup",
-        "Label",
-        "Input",
-        "PasswordInput",
-        "ActionButton",
         "ButtonGroup",
-        "StatusMessage",
-        "ConfigInfo",
-        "ConfigRow"
+        "ActionButton",
+        "StatusMessage"
       ],
       "children": [
         "Modal"
+      ]
+    },
+    {
+      "name": "TimeTimerModal",
+      "path": "modals/TimeTimerModal/TimeTimerModal",
+      "renders": [
+        "Modal",
+        "TimerContainer",
+        "TimeTimer"
+      ],
+      "children": [
+        "Modal",
+        "TimeTimer"
       ]
     },
     {
@@ -478,6 +775,186 @@
       "children": []
     },
     {
+      "name": "ProjectCarousel",
+      "path": "room-modules/atelier/ProjectCarousel",
+      "renders": [
+        "Container",
+        "Button",
+        "Center",
+        "Title"
+      ],
+      "children": [
+        "Button"
+      ]
+    },
+    {
+      "name": "ProjectsDropdown",
+      "path": "room-modules/bibliotheque/ProjectsDropdown",
+      "renders": [
+        "DropdownContainer",
+        "Header",
+        "StatsBar",
+        "StatLabel",
+        "ProgressBar",
+        "ProgressFill",
+        "ProjectsList",
+        "ProjectItem",
+        "StatusBadge",
+        "ProjectInfo",
+        "ProjectName",
+        "TechStack",
+        "MetadataIndicators",
+        "Indicator",
+        "QuickActions",
+        "IconButton",
+        "Footer",
+        "FooterButton",
+        "EmptyState"
+      ],
+      "children": [
+        "IconButton"
+      ]
+    },
+    {
+      "name": "NavigationGrid",
+      "path": "room-modules/chambre/NavigationGrid",
+      "renders": [
+        "GridContainer",
+        "RoomCell",
+        "RoomLabel"
+      ],
+      "children": []
+    },
+    {
+      "name": "HydrationReminder",
+      "path": "room-modules/cuisine/HydrationReminder",
+      "renders": [
+        "Container",
+        "Message",
+        "Button",
+        "Sparkles"
+      ],
+      "children": [
+        "Button"
+      ]
+    },
+    {
+      "name": "PauseCorps",
+      "path": "room-modules/cuisine/PauseCorps",
+      "renders": [
+        "PauseCorpsContainer",
+        "MysteryCard",
+        "MysteryText",
+        "RevealButton",
+        "ExerciceCard",
+        "TitleRow",
+        "CorpsIcon",
+        "ExerciceTitle",
+        "TargetsContainer",
+        "TargetBadge",
+        "ExerciceDescription",
+        "ExerciceDuration",
+        "ActionButton",
+        "EncouragementMessage"
+      ],
+      "children": []
+    },
+    {
+      "name": "CaptureUrgente",
+      "path": "room-modules/forge/CaptureUrgente",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "CapturesList",
+      "path": "room-modules/forge/CapturesList",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "DeploymentNotes",
+      "path": "room-modules/forge/DeploymentNotes",
+      "renders": [
+        "NotesContainer",
+        "Header",
+        "Title",
+        "ProjectSelector",
+        "InfoBanner",
+        "EditorWrapper",
+        "MarkdownEditor",
+        "EmptyState"
+      ],
+      "children": [
+        "MarkdownEditor"
+      ]
+    },
+    {
+      "name": "ComponentToTest",
+      "path": "room-modules/laboratoire/ComponentToTest",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "MindLogSorter",
+      "path": "room-modules/sanctuaire/MindLogSorter/MindLogSorter",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "index",
+      "path": "room-modules/sanctuaire/MindLogSorter/index",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "CaptureModal",
+      "path": "room-modules/sanctuaire/MomentsOui/CaptureModal",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "MomentCard",
+      "path": "room-modules/sanctuaire/MomentsOui/MomentCard",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "MomentsOuiWidget",
+      "path": "room-modules/sanctuaire/MomentsOui/MomentsOuiWidget",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "MomentsTimeline",
+      "path": "room-modules/sanctuaire/MomentsOui/MomentsTimeline",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "NeedsMiniHeatmap",
+      "path": "room-modules/sanctuaire/MomentsOui/NeedsMiniHeatmap",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "NeedsSelector",
+      "path": "room-modules/sanctuaire/MomentsOui/NeedsSelector",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "WeeklyCounter",
+      "path": "room-modules/sanctuaire/MomentsOui/WeeklyCounter",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "index",
+      "path": "room-modules/sanctuaire/MomentsOui/index",
+      "renders": [],
+      "children": []
+    },
+    {
       "name": "AtelierRoom",
       "path": "rooms/Atelier/AtelierRoom",
       "renders": [
@@ -498,10 +975,17 @@
       "path": "rooms/Bibliotheque/BibliothequeRoom",
       "renders": [
         "BaseRoom",
-        "BibliothequeGrid"
+        "PanelGrid",
+        "Panel",
+        "ProjectsDropdown",
+        "ProjectOverviewModal"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "PanelGrid",
+        "Panel",
+        "ProjectsDropdown",
+        "ProjectOverviewModal"
       ]
     },
     {
@@ -532,10 +1016,19 @@
       "path": "rooms/Cave/CaveRoom",
       "renders": [
         "BaseRoom",
-        "CaveGrid"
+        "PanelGrid",
+        "Panel",
+        "SlidingPuzzle",
+        "Medieval2048",
+        "Mastermind"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "PanelGrid",
+        "Panel",
+        "SlidingPuzzle",
+        "Medieval2048",
+        "Mastermind"
       ]
     },
     {
@@ -549,19 +1042,13 @@
       "path": "rooms/Chambre/ChambreRoom",
       "renders": [
         "BaseRoom",
-        "ChambreTitle",
         "PanelGrid",
-        "Panel",
-        "div",
-        "p",
-        "small",
-        "MarkdownEditor"
+        "Panel"
       ],
       "children": [
         "BaseRoom",
         "PanelGrid",
-        "Panel",
-        "MarkdownEditor"
+        "Panel"
       ]
     },
     {
@@ -575,10 +1062,12 @@
       "path": "rooms/Comptoir/ComptoirRoom",
       "renders": [
         "BaseRoom",
-        "ComptoirGrid"
+        "PanelGrid",
+        "Sage"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "PanelGrid"
       ]
     },
     {
@@ -588,14 +1077,72 @@
       "children": []
     },
     {
+      "name": "HandoffCreator",
+      "path": "rooms/Comptoir/widgets/HandoffCreator",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "QuestionSelector",
+      "path": "rooms/Comptoir/widgets/QuestionSelector",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "QuestionsPanel",
+      "path": "rooms/Comptoir/widgets/QuestionsPanel",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "RespirationTimer",
+      "path": "rooms/Comptoir/widgets/RespirationTimer",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "SageQuote",
+      "path": "rooms/Comptoir/widgets/SageQuote",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "SageSelector",
+      "path": "rooms/Comptoir/widgets/SageSelector",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "SagesPortal",
+      "path": "rooms/Comptoir/widgets/SagesPortal",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "ZoneRouge",
+      "path": "rooms/Comptoir/widgets/ZoneRouge",
+      "renders": [],
+      "children": []
+    },
+    {
       "name": "CuisineRoom",
       "path": "rooms/Cuisine/CuisineRoom",
       "renders": [
         "BaseRoom",
-        "CuisineGrid"
+        "ClockWrapper",
+        "AnalogClock",
+        "PanelGrid",
+        "Panel",
+        "HydrationReminder",
+        "PauseCorps"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "AnalogClock",
+        "PanelGrid",
+        "Panel",
+        "HydrationReminder",
+        "PauseCorps"
       ]
     },
     {
@@ -603,20 +1150,23 @@
       "path": "rooms/Forge/ForgeRoom",
       "renders": [
         "BaseRoom",
+        "ForgeTitle",
+        "ForgeToolbar",
+        "Button",
         "PanelGrid",
         "Panel",
         "ComponentCatalog",
         "SystemOverview",
-        "ForgeToolbar",
-        "Button"
+        "MarkdownEditor"
       ],
       "children": [
         "BaseRoom",
+        "Button",
         "PanelGrid",
         "Panel",
         "ComponentCatalog",
         "SystemOverview",
-        "Button"
+        "MarkdownEditor"
       ]
     },
     {
@@ -646,21 +1196,15 @@
         "Button",
         "PanelGrid",
         "Panel",
-        "WelcomeContent",
-        "WelcomeEmoji",
-        "WelcomeTitle",
-        "WelcomeDescription",
-        "WelcomeHint",
-        "NoPanelContent",
-        "NoPanelCenter",
-        "LargeEmoji",
-        "NoPanelSubtitle"
+        "ComponentToTest",
+        "NoPanelContent"
       ],
       "children": [
         "BaseRoom",
         "Button",
         "PanelGrid",
-        "Panel"
+        "Panel",
+        "ComponentToTest"
       ]
     },
     {
@@ -668,11 +1212,13 @@
       "path": "rooms/Sanctuaire/SanctuaireRoom",
       "renders": [
         "BaseRoom",
-        "SanctuaireWrapper",
-        "SanctuaireGrid"
+        "PanelGrid",
+        "Panel"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "PanelGrid",
+        "Panel"
       ]
     },
     {
@@ -680,10 +1226,17 @@
       "path": "rooms/Scriptorium/ScriptoriumRoom",
       "renders": [
         "BaseRoom",
-        "ScriptoriumGrid"
+        "PanelGrid",
+        "Panel",
+        "MarkdownEditor",
+        "DiaryArchive"
       ],
       "children": [
-        "BaseRoom"
+        "BaseRoom",
+        "PanelGrid",
+        "Panel",
+        "MarkdownEditor",
+        "DiaryArchive"
       ]
     },
     {
@@ -693,50 +1246,50 @@
       "children": []
     },
     {
-      "name": "ControlTower",
-      "path": "tower/ControlTower/ControlTower",
+      "name": "TowerHeader",
+      "path": "tower/TowerHeader/TowerHeader",
       "renders": [
         "TowerContainer",
-        "TopRow",
-        "IconButton",
-        "CenterRect",
-        "div",
-        "BottomRow"
+        "DateTimeSection",
+        "TimeDisplay",
+        "DateDisplay",
+        "GlobalActionsRow",
+        "IconButton"
       ],
       "children": [
         "IconButton"
       ]
     },
     {
-      "name": "SideTowerNotes",
-      "path": "tower/SideTowerNotes/SideTowerNotes",
+      "name": "TowerToolbar",
+      "path": "tower/TowerToolbar/TowerToolbar",
       "renders": [
-        "NoteContainer",
-        "div",
-        "span",
-        "MarkdownToolbar",
-        "MarkdownEditor"
-      ],
-      "children": [
-        "MarkdownToolbar",
-        "MarkdownEditor"
-      ]
-    },
-    {
-      "name": "WorkbenchDrawer",
-      "path": "tower/WorkbenchDrawer/WorkbenchDrawer",
-      "renders": [
-        "DrawerContainer",
+        "ToolbarContainer",
         "TabsHeader",
         "TabButton",
-        "span",
         "TabContent",
         "ItemsGrid",
-        "div",
         "IconButton"
       ],
       "children": [
         "IconButton"
+      ]
+    },
+    {
+      "name": "TowerViewer",
+      "path": "tower/TowerViewer/TowerViewer",
+      "renders": [
+        "ViewerContainer",
+        "TimeTimer",
+        "IconButton",
+        "MarkdownToolbar",
+        "MarkdownEditor"
+      ],
+      "children": [
+        "TimeTimer",
+        "IconButton",
+        "MarkdownToolbar",
+        "MarkdownEditor"
       ]
     },
     {
@@ -755,6 +1308,36 @@
       "children": []
     },
     {
+      "name": "Diary",
+      "path": "widgets/Diary/Diary",
+      "renders": [
+        "MarkdownEditor"
+      ],
+      "children": [
+        "MarkdownEditor"
+      ]
+    },
+    {
+      "name": "DiaryArchive",
+      "path": "widgets/DiaryArchive/DiaryArchive",
+      "renders": [
+        "ArchiveContainer",
+        "MonthsList",
+        "MonthItem",
+        "ArchiveContent",
+        "ArchiveHeader",
+        "ExportButton",
+        "NoArchivesMessage",
+        "DayEntry",
+        "DayHeader",
+        "DayContent",
+        "MarkdownEditor"
+      ],
+      "children": [
+        "MarkdownEditor"
+      ]
+    },
+    {
       "name": "ImageCarousel",
       "path": "widgets/ImageCarousel/ImageCarousel",
       "renders": [
@@ -767,6 +1350,12 @@
       "children": []
     },
     {
+      "name": "ImageDisplay",
+      "path": "widgets/ImageDisplay/ImageDisplay",
+      "renders": [],
+      "children": []
+    },
+    {
       "name": "MindLog",
       "path": "widgets/MindLog/MindLog",
       "renders": [
@@ -776,6 +1365,24 @@
         "br",
         "textarea"
       ],
+      "children": []
+    },
+    {
+      "name": "MindLogCompact",
+      "path": "widgets/MindLog/MindLogCompact",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "QuoteCarousel",
+      "path": "widgets/QuoteCarousel/QuoteCarousel",
+      "renders": [],
+      "children": []
+    },
+    {
+      "name": "TimeTimer",
+      "path": "widgets/TimeTimer",
+      "renders": [],
       "children": []
     }
   ]

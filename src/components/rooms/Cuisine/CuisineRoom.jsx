@@ -13,9 +13,12 @@ import { ClockWrapper } from "./CuisineRoom.styles";
 /**
  * Cuisine room component for cooking and wellness
  * @renders BaseRoom
+ * @renders ClockWrapper
+ * @renders AnalogClock
  * @renders PanelGrid
  * @renders Panel
  * @renders HydrationReminder
+ * @renders PauseCorps
  */
 const CuisineRoom = () => {
   const theme = useTheme();

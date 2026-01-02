@@ -51,6 +51,13 @@ const Title = styled.div`
   line-height: 1;
 `;
 
+/**
+ * ProjectCarousel - Carousel de selection de projet
+ * @renders Container
+ * @renders Button
+ * @renders Center
+ * @renders Title
+ */
 const ProjectCarousel = () => {
   const { getCurrentProject, selectProject, visibleProjects } =
     useProjectMetaStore();

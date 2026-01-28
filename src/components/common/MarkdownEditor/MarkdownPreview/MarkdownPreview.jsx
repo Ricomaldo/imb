@@ -6,6 +6,17 @@ import remarkGfm from 'remark-gfm';
 import { PreviewContainer, EmptyPreview } from './MarkdownPreview.styles';
 
 /**
+ * Strip YAML frontmatter from markdown content
+ * Frontmatter is delimited by --- at start of file
+ */
+const stripFrontmatter = (text) => {
+  if (!text) return text;
+  // Match frontmatter: starts with ---, ends with ---, at beginning of file
+  const frontmatterRegex = /^---\n[\s\S]*?\n---\n?/;
+  return text.replace(frontmatterRegex, '');
+};
+
+/**
  * Markdown preview component with styling support
  * @renders PreviewContainer
  * @renders EmptyPreview
@@ -20,7 +31,10 @@ import { PreviewContainer, EmptyPreview } from './MarkdownPreview.styles';
  * @renders input
  */
 const MarkdownPreview = ({ content, height, compact, zoomLevel = 0, accentColor }) => {
-  if (!content || !content.trim()) {
+  // Strip frontmatter for clean preview
+  const cleanContent = stripFrontmatter(content);
+
+  if (!cleanContent || !cleanContent.trim()) {
     return (
       <EmptyPreview height={height}>
         Aperçu du rendu markdown...
@@ -76,7 +90,7 @@ const MarkdownPreview = ({ content, height, compact, zoomLevel = 0, accentColor 
           )
         }}
       >
-        {content}
+        {cleanContent}
       </ReactMarkdown>
     </PreviewContainer>
   );

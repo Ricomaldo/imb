@@ -12,7 +12,7 @@ const VAULT_API_URL = 'https://mcp.irimwebforge.com/vault-api';
 
 /**
  * Read a note from vault
- * @param {string} path - File path (e.g., "1-knowledge-base/questions/...")
+ * @param {string} path - File path (e.g., "2-reference/knowledge-base/questions/...")
  * @returns {Promise<{success: boolean, content: string}>}
  */
 export const readNote = async (path) => {
@@ -47,7 +47,7 @@ export const readNote = async (path) => {
 
 /**
  * Create a note in vault
- * @param {string} path - File path (e.g., "_inboxes/handoffs/...")
+ * @param {string} path - File path (e.g., "1-workspace/coordination/handoffs/...")
  * @param {string} content - File content
  * @returns {Promise<{success: boolean, path: string}>}
  */

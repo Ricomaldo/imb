@@ -28,7 +28,7 @@ const getQuestionPath = (questionId, sageIndex) => {
     return question.filepath;
   }
   const domain = questionId.substring(0, questionId.search(/\d/)) || 'unknown';
-  return `1-knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
+  return `2-reference/knowledge-base/questions/domaines-v4/${domain}/${questionId}-titre.md`;
 };
 
 export const QuestionsPanel = forwardRef(({ sageId, questionIds, sageColor, sageIndex = [] }, ref) => {

@@ -59,7 +59,7 @@ const ComptoirRoom = () => {
   useEffect(() => {
     const loadQuestions = async () => {
       try {
-        const indexPath = `1-knowledge-base/index-sages/${activeSageId}-questions.md`;
+        const indexPath = `2-reference/knowledge-base/index-sages/${activeSageId}-questions.md`;
         const content = await readNote(indexPath);
 
         const questions = parseQuestionsFromMarkdown(content);
@@ -103,11 +103,11 @@ const ComptoirRoom = () => {
       );
       const relativeFilepath = filepathMatch ? filepathMatch[1].trim() : null;
 
-      // Prepend 1-knowledge-base/ if filepath is relative
+      // Prepend 2-reference/knowledge-base/ if filepath is relative
       const filepath = relativeFilepath
-        ? relativeFilepath.startsWith("1-knowledge-base/")
+        ? relativeFilepath.startsWith("2-reference/")
           ? relativeFilepath
-          : `1-knowledge-base/${relativeFilepath}`
+          : `2-reference/knowledge-base/${relativeFilepath}`
         : null;
 
       // Extract domaine from filepath (e.g., "accompagnement-ia" from "...domaines-v4/accompagnement-ia/...")

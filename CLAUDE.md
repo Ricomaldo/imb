@@ -6,9 +6,11 @@ status: active
 
 # CLAUDE.md - IRIMMetaBrain
 
-> Point d'entrée principal. Instructions complètes : `_internal/cockpit/CLAUDE.md`
+> Point d'entrée principal. Instructions complètes : `_cockpit/CLAUDE.md`
 
 > Meta-cerveau spatial pour cerveaux créatifs neuro-atypiques
+
+**Déploiement** : https://irim-metabrain.vercel.app/
 
 ---
 
@@ -85,7 +87,7 @@ src/
 
 ### Standards Documentation
 - Front matter YAML obligatoire (`type`, `updated`)
-- ADR pour décisions architecturales (`_internal/docs/decisions/ADR-XXX-*.md`)
+- ADR pour décisions architecturales (`_docs/decisions/ADR-XXX-*.md`)
 - Liens internes en chemins relatifs
 
 ---
@@ -93,15 +95,15 @@ src/
 ## Missions Actives
 
 ### Mission Prioritaire : IMB Sync — Auto-export Gist
-**Fichier** : `_internal/cockpit/workflow/done/imb-sync-mission.md`
+**Fichier** : `_cockpit/missions/done/imb-sync-mission.md`
 **Statut** : DONE (déjà exécutée)
 
-Voir historique dans `_internal/cockpit/workflow/done/` pour détails.
+Voir historique dans `_cockpit/missions/done/` pour détails.
 
 ---
 
 ### Mission Secondaire : IMB Upgrade — MCP + Sages
-**Fichier** : `_internal/cockpit/workflow/backlog/imb-upgrade-mission.md`
+**Fichier** : `_cockpit/missions/backlog/imb-upgrade-mission.md`
 **Statut** : À commencer après sync stabilisée
 
 **Chantiers** :
@@ -118,11 +120,11 @@ Voir historique dans `_internal/cockpit/workflow/done/` pour détails.
 ## Références
 
 ### Documentation Projet
-- [Architecture Stores](_internal/docs/architecture/stores-architecture.md)
-- [Architecture Companion](_internal/docs/COMPANION_ARCHITECTURE.md)
-- [Guide Sync](_internal/docs/guides/sync-system.md)
-- [Contributing](_internal/docs/CONTRIBUTING.md)
-- [ADR Index](_internal/docs/decisions/README.md)
+- [Architecture Stores](_docs/architecture/stores-architecture.md)
+- [Architecture Companion](_docs/COMPANION_ARCHITECTURE.md)
+- [Guide Sync](_docs/guides/sync-system.md)
+- [Contributing](_docs/CONTRIBUTING.md)
+- [ADR Index](_docs/decisions/README.md)
 
 ### Références Système
 
@@ -170,18 +172,18 @@ status: draft | active | archived
 - **Audit methodology** (reference): `~/dev/_ref/guides/audit-cycles.md`
 
 ### Active Work
-- **Cockpit**: `_internal/cockpit/`
-  - **Done missions**: `_internal/cockpit/workflow/done/`
-  - **Active missions**: `_internal/cockpit/workflow/active/`
-  - **Backlog missions**: `_internal/cockpit/workflow/backlog/`
+- **Cockpit**: `_cockpit/`
+  - **Done missions**: `_cockpit/missions/done/`
+  - **Active missions**: `_cockpit/missions/active/`
+  - **Backlog missions**: `_cockpit/missions/backlog/`
 - **Project state**: Stores + sync + 12 rooms spatial interface
 
 ### Project Documentation
-- **Stores architecture**: `_internal/docs/architecture/stores-architecture.md`
-- **Companion PWA**: `_internal/docs/COMPANION_ARCHITECTURE.md`
-- **Sync system**: `_internal/docs/guides/sync-system.md`
-- **ADRs**: `_internal/docs/decisions/` (architecture decisions)
-- **Contributing**: `_internal/docs/CONTRIBUTING.md`
+- **Stores architecture**: `_docs/architecture/stores-architecture.md`
+- **Companion PWA**: `_docs/COMPANION_ARCHITECTURE.md`
+- **Sync system**: `_docs/guides/sync-system.md`
+- **ADRs**: `_docs/decisions/` (architecture decisions)
+- **Contributing**: `_docs/CONTRIBUTING.md`
 
 ### System Standards (System-Level)
 - **ADR-01** (Architecture): `~/dev/_ref/standards/ADR-01-architecture-v2.md`

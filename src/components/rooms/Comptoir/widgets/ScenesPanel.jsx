@@ -1,9 +1,8 @@
 // src/components/rooms/Comptoir/widgets/ScenesPanel.jsx
 //
-// La carte vivante des 12 scènes de la Canopée, lue depuis canopee-api.
-// Remplace le portail des sages/questions (feu vault-api). Groupé par strate ;
-// chaque scène montre son emoji, son sage, son territoire d'écriture, et le
-// nombre de mandats actifs qui s'y jouent (vue par_scène du registre).
+// La carte des 12 scènes, groupées par strate. Surface lisible partagée
+// (canopeeUi) — le Panel est en transparentContent, c'est cette surface qui
+// porte le contraste. Badge = mandats actifs de la scène (vue par_scène).
 
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -12,8 +11,8 @@ import {
   fetchMandats,
   isConfigured,
 } from "../../../../services/canopeeApi";
+import { Surface, SectionHead, Notice, Path } from "./canopeeUi";
 
-// Strates dans l'ordre du monde, vu du ciel.
 const TIERS = [
   { key: "glade", label: "Clairières", hint: "on y façonne" },
   { key: "river", label: "Rivières", hint: "ça coule et dépose" },
@@ -21,47 +20,17 @@ const TIERS = [
   { key: "lodge", label: "Loge", hint: "on y tient le monde" },
 ];
 
-const Wrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 4px 2px;
-`;
-
-const TierBlock = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const TierHead = styled.h3`
-  margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme?.colors?.textMuted || "#9bb5a4"};
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  span {
-    font-size: 0.68rem;
-    text-transform: none;
-    letter-spacing: 0;
-    opacity: 0.7;
-  }
-`;
-
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 10px;
 `;
 
 const Card = styled.article`
-  border: 1px solid ${({ theme }) => theme?.colors?.border || "rgba(255,255,255,0.12)"};
-  border-radius: 8px;
+  background: #fbf6e8;
+  border: 1px solid #e2d4b4;
+  border-radius: 6px;
   padding: 10px 12px;
-  background: ${({ theme }) => theme?.colors?.surface || "rgba(255,255,255,0.03)"};
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -72,51 +41,33 @@ const CardHead = styled.header`
   align-items: center;
   gap: 8px;
   .emoji {
-    font-size: 1.25rem;
-    line-height: 1;
+    font-size: 1.2rem;
   }
   .nom {
-    font-weight: 600;
+    font-weight: 700;
   }
-  .mandats {
+  .badge {
     margin-left: auto;
     font-size: 0.72rem;
-    padding: 1px 7px;
+    padding: 1px 8px;
     border-radius: 10px;
-    background: ${({ theme }) => theme?.colors?.accent || "#2a6b4e"};
+    background: #b06a2c;
     color: #fff;
   }
 `;
 
 const Essence = styled.p`
   margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.35;
-  opacity: 0.85;
+  font-size: 0.78rem;
+  color: #4a3b2a;
 `;
 
 const Meta = styled.div`
-  font-size: 0.72rem;
-  opacity: 0.7;
+  font-size: 0.73rem;
+  color: #6a533a;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  code {
-    font-size: 0.7rem;
-    opacity: 0.9;
-  }
-`;
-
-const Notice = styled.div`
-  padding: 14px;
-  font-size: 0.85rem;
-  line-height: 1.4;
-  opacity: 0.85;
-  code {
-    background: rgba(255, 255, 255, 0.08);
-    padding: 1px 5px;
-    border-radius: 4px;
-  }
+  gap: 3px;
 `;
 
 const ScenesPanel = () => {
@@ -144,38 +95,33 @@ const ScenesPanel = () => {
     };
   }, []);
 
-  if (!isConfigured()) {
+  if (!isConfigured())
     return (
       <Notice>
-        La porte <strong>canopee-api</strong> n'est pas configurée. Définir{" "}
-        <code>VITE_CANOPEE_API</code> et <code>VITE_CANOPEE_TOKEN</code> dans les
-        variables d'environnement (Vercel ou <code>.env.local</code>), puis
-        redéployer.
+        Porte <strong>canopee-api</strong> non configurée —{" "}
+        <code>VITE_CANOPEE_API</code> / <code>VITE_CANOPEE_TOKEN</code>.
       </Notice>
     );
-  }
-  if (loading) return <Notice>Lecture des registres…</Notice>;
+  if (loading) return <Notice>Lecture des scènes…</Notice>;
   if (error) return <Notice>⚠️ {error}</Notice>;
   if (!scenes) return <Notice>Aucune scène servie.</Notice>;
 
-  const mandatsCount = (slug) =>
+  const count = (slug) =>
     mandats?.par_scène?.[slug]?.mandats_couverts?.length || 0;
 
   return (
-    <Wrap>
+    <Surface>
       {TIERS.map(({ key, label, hint }) => {
-        const entries = Object.entries(scenes).filter(
-          ([, s]) => s.tier === key
-        );
+        const entries = Object.entries(scenes).filter(([, s]) => s.tier === key);
         if (!entries.length) return null;
         return (
-          <TierBlock key={key}>
-            <TierHead>
+          <section key={key}>
+            <SectionHead>
               {label} <span>— {hint}</span>
-            </TierHead>
+            </SectionHead>
             <Grid>
               {entries.map(([slug, s]) => {
-                const n = mandatsCount(slug);
+                const n = count(slug);
                 return (
                   <Card key={slug}>
                     <CardHead>
@@ -183,7 +129,7 @@ const ScenesPanel = () => {
                       <span className="nom">{s.nom}</span>
                       {n > 0 && (
                         <span
-                          className="mandats"
+                          className="badge"
                           title={`${n} mandat${n > 1 ? "s" : ""} actif${
                             n > 1 ? "s" : ""
                           }`}
@@ -198,9 +144,12 @@ const ScenesPanel = () => {
                         Sage :{" "}
                         {s.sage_primordial || <em>invitation (sans sage)</em>}
                       </div>
-                      {Array.isArray(s.territoire) && s.territoire.length > 0 ? (
+                      {Array.isArray(s.territoire) && s.territoire.length ? (
                         <div>
-                          Territoire : <code>{s.territoire.join(" · ")}</code>
+                          Territoire :{" "}
+                          {s.territoire.map((p) => (
+                            <Path key={p}>{p}</Path>
+                          ))}
                         </div>
                       ) : (
                         <div>Territoire : — (tout passe par les mandats)</div>
@@ -210,10 +159,10 @@ const ScenesPanel = () => {
                 );
               })}
             </Grid>
-          </TierBlock>
+          </section>
         );
       })}
-    </Wrap>
+    </Surface>
   );
 };
 

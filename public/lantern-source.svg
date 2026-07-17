@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b5240"/>
+      <stop offset="1" stop-color="#123f30"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.52" r="0.5">
+      <stop offset="0" stop-color="#ffd97a" stop-opacity="1"/>
+      <stop offset="0.45" stop-color="#ffab3d" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffab3d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pane" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0" stop-color="#ffe6a8"/>
+      <stop offset="1" stop-color="#c66f16"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- halo large -->
+  <circle cx="256" cy="266" r="172" fill="url(#glow)"/>
+  <!-- anse -->
+  <path d="M256 92 v30" stroke="#f0e4b8" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M206 146 q50 -50 100 0" stroke="#e3cea0" stroke-width="11" fill="none" stroke-linecap="round"/>
+  <!-- chapeau -->
+  <path d="M196 150 h120 l-14 20 h-92 z" fill="#e3cea0"/>
+  <!-- corps -->
+  <rect x="196" y="168" width="120" height="182" rx="18" fill="#215039" stroke="#e3cea0" stroke-width="11"/>
+  <!-- vitre lumineuse -->
+  <rect x="222" y="192" width="68" height="134" rx="12" fill="url(#pane)"/>
+  <!-- flamme -->
+  <path d="M256 300 q-22 -28 0 -62 q22 34 0 62 z" fill="#fff1c8"/>
+  <circle cx="256" cy="270" r="11" fill="#ffffff"/>
+  <!-- base -->
+  <rect x="208" y="346" width="96" height="22" rx="8" fill="#e3cea0"/>
+  <!-- 2 lucioles discrètes -->
+  <circle cx="126" cy="150" r="6" fill="#ffe9b8" opacity="0.75"/>
+  <circle cx="392" cy="176" r="5" fill="#ffe9b8" opacity="0.6"/>
+</svg>

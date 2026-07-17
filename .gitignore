@@ -26,3 +26,4 @@ captures
 *.njsproj
 *.sln
 *.sw?
+.env*

@@ -4,8 +4,8 @@
   "description": "Interface mobile optimisée de IRIMMetaBrain - Meta-cerveau spatial pour développeurs",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#E8E2D6",
-  "theme_color": "#8B4513",
+  "background_color": "#123f30",
+  "theme_color": "#1b5240",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
@@ -34,7 +34,7 @@
     {
       "name": "Comptoir",
       "short_name": "Comptoir",
-      "description": "Portail 8 Sages",
+      "description": "Carte vivante de la Canopée",
       "url": "/comptoir",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },

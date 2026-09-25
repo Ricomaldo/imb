@@ -494,20 +494,6 @@ class ProjectSyncAdapter {
       needsSync: this.needsSync()
     };
   }
-
-  /**
-   * Test de connexion GitHub
-   */
-  async testConnection() {
-    return this.syncManager.testConnection();
-  }
-
-  /**
-   * Liste les Gists disponibles
-   */
-  async listGists() {
-    return this.syncManager.listGists();
-  }
 }
 
 // Export une instance singleton

@@ -7,8 +7,16 @@
 ```
 ProjectSyncAdapter (orchestrateur)
        │
-       └── SyncManager (GitHub API + crypto)
+       └── SyncManager (crypto + appels /api/sync)
+                  │
+                  └── api/sync.js (fonction Vercel : seule à détenir le token GitHub)
 ```
+
+Le token GitHub (`SYNC_GITHUB_TOKEN`) et l'ID du Gist (`SYNC_GIST_ID`) vivent
+uniquement dans l'environnement serveur de la fonction Vercel `api/sync.js`
+— jamais dans le bundle client. `SyncManager` ne parle plus à
+`api.github.com` directement, il passe par `/api/sync`, protégé par un
+secret partagé (`X-Irim-Sync-Key` / `VITE_SYNC_GATE_KEY`).
 
 ## ProjectSyncAdapter
 
@@ -111,35 +119,37 @@ Le collecteur détecte automatiquement :
 ```javascript
 import SyncManager from './SyncManager';
 
-SyncManager.configure(githubToken, gistId);
-SyncManager.setPassword(password); // Min 8 caractères
+SyncManager.setPassword(password); // Min 8 caractères, saisi par l'utilisateur
 ```
 
 ### Méthodes
 
 | Méthode | Description |
 |---------|-------------|
-| `uploadGist(data, encrypted)` | Crée/update Gist |
-| `downloadGist(gistId, encrypted)` | Télécharge + déchiffre |
-| `testConnection()` | Vérifie token GitHub |
-| `listGists()` | Liste les Gists du user |
+| `uploadGist(data, encrypted)` | POST /api/sync — crée/update Gist côté serveur |
+| `downloadGist(gistId, encrypted)` | GET /api/sync — télécharge + déchiffre (`gistId` ignoré, déterminé côté serveur) |
 
 ### Chiffrement
 
-- **Algorithme** : AES-256-GCM (Web Crypto API)
-- **Clé** : Dérivée du password via PBKDF2 (100k itérations)
-- **Format stocké** : `base64(salt + iv + ciphertext)`
+- **Algorithme** : AES-256-CBC (via `crypto-js`, côté client uniquement)
+- **Clé** : Dérivée du password via PBKDF2 (10 000 itérations)
+- **Format stocké** : `hex(salt) + hex(iv) + base64(ciphertext)`, concaténés en une seule chaîne
 
 ---
 
 ## Variables d'Environnement
 
 ```bash
-# .env.local
-VITE_GITHUB_TOKEN=ghp_xxxxxxxxxxxx   # Personal Access Token (scope: gist)
-VITE_SYNC_PASSWORD=MySecurePassword  # Min 8 chars, AES-256 key
-VITE_SYNC_GIST_ID=abc123def456       # Optionnel, auto-créé si absent
+# Client (bundle public — .env.local ou Vercel Preview/Production)
+VITE_SYNC_GATE_KEY=xxxxxxxxxxxx      # Secret partagé, vérifié par api/sync.js
 VITE_ACCESS_PASSWORD=password        # Gate d'accès app (symbolique)
+
+# Serveur uniquement (fonction Vercel api/sync.js, jamais préfixé VITE_)
+SYNC_GITHUB_TOKEN=ghp_xxxxxxxxxxxx   # Personal Access Token (scope: gist)
+SYNC_GIST_ID=abc123def456            # Créé au premier export si absent
+
+# Mot de passe de chiffrement : saisi par l'utilisateur dans SyncModal,
+# persisté en localStorage (`sync-encryption-password`) — plus une variable d'env.
 ```
 
 ---
@@ -158,15 +168,17 @@ VITE_ACCESS_PASSWORD=password        # Gate d'accès app (symbolique)
 2. SyncManager.uploadGist()
    ├── JSON.stringify(data)
    ├── encrypt(json, password) → AES-256
-   └── GitHub API: PATCH /gists/{id} ou POST /gists
+   └── POST /api/sync (X-Irim-Sync-Key)
+        └── api/sync.js → GitHub API: PATCH /gists/{id} ou POST /gists
 
 3. Copie Gist ID dans presse-papier
 ```
 
 ### Import
 ```
-1. SyncManager.downloadGist(gistId)
-   ├── GitHub API: GET /gists/{id}
+1. SyncManager.downloadGist()
+   ├── GET /api/sync (X-Irim-Sync-Key)
+   │    └── api/sync.js → GitHub API: GET /gists/{SYNC_GIST_ID}
    └── decrypt(content, password)
 
 2. Détection version
@@ -206,6 +218,8 @@ projectSyncAdapter.getSyncStats()
 | Erreur | Cause | Solution |
 |--------|-------|----------|
 | `Unknown data format version` | Format Gist non reconnu | Vérifier version export |
-| `Decryption failed` | Mauvais password | Vérifier VITE_SYNC_PASSWORD |
-| `401 Unauthorized` | Token GitHub invalide | Régénérer token |
-| `404 Not Found` | Gist ID inexistant | Exporter d'abord (crée Gist) |
+| `Decryption failed` | Mauvais password | Ressaisir le mot de passe dans SyncModal |
+| `403 Forbidden` | `X-Irim-Sync-Key` manquante/erronée | Vérifier `VITE_SYNC_GATE_KEY` (client et serveur) |
+| `500 ... not configured` | `SYNC_GITHUB_TOKEN`/`SYNC_GIST_ID` absent côté Vercel | Poser les variables serveur dans Vercel |
+| `401 Unauthorized` (dans le texte de l'erreur GitHub relayée) | Token GitHub invalide | Régénérer `SYNC_GITHUB_TOKEN` |
+| `404 Not Found` (dans le texte de l'erreur GitHub relayée) | Gist ID inexistant | Exporter d'abord (crée le Gist, copier l'id dans `SYNC_GIST_ID`) |

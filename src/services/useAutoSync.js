@@ -30,20 +30,17 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
   const debounceTimerRef = useRef(null);
   const isInitializedRef = useRef(false);
 
-  // Config depuis variables d'environnement
-  const githubToken = import.meta.env.VITE_GITHUB_TOKEN;
-  const encryptionPassword = import.meta.env.VITE_SYNC_PASSWORD;
-  const gistId = import.meta.env.VITE_SYNC_GIST_ID;
+  // Mot de passe de chiffrement saisi par l'utilisateur, persisté par appareil
+  const encryptionPassword = localStorage.getItem('sync-encryption-password');
 
-  const isConfigured = !!(githubToken && encryptionPassword);
+  const isConfigured = !!encryptionPassword;
 
   /**
-   * Configure le projectSyncAdapter avec les credentials
+   * Configure le projectSyncAdapter avec le mot de passe de chiffrement
    */
   const configureSyncAdapter = useCallback(() => {
-    projectSyncAdapter.configure(githubToken, gistId);
     projectSyncAdapter.setPassword(encryptionPassword);
-  }, [githubToken, gistId, encryptionPassword]);
+  }, [encryptionPassword]);
 
   /**
    * Exécute la synchronisation via projectSyncAdapter
@@ -132,8 +129,8 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
    * Auto-import au démarrage si le Gist est plus récent
    */
   const checkAndImportFromGist = useCallback(async () => {
-    if (!isConfigured || !gistId) {
-      logger.debug('[AutoSync] Auto-import skipped: not configured or no gistId');
+    if (!isConfigured) {
+      logger.debug('[AutoSync] Auto-import skipped: not configured');
       return;
     }
 
@@ -143,8 +140,8 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       // Configurer le syncAdapter
       configureSyncAdapter();
 
-      // Récupérer les données du Gist
-      const gistData = await projectSyncAdapter.syncManager.downloadGist(gistId, true);
+      // Récupérer les données du Gist (le serveur détermine quel gist)
+      const gistData = await projectSyncAdapter.syncManager.downloadGist(null, true);
 
       if (!gistData || !gistData.timestamp) {
         logger.debug('[AutoSync] No valid data in Gist');
@@ -163,7 +160,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
         logger.debug('[AutoSync] 📥 Gist is newer, importing...');
         setSyncStatus('syncing');
 
-        const result = await projectSyncAdapter.importFromGist(gistId, true);
+        const result = await projectSyncAdapter.importFromGist(null, true);
 
         if (result.success) {
           logger.debug('[AutoSync] ✅ Auto-import successful!');
@@ -187,7 +184,7 @@ export function useAutoSync({ debounceMs = 30000, enabled = true } = {}) {
       // Ne pas bloquer l'app si l'import échoue (ex: format incompatible)
       logger.debug('[AutoSync] ⚠️ Will re-sync with correct format on next change');
     }
-  }, [isConfigured, gistId, configureSyncAdapter]);
+  }, [isConfigured, configureSyncAdapter]);
 
   // Ref pour le trigger (évite les problèmes de closure)
   const triggerRef = useRef(triggerDebouncedSync);

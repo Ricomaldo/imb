@@ -9,7 +9,7 @@ import { logger } from '../utils/logger';
  * Architecture:
  * - Indépendant des stores spécifiques
  * - Chiffrement/déchiffrement transparent
- * - Upload/download vers GitHub Gist
+ * - Upload/download via /api/sync (le token GitHub reste côté serveur)
  *
  * Sécurité:
  * - AES-256 pour le chiffrement symétrique
@@ -18,18 +18,16 @@ import { logger } from '../utils/logger';
  */
 class SyncManager {
   constructor() {
-    this.githubToken = null;
     this.gistId = null;
     this.password = null;
   }
 
   /**
-   * Configure le service avec les credentials
-   * @param {string} githubToken - Personal Access Token GitHub
-   * @param {string} gistId - ID du Gist (optionnel, sera créé si absent)
+   * Configure le service
+   * @param {string} githubToken - Ignoré : le token vit désormais côté serveur (SYNC_GITHUB_TOKEN)
+   * @param {string} gistId - Ignoré côté client : le gist est déterminé côté serveur (SYNC_GIST_ID)
    */
   configure(githubToken, gistId = null) {
-    this.githubToken = githubToken;
     this.gistId = gistId;
   }
 
@@ -131,10 +129,6 @@ class SyncManager {
    * @returns {Promise<string>} - URL du Gist
    */
   async uploadGist(data, encrypted = true) {
-    if (!this.githubToken) {
-      throw new Error('GitHub token not configured');
-    }
-
     const timestamp = new Date().toISOString();
 
     // Si les données ont déjà un format complet (avec version, architecture, etc), les utiliser directement
@@ -161,18 +155,11 @@ class SyncManager {
     };
 
     try {
-      const url = this.gistId
-        ? `https://api.github.com/gists/${this.gistId}`
-        : 'https://api.github.com/gists';
-
-      const method = this.gistId ? 'PATCH' : 'POST';
-
-      const response = await fetch(url, {
-        method,
+      const response = await fetch('/api/sync', {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.githubToken}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Irim-Sync-Key': import.meta.env.VITE_SYNC_GATE_KEY
         },
         body: JSON.stringify(gistData)
       });
@@ -198,29 +185,17 @@ class SyncManager {
 
   /**
    * Download des données depuis GitHub Gist
-   * @param {string} gistId - ID du Gist (optionnel si déjà configuré)
+   * @param {string} gistId - Ignoré : le gist est déterminé côté serveur (SYNC_GIST_ID)
    * @param {boolean} encrypted - Si true, déchiffre après download
    * @returns {Promise<Object>} - Données téléchargées
    */
-  async downloadGist(gistId = this.gistId, encrypted = true) {
-    if (!this.githubToken) {
-      throw new Error('GitHub token not configured');
-    }
-
-    if (!gistId) {
-      throw new Error('Gist ID required for download');
-    }
-
+  async downloadGist(_gistId = this.gistId, encrypted = true) {
     try {
-      const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+      const response = await fetch('/api/sync', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.githubToken}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'IRIM-MetaBrain/1.0',
-          'X-GitHub-Api-Version': '2022-11-28'
-        },
-        mode: 'cors'
+          'X-Irim-Sync-Key': import.meta.env.VITE_SYNC_GATE_KEY
+        }
       });
 
       if (!response.ok) {
@@ -277,63 +252,6 @@ class SyncManager {
     } catch (error) {
       logger.error('Download error:', error);
       throw new Error(`Failed to download from GitHub: ${error.message}`);
-    }
-  }
-
-  /**
-   * Teste la connexion GitHub
-   * @returns {Promise<boolean>} - True si la connexion est OK
-   */
-  async testConnection() {
-    if (!this.githubToken) {
-      return false;
-    }
-
-    try {
-      const response = await fetch('https://api.github.com/user', {
-        headers: {
-          'Authorization': `Bearer ${this.githubToken}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-
-      return response.ok;
-    } catch (error) {
-      logger.error('Connection test failed:', error);
-      return false;
-    }
-  }
-
-  /**
-   * Liste les Gists de l'utilisateur
-   * @returns {Promise<Array>} - Liste des Gists
-   */
-  async listGists() {
-    if (!this.githubToken) {
-      throw new Error('GitHub token not configured');
-    }
-
-    try {
-      const response = await fetch('https://api.github.com/gists', {
-        headers: {
-          'Authorization': `Bearer ${this.githubToken}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`GitHub API error: ${response.status}`);
-      }
-
-      const gists = await response.json();
-      // Filtrer pour ne garder que les gists IRIM
-      return gists.filter(gist =>
-        gist.description?.includes('IRIM') ||
-        gist.files['irim-sync.json']
-      );
-    } catch (error) {
-      logger.error('List gists error:', error);
-      throw new Error(`Failed to list gists: ${error.message}`);
     }
   }
 }
